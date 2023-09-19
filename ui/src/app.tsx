@@ -1,44 +1,48 @@
 import React, { useEffect, useState } from 'react';
 import Urbit from '@urbit/http-api';
 import { Charges, ChargeUpdateInitial, scryCharges } from '@urbit/api';
-import { AppTile } from './components/AppTile';
+
+import { darkTheme, lightTheme } from "./styles";
+import { Hidden } from "@mui/material";
+
+import { NavBar } from "./components/Navbar";
+
+// Material UI
+import { ThemeProvider } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+
+
+const savedTheme = localStorage.getItem("theme") || "";
 
 const api = new Urbit('', '', window.desk);
 api.ship = window.ship;
 
-export function App() {
+export const App = () => {
+  const [theme, setTheme] = useState(savedTheme === "dark" || savedTheme === "" ? darkTheme : lightTheme);
   const [apps, setApps] = useState<Charges>();
+
+  const toggleTheme = () => {
+    if (theme.palette.mode === "dark") {
+      localStorage.setItem("theme", "light");
+      setTheme(lightTheme);
+    } else {
+      localStorage.setItem("theme", "dark");
+      setTheme(darkTheme);
+    }
+  };
 
   useEffect(() => {
     async function init() {
-      const charges = (await api.scry<ChargeUpdateInitial>(scryCharges)).initial;
-      setApps(charges);
     }
 
     init();
   }, []);
 
   return (
-    <main className="flex items-center justify-center min-h-screen">
-      <div className="max-w-md space-y-6 py-20">
-        <h1 className="text-3xl font-bold">Welcome to bizbaz</h1>
-        <p>Here&apos;s your urbit&apos;s installed apps:</p>
-        {apps && (
-          <ul className="space-y-4">
-            {Object.entries(apps).map(([desk, app]) => (
-              <li key={desk} className="flex items-center space-x-3 text-sm leading-tight">
-                <AppTile {...app} />
-                <div className="flex-1 text-black">
-                  <p>
-                    <strong>{app.title || desk}</strong>
-                  </p>
-                  {app.info && <p>{app.info}</p>}
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-    </main>
+    <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <NavBar />
+    </ThemeProvider>
   );
 }
+
