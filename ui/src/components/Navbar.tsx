@@ -1,14 +1,25 @@
 import React, { useState } from "react";
-// import SwipeableViews from 'react-swipeable-views';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
 
-import { styled, useTheme } from "@mui/material";
+// MUI 
 import AppBar from "@mui/material/AppBar";
+import Box from '@mui/material/Box';
+import Tab from '@mui/material/Tab';
+import Tabs from '@mui/material/Tabs';
+import Typography from '@mui/material/Typography';
+import { styled, useTheme } from "@mui/material";
+
+// Icons
 import HomeIcon from "@mui/icons-material/Home";
 import { AccountCircle, ExploreOutlined } from "@mui/icons-material";
+
+import '@urbit/sigil-js'
+
+const config = {
+ point: '~talsyx-talsud', // or 'zod'
+ size: 24,
+ detail:'default',
+ space:'none',
+}
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -72,7 +83,7 @@ export const NavBar = () => {
                 >
                     <Tab icon={<HomeIcon />} {...a11yProps(0)} />
                     <Tab icon={<ExploreOutlined />} {...a11yProps(1)} />
-                    <Tab icon={<AccountCircle />} {...a11yProps(2)} />
+                    <Tab icon={<urbit-sigil {...config} />} {...a11yProps(2)} />
                 </Tabs>
             </AppBar>
             <Box marginTop={theme.spacing(4)}>
@@ -83,19 +94,10 @@ export const NavBar = () => {
                 Item Two
                 </TabPanel>
                 <TabPanel value={value} index={2} dir={theme.direction}>
+                  
                 Item Three
                 </TabPanel>
             </Box>
         </Box>
     )
 }
-
-/*
-
-            <SwipeableViews
-                axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-                index={value}
-                onChangeIndex={handleChangeIndex}
-            >
-            </SwipeableViews>
-            */

@@ -1,15 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import Urbit from '@urbit/http-api';
-import { Charges, ChargeUpdateInitial, scryCharges } from '@urbit/api';
+import React, { useEffect, useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 
-import { darkTheme, lightTheme } from "./styles";
-import { Hidden } from "@mui/material";
+// Urbit
+import Urbit from "@urbit/http-api";
+import { Charges, ChargeUpdateInitial, scryCharges } from "@urbit/api";
 
+// Components
 import { NavBar } from "./components/Navbar";
 
-// Material UI
-import { ThemeProvider } from "@mui/material/styles";
+// MUI 
 import CssBaseline from "@mui/material/CssBaseline";
+import Fab from "@mui/material/Fab";
+import { ThemeProvider } from "@mui/material/styles";
+import { darkTheme, lightTheme } from "./styles";
+
+// Icons
+import AddIcon from "@mui/icons-material/Add";
 
 
 const savedTheme = localStorage.getItem("theme") || "";
@@ -20,6 +26,7 @@ api.ship = window.ship;
 export const App = () => {
   const [theme, setTheme] = useState(savedTheme === "dark" || savedTheme === "" ? darkTheme : lightTheme);
   const [apps, setApps] = useState<Charges>();
+  // const navigate = useNavigate();
 
   const toggleTheme = () => {
     if (theme.palette.mode === "dark") {
@@ -42,6 +49,12 @@ export const App = () => {
     <ThemeProvider theme={theme}>
         <CssBaseline />
         <NavBar />
+        <Fab color='primary'>
+          <AddIcon onClick={() => {
+            console.log("Hello")
+            // navigate("/create-listing")
+          }} />
+        </Fab>
     </ThemeProvider>
   );
 }
