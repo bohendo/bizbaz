@@ -5,7 +5,7 @@
   $%  state-0
   ==
 +$  state-0
-  $:  [%0 reviews=(list @)]
+  $:  [%0 reviews=(list review)]
   ==
 +$  card  card:agent:gall
 --
@@ -24,11 +24,10 @@
   `this(state !<(state-0 old))
 ++  on-poke
   |=  [=mark =vase]
-  :: ^-  (quip card _this)
+  ^-  (quip card _this)
   ?>  ?=(%review-action mark)
   =/  act  !<(action vase)
   ~&  act
-  ~&  -.act
   ?-  -.act
       %post-review  [~ this(reviews [review.act reviews])]
       %post-listing
