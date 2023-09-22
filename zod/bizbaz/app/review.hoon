@@ -5,7 +5,7 @@
   $%  state-0
   ==
 +$  state-0
-  $:  [%0 values=(list @)]
+  $:  [%0 reviews=(list @)]
   ==
 +$  card  card:agent:gall
 --
@@ -24,39 +24,25 @@
   `this(state !<(state-0 old))
 ++  on-poke
   |=  [=mark =vase]
-  ^-  (quip card _this)
+  :: ^-  (quip card _this)
   ?>  ?=(%review-action mark)
   =/  act  !<(action vase)
-  ?-    -.act
-      %push
-    ?:  =(our.bowl target.act)
-      :_  this(values [value.act values])
-      [%give %fact ~[/values] %review-update !>(`update`act)]~
-    ?>  =(our.bowl src.bowl)
-    :_  this
-    [%pass /pokes %agent [target.act %review] %poke mark vase]~
-  ::
-      %pop
-    ?:  =(our.bowl target.act)
-      :_  this(values ?~(values ~ t.values))
-      [%give %fact ~[/values] %review-update !>(`update`act)]~
-    ?>  =(our.bowl src.bowl)
-    :_  this
-    [%pass /pokes %agent [target.act %review] %poke mark vase]~
-  ==
-::
+  ~&  act
+  ~&  -.act
+  ?-  -.act
+      %post-review  [~ this(reviews [review.act reviews])]
+      %post-listing
+      !!
+  == 
+
+
 ++  on-peek
   |=  =path
   ^-  (unit (unit cage))
   ?+  path  (on-peek:default path)
-    [%x %values ~]  ``noun+!>(values)
+    [%x %reviews ~]  ``noun+!>(reviews)
   ==
-++  on-watch
-  |=  =path
-  ^-  (quip card _this)
-  ?>  ?=([%values ~] path)
-  :_  this
-  [%give %fact ~ %review-update !>(`update`[%init values])]~
+++  on-watch  on-watch:default
 ++  on-arvo   on-arvo:default
 ++  on-leave  on-leave:default
 ++  on-agent  on-agent:default

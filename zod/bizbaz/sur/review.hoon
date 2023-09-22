@@ -1,10 +1,12 @@
 |%
++$  review  [reviewee=@p reviewer=@p what=@t when=@da]  
++$  listing  [when=@da tag=?(%services %for-sale) description=@t rate=@rs]
 +$  action
-  $%  [%push target=@p value=@]
-      [%pop target=@p]
+  $%  [%post-review review=review]
+      [%post-listing listing=listing]
   ==
 +$  update
-  $%  [%init values=(list @)]
+  $%  [%init reviews=(list @)]
       action
   ==
 --
