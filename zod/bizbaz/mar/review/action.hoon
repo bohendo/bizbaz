@@ -13,8 +13,7 @@
     ^-  action
     %.  jon
     %-  of
-    :~  [%push (ot ~[target+(se %p) value+ni])]
-        [%pop (se %p)]
+    :~  [%post-review (ot ~[review+(ot ~[reviewee+(se %p) reviewer+(se %p) what+so])])]
     ==
   --
 ++  grad  %noun
