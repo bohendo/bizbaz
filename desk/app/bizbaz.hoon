@@ -30,11 +30,7 @@
   ~&  act
   ?-  -.act
       %post-review  [~ this(reviews [review.act reviews])]
-      %post-listing
-      !!
   == 
-
-
 ++  on-peek
   |=  =path
   ^-  (unit (unit cage))

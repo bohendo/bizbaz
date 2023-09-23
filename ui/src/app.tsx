@@ -38,9 +38,6 @@ function reducer( state: any, action: any ) {
     case 'post-review':
       newState.unshift(action.val)
       return newState
-    case 'post-listing':
-      newState.shift()
-      return newState
     default:
       return state
   }
@@ -65,7 +62,7 @@ export const App = () => {
 
   useEffect(() => {
     async function init() {
-      api.subscribe( { app:"review", path: '/reviews', event: handleUpdate } )
+      api.subscribe( { app: "bizbaz", path: '/bizbaz/review', event: handleUpdate } )
     }
     init();
   }, []);
@@ -84,7 +81,7 @@ export const App = () => {
 
   const postReview = () => {
     api.poke( {
-      app: 'review',
+      app: 'bizbaz',
       mark: 'review-action',
       json: { 
         'post-review': { 
