@@ -48,7 +48,7 @@ then
 else
   echo
   echo "No data found at $(realpath $fresh)"
-  echo "Booting a new urbit (+ dev-latest.pill) to use as a quick-start $name.."
+  echo "Booting a new urbit to use as a quick-start $name.."
   echo "Once this ship boots, run the following commands to pre-configure the fresh data dir"
   echo "~$name:dojo> |mount %base" # generic boilerplate (like what you get after `git init`)
   echo "~$name:dojo> |mount %garden" # this desk serves landscape so the server I guess?
@@ -63,5 +63,5 @@ else
     echo "Downloading $pill"
     wget https://storage.googleapis.com/media.urbit.org/developers/dev-latest.pill
   fi
-  $urbit --fake "$name" --bootstrap "$pill" --pier "$fresh" # warning: takes ~2 minutes & lots of cpu
+  $urbit --fake "$name" --pier "$fresh" # warning: takes ~2 minutes & lots of cpu
 fi
