@@ -12,6 +12,8 @@ import { styled, useTheme } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import { AccountCircle, ExploreOutlined } from "@mui/icons-material";
 
+import { Listings } from "../pages/Listings";
+
 import '@urbit/sigil-js'
 
 const config = {
@@ -81,21 +83,18 @@ export const NavBar = () => {
                     variant="fullWidth"
                     aria-label="full width tabs example"
                 >
-                    <Tab icon={<HomeIcon />} {...a11yProps(0)} />
-                    <Tab icon={<ExploreOutlined />} {...a11yProps(1)} />
+                    <Tab icon={<ExploreOutlined />} {...a11yProps(0)} />
                     <Tab icon={<urbit-sigil {...config} />} {...a11yProps(2)} />
                 </Tabs>
             </AppBar>
             <Box marginTop={theme.spacing(4)}>
                 <TabPanel value={value} index={0} dir={theme.direction}>
-                Item One
+                  <Listings />
                 </TabPanel>
                 <TabPanel value={value} index={1} dir={theme.direction}>
-                Item Two
-                </TabPanel>
-                <TabPanel value={value} index={2} dir={theme.direction}>
-                  
-                Item Three
+                  <Typography variant="h2">
+                    Profile
+                  </Typography>
                 </TabPanel>
             </Box>
         </Box>

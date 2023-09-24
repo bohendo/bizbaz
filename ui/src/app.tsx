@@ -60,13 +60,6 @@ export const App = () => {
     }
   };
 
-  useEffect(() => {
-    async function init() {
-      api.subscribe( { app: "bizbaz", path: '/bizbaz/review', event: handleUpdate } )
-    }
-    init();
-  }, []);
-
   const handleUpdate = ( upd: any) => {
     if ( 'init' in upd ) {
       dispatch({type:'init', init:upd.init})
@@ -97,7 +90,7 @@ export const App = () => {
   }
 
   const handleClickFab = () => {
-    console.log("SEtting dialog to true")
+    console.log("Setting dialog to true")
     setOpenReviewDialog(true);
   }
 
