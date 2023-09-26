@@ -2,6 +2,7 @@
 data
 libs
 node_modules
+zod/garden
 zod/.bin
 zod/.http.ports
 zod/.run
