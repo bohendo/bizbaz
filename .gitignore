@@ -1,5 +1,6 @@
 *.swp
 data
+libs
 node_modules
 zod/.bin
 zod/.http.ports

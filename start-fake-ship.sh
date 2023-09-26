@@ -49,12 +49,9 @@ else
   echo
   echo "No data found at $(realpath $fresh)"
   echo "Booting a new urbit to use as a quick-start $name.."
-  echo "Once this ship boots, run the following commands to pre-configure the fresh data dir"
-  echo "~$name:dojo> |mount %base" # generic boilerplate (like what you get after `git init`)
-  echo "~$name:dojo> |mount %garden" # this desk serves landscape so the server I guess?
-  echo "~$name:dojo> |mount %webterm" # in-browser dojo terminal app
-  echo "~$name:dojo> |exit"
-  echo "Then, re-run this script to start a fresh $name ship from the generated fresh"
+  echo "Once this ship boots, run '|exit' to preserve a pristinely booted fresh ship"
+  echo "Then, re-run this script to start a fresh $name ship from the generated fresh-$name data"
+  echo "(may require one-time sudo to copy due to different docker user)"
   echo
   sleep 3 # give the user a sec to read the message above
   pill="dev-latest.pill"
