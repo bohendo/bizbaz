@@ -53,11 +53,17 @@
 ++  on-watch
   |=  =path
   ^-  (quip card _this)
-  ?>  ?=([%listings ~] path)
+  :: ?>  |(?=(%reviews path) ?=(%listings path))
+  :: ~&  path
   :_  this
-  ~&  "watched a listing"
-  ~&  listings
-  [%give %fact ~ %listing-update !>(`update:listing`[%init listings])]~
+  ?+  path  !!
+    [%reviews ~]
+      ~&  "watching reviews"
+      [%give %fact ~ %review-update !>(`update:review`[%init reviews])]~
+    [%listings ~]
+      ~&  "watching listings"
+      [%give %fact ~ %listing-update !>(`update:listing`[%init listings])]~
+  ==
 ++  on-arvo   on-arvo:default
 ++  on-leave  on-leave:default
 ++  on-agent  on-agent:default
