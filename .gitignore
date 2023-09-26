@@ -1,6 +1,6 @@
 *.swp
 data
-libs
+lib
 node_modules
 zod/garden
 zod/.bin

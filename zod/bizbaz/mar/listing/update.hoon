@@ -13,7 +13,7 @@
       %-  pairs
       :~  ['who' s+(scot %p who.listing.upd)]
           ['when' (sect when.listing.upd)]
-          ['tags' (tank tags.listing.upd)]
+          ['tags' a+(turn tags.listing.upd tape)]
           ['description' (tape description.listing.upd)] :: TODO: change to wall
       ==
     ::
@@ -23,7 +23,7 @@
       %-  pairs
       :~  ['who' s+(scot %p who.listing.upd)]
           ['when' (sect when.listing.upd)]
-          ['tags' (tank tags.listing.upd)]
+          ['tags' a+(turn tags.listing.upd tape)]
           ['description' (tape description.listing.upd)] :: TODO: change to wall
       ==
     ::
@@ -33,7 +33,7 @@
       %-  pairs
       :~  ['who' s+(scot %p who.listing.upd)]
           ['when' (sect when.listing.upd)]
-          ['tags' (tank tags.listing.upd)]
+          ['tags' a+(turn tags.listing.upd tape)]
           ['description' (tape description.listing.upd)] :: TODO: change to wall
       ==
     ::
@@ -44,7 +44,7 @@
       %-  pairs
       :~  ['who' s+(scot %p who.listing.upd)]
           ['when' (sect when.listing.upd)]
-          ['tags' (tank tags.listing.upd)]
+          ['tags' a+(turn tags.listing.upd tape)]
           ['description' (tape description.listing.upd)] :: TODO: change to wall
       ==
     ==
