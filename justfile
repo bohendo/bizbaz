@@ -5,4 +5,7 @@ sync:
 
 sync-lib dir: 
   rm -rf data/zod/{{dir}}
-  cp -rf {{dir}} data/zod/{{dir}}
+  cp -rf libs/{{dir}} data/zod/{{dir}}
+
+start:
+  bash start-fake-ship.sh
