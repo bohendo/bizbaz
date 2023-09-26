@@ -1,23 +1,32 @@
 /-  *review
-|_  act=action
+|_  upd=update
 ++  grow
   |%
-  ++  noun  act
+  ++  noun  upd
   ++  json
     =,  enjs:format
     ^-  ^json
-    ?-    -.upd
-      %pop   (frond 'pop' s+(scot %p target.upd))
-      %init  (frond 'init' a+(turn values.upd numb))
-      %push  %+  frond  'push'
-             %-  pairs
-             :~  ['target' s+(scot %p target.upd)]
-                 ['value' (numb value.upd)]
-    ==       ==
+    ~&  upd
+    ~&  -.upd
+    ~&  reviews.upd
+    ?+    -.upd  !!
+        %init
+      =/  reviews  +.upd
+      %+  frond  'review'
+      :-  %a
+      %+  turn  reviews
+      |=  rev=review
+      %-  pairs
+      :~  ['reviewee' s+(scot %p reviewee.rev)]
+          ['reviewer' s+(scot %p reviewer.rev)]
+          ['what' s+what.rev]
+          ['when' (sect when.rev)]
+      ==
+    ==
   --
 ++  grab
   |%
-  ++  noun  action
+  ++  noun  update
   --
 ++  grad  %noun
 --
