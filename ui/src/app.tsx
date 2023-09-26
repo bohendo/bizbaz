@@ -24,12 +24,15 @@ const savedTheme = localStorage.getItem("theme") || "";
 const api = new Urbit('', '', window.desk);
 api.ship = window.ship;
 
+export const ShipContext = React.createContext({
+  api: api,
+});
+
 export const App = () => {
   const [theme, setTheme] = useState(savedTheme === "dark" || savedTheme === "" ? darkTheme : lightTheme);
   const [apps, setApps] = useState<Charges>();
   const [openReviewDialog, setOpenReviewDialog] = useState(false);
   const [openListingDialog, setOpenListingDialog] = useState(false);
-  // const navigate = useNavigate();
 
   const toggleTheme = () => {
     if (theme.palette.mode === "dark") {
@@ -41,34 +44,31 @@ export const App = () => {
     }
   };
 
-  const postReview = () => {
-    api.poke( {
-      app: 'bizbaz',
-      mark: 'review-action',
-      json: { 
-        'post-review': { 
-          review: {
-            reviewee: "~nec",
-            reviewer: `~${window.ship}`,
-            what: "test review",
-            when: 1630471524
-          }
-        }
-      }
-    } )
-  }
+  // const postReview = () => {
+  //   api.poke( {
+  //     app: 'bizbaz',
+  //     mark: 'review-action',
+  //     json: { 
+  //       'post-review': { 
+  //         review: {
+  //           reviewee: "~nec",
+  //           reviewer: `~${window.ship}`,
+  //           what: "test review",
+  //           when: 1630471524
+  //         }
+  //       }
+  //     }
+  //   } )
+  // }
 
   const handleClickFab = () => {
-    console.log("Setting dialog to true")
     setOpenListingDialog(true);
-  }
-
-  const handleCloseDialog = () => {
-    setOpenReviewDialog(false);
   }
 
   return (
     <ThemeProvider theme={theme}>
+      <ShipContext.Provider value={{api}}>
+
         <CssBaseline />
         <NavBar />
         <NewListing
@@ -77,11 +77,10 @@ export const App = () => {
         <Fab color='primary'>
           <AddIcon onClick={() => { console.log(window.ship) 
           handleClickFab()
-          // postListing()
-          // postReview()
         }} />
         </Fab>
         
+      </ShipContext.Provider>
     </ThemeProvider>
   );
 }

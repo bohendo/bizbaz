@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, useContext} from "react";
 
 // MUI Components
 import TextField from '@mui/material/TextField';
@@ -8,8 +8,9 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from "@mui/material/Button";
+import { ShipContext } from "../app";
 
-// MUI Icons
+// const shipContext = useContext(ShipContext);
 
 export const NewListing = ({
     open,
