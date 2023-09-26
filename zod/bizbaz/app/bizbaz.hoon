@@ -32,17 +32,19 @@
     %review-action
       =/  act  !<(action:review vase)
       ~&  act
+      ~&  reviewee.review.act
       ?-  -.act
           %post-review  [~ this(reviews [review.act reviews])]
       == 
     %listing-action
       =/  act  !<(action:listing vase)
       ~&  act
-      ?-  -.act
-          %create  [~ this(listings [listing.act listings])]
-          %delete  !!
-          %spread  !!
-      == 
+      !!
+      :: ?-  -.act
+      ::     %create  [~ this(listings [listing.act listings])]
+      ::     %delete  !!
+      ::     %spread  !!
+      :: == 
   ==
 ++  on-peek
   |=  =path
@@ -56,6 +58,7 @@
   ?>  ?=([%listings ~] path)
   :_  this
   ~&  "watched a listing"
+  ~&  listings
   [%give %fact ~ %listing-update !>(`update:listing`[%init listings])]~
 ++  on-arvo   on-arvo:default
 ++  on-leave  on-leave:default
