@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useContext} from "react";
+import React, {useEffect, useState} from "react";
 
 // MUI Components
 import TextField from '@mui/material/TextField';
@@ -8,34 +8,34 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from "@mui/material/Button";
-import { ShipContext } from "../app";
 
-// const shipContext = useContext(ShipContext);
 
 export const NewListing = ({
     open,
-    handleCloseDialog
+    handleCloseDialog,
+    api
 }: {
     open: boolean;
     handleCloseDialog: () => void;
+    api: any
 }) => {
 
     const postListing = () => {
         console.log("Creating new listing");
-        // api.poke( {
-        //   app: 'bizbaz',
-        //   mark: 'listing-action',
-        //   json: { 
-        //     'create': { 
-        //       listing: {
-        //         who: `~${window.ship}`,
-        //         tags: ["tag1", "tag2"],
-        //         description: "test listing",
-        //         when: 1630471524
-        //       }
-        //     }
-        //   }
-        // } )
+        api.poke( {
+          app: 'bizbaz',
+          mark: 'listing-action',
+          json: { 
+            'create': { 
+              listing: {
+                who: `~${window.ship}`,
+                tags: ["tag1", "tag2"],
+                description: "test listing",
+                when: 1630471524
+              }
+            }
+          }
+        } )
     
     }
 

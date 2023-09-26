@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useReducer } from "react";
-// import { useNavigate, Link } from "react-router-dom";
 
 // Urbit
 import Urbit from "@urbit/http-api";
@@ -23,10 +22,6 @@ const savedTheme = localStorage.getItem("theme") || "";
 
 const api = new Urbit('', '', window.desk);
 api.ship = window.ship;
-
-export const ShipContext = React.createContext({
-  api: api,
-});
 
 export const App = () => {
   const [theme, setTheme] = useState(savedTheme === "dark" || savedTheme === "" ? darkTheme : lightTheme);
@@ -67,20 +62,17 @@ export const App = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <ShipContext.Provider value={{api}}>
-
         <CssBaseline />
         <NavBar />
         <NewListing
           open={openListingDialog} handleCloseDialog={() => setOpenListingDialog(false)}
+          api={api}
         />
         <Fab color='primary'>
           <AddIcon onClick={() => { console.log(window.ship) 
           handleClickFab()
         }} />
         </Fab>
-        
-      </ShipContext.Provider>
     </ThemeProvider>
   );
 }
