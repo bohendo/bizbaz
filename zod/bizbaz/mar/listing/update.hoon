@@ -11,7 +11,7 @@
       %+  frond  'create'
       %+  frond  'listing'
       %-  pairs
-      :~  ['who' s+(scot %p target.upd)]
+      :~  ['who' s+(scot %p who.upd)]
           ['when' (sect when.upd)]
           ['tags' (tank tags.upd)]
           ['description' (tape description.upd)] :: TODO: change to wall
@@ -21,7 +21,7 @@
       %+  frond  'delete'
       %+  frond  'listing'
       %-  pairs
-      :~  ['who' s+(scot %p target.upd)]
+      :~  ['who' s+(scot %p who.upd)]
           ['when' (sect when.upd)]
           ['tags' (tank tags.upd)]
           ['description' (tape description.upd)] :: TODO: change to wall
@@ -31,7 +31,7 @@
       %+  frond  'spread'
       %+  frond  'listing'
       %-  pairs
-      :~  ['who' s+(scot %p target.upd)]
+      :~  ['who' s+(scot %p who.upd)]
           ['when' (sect when.upd)]
           ['tags' (tank tags.upd)]
           ['description' (tape description.upd)] :: TODO: change to wall
@@ -40,9 +40,9 @@
         %init
       %+  frond  'init'
       %+  frond  'listings'
-      %+  turn
+      %-  turn
       %-  pairs
-      :~  ['who' s+(scot %p target.upd)]
+      :~  ['who' s+(scot %p who.upd)]
           ['when' (sect when.upd)]
           ['tags' (tank tags.upd)]
           ['description' (tape description.upd)] :: TODO: change to wall
