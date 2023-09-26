@@ -30,21 +30,7 @@ const savedTheme = localStorage.getItem("theme") || "";
 const api = new Urbit('', '', window.desk);
 api.ship = window.ship;
 
-function reducer( state: any, action: any ) {
-  let newState = [ ...state ]
-  switch ( action.type ) {
-    case 'init':
-      return action.init
-    case 'post-review':
-      newState.unshift(action.val)
-      return newState
-    default:
-      return state
-  }
-}
-
 export const App = () => {
-  const [ state, dispatch ] = useReducer( reducer, [] )
   const [theme, setTheme] = useState(savedTheme === "dark" || savedTheme === "" ? darkTheme : lightTheme);
   const [apps, setApps] = useState<Charges>();
   const [openReviewDialog, setOpenReviewDialog] = useState(false);
@@ -60,18 +46,6 @@ export const App = () => {
     }
   };
 
-  const handleUpdate = ( upd: any) => {
-    if ( 'init' in upd ) {
-      dispatch({type:'init', init:upd.init})
-    }
-    else if ( 'push' in upd ) {
-      dispatch({type:'push', val:upd.push.value})
-    }
-    else if ( 'pop' in upd ) {
-      dispatch( { type:'pop' } )
-    }
-  }
-
   const postListing = () => {
     api.poke( {
       app: 'bizbaz',
@@ -80,9 +54,9 @@ export const App = () => {
         create: { 
           listing: {
             who: `~${window.ship}`,
-            when: 1630471524,
             tags: ["tag1", "tag2"],
-            description: "test listing"
+            description: "test listing",
+            when: 1630471524
           }
         }
       }
@@ -118,14 +92,13 @@ export const App = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <div>
         <CssBaseline />
         <NavBar />
         <Dialog open={openReviewDialog} onClose={handleCloseDialog}>
           <DialogTitle> Review </DialogTitle>
             <DialogContent>
                <DialogContentText>
-               Add you review
+                  Add you review
                </DialogContentText>
             </DialogContent>
         </Dialog>
@@ -136,7 +109,6 @@ export const App = () => {
           // postReview()
         }} />
         </Fab>
-      </div>
         
     </ThemeProvider>
   );
