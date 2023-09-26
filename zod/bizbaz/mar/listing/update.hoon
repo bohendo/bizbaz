@@ -18,7 +18,7 @@
       ==
     ::
         %delete
-      %+  frond  'create'
+      %+  frond  'delete'
       %+  frond  'listing'
       %-  pairs
       :~  ['who' s+(scot %p target.upd)]
@@ -28,7 +28,7 @@
       ==
     ::
         %spread
-      %+  frond  'create'
+      %+  frond  'spread'
       %+  frond  'listing'
       %-  pairs
       :~  ['who' s+(scot %p target.upd)]
@@ -38,7 +38,7 @@
       ==
     ::
         %init
-      %+  frond  'create'
+      %+  frond  'init'
       %+  frond  'listings'
       %+  turn
       %-  pairs
