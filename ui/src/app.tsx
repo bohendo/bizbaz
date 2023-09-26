@@ -72,6 +72,24 @@ export const App = () => {
     }
   }
 
+  const postListing = () => {
+    api.poke( {
+      app: 'bizbaz',
+      mark: 'listing-action',
+      json: { 
+        create: { 
+          listing: {
+            who: `~${window.ship}`,
+            when: 1630471524,
+            tags: ["tag1", "tag2"],
+            description: "test listing"
+          }
+        }
+      }
+    } )
+
+  }
+
   const postReview = () => {
     api.poke( {
       app: 'bizbaz',
@@ -114,7 +132,8 @@ export const App = () => {
         <Fab color='primary'>
           <AddIcon onClick={() => { console.log(window.ship) 
           handleClickFab()
-          postReview()
+          postListing()
+          // postReview()
         }} />
         </Fab>
       </div>
