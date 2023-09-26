@@ -13,9 +13,9 @@
     ^-  action
     %.  jon
     %-  of
-    :~  [%create (ot ~[listing+(ot ~[who+(se %p) when+du tags+(as (se %tas)) description+so])])]
-        [%delete (ot ~[listing+(ot ~[who+(se %p) when+du tags+(as (se %tas)) description+so])])]
-        [%spread (ot ~[listing+(ot ~[who+(se %p) when+du tags+(as (se %tas)) description+so])])]
+    :~  [%create (ot ~[listing+(ot ~[who+(se %p) when+du tags+(as (se %tas)) description+sa])])]
+        [%delete (ot ~[listing+(ot ~[who+(se %p) when+du tags+(as (se %tas)) description+sa])])]
+        [%spread (ot ~[listing+(ot ~[who+(se %p) when+du tags+(as (se %tas)) description+sa])])]
     ==
   --
 ++  grad  %noun

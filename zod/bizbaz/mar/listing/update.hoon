@@ -13,8 +13,8 @@
       %-  pairs
       :~  ['who' s+(scot %p who.listing.upd)]
           ['when' (sect when.listing.upd)]
-          ['tags' a+(turn tags.listing.upd tape)]
-          ['description' (tape description.listing.upd)] :: TODO: change to wall
+          ['tags' a+(turn (turn tags.listing.upd trip) tape)]
+          ['description' (cord description.listing.upd)] :: TODO: change to wall
       ==
     ::
         %delete
@@ -23,7 +23,7 @@
       %-  pairs
       :~  ['who' s+(scot %p who.listing.upd)]
           ['when' (sect when.listing.upd)]
-          ['tags' a+(turn tags.listing.upd tape)]
+          ['tags' a+(turn (turn tags.listing.upd trip) tape)]
           ['description' (tape description.listing.upd)] :: TODO: change to wall
       ==
     ::
@@ -33,20 +33,22 @@
       %-  pairs
       :~  ['who' s+(scot %p who.listing.upd)]
           ['when' (sect when.listing.upd)]
-          ['tags' a+(turn tags.listing.upd tape)]
+          ['tags' a+(turn (turn tags.listing.upd trip) tape)]
           ['description' (tape description.listing.upd)] :: TODO: change to wall
       ==
     ::
         %init
       %+  frond  'init'
-      %+  frond  'listings'
-      %-  turn
-      %-  pairs
-      :~  ['who' s+(scot %p who.listing.upd)]
-          ['when' (sect when.listing.upd)]
-          ['tags' a+(turn tags.listing.upd tape)]
-          ['description' (tape description.listing.upd)] :: TODO: change to wall
-      ==
+      %+  frond  'listings'  a+(turn listings.upd |=(lis=listing (tape description.lis)))
+      :: :-  %a
+      :: %-  turn  listings.upd
+      :: |=  lis=listing
+      :: %-  pairs
+      :: :~  ['who' s+(scot %p who.lis)]
+      ::     ['when' (sect when.lis)]
+      ::     ['tags' a+(turn tags.lis tape)]
+      ::     ['description' (tape description.lis)] :: TODO: change to wall
+      :: ==
     ==
   --
 ++  grab
