@@ -38,13 +38,11 @@
       == 
     %listing-action
       =/  act  !<(action:listing vase)
-      ~&  act
-      !!
-      :: ?-  -.act
-      ::     %create  [~ this(listings [listing.act listings])]
-      ::     %delete  !!
-      ::     %spread  !!
-      :: == 
+      ?-  -.act
+          %create  [~ this(listings [listing.act listings])]
+          %delete  !!
+          %spread  !!
+      == 
   ==
 ++  on-peek
   |=  =path

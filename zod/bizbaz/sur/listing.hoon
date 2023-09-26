@@ -7,6 +7,6 @@
   ==
 +$  update
   $%  [%init listings=(list listing)]
-  action
+      action
   ==
 --
