@@ -7,7 +7,14 @@ export type ListingValidation = {
 
 }
 
+export type NewListing = {
+    description: string;
+    tags: Array<string>;
+}
+
 export type Listing = {
     description: string;
     tags: Array<string>;
+    when: number;
+    who: string;
 }

@@ -9,7 +9,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from "@mui/material/Button";
 
-import { Listing, ListingValidation  } from "../types";
+import { NewListing, ListingValidation  } from "../types";
 
 export const NewListing = ({
     open,
@@ -18,6 +18,7 @@ export const NewListing = ({
 }: {
     open: boolean;
     handleCloseDialog: () => void;
+    // TODO: Fix api type
     api: any
 }) => {
     const [validation, setValidation] = useState({
@@ -30,15 +31,15 @@ export const NewListing = ({
     const [newListing, setNewListing] = useState({
         description: "",
         tags: []
-    } as Listing);
+    } as NewListing);
 
-    const validate = (listing: Listing) => {
+    const validate = (listing: NewListing) => {
        const descriptionError = !listing.description ? "Listing description is required" : "";
        const tagsError = ""
        const hasError = !!(descriptionError || tagsError);
        setValidation({ hasError, errorMsgs: {descriptionError, tagsError}});
     }
-    const syncNewListing = (listing: Listing) => {
+    const syncNewListing = (listing: NewListing) => {
        validate(listing);
        setNewListing(listing);
     }
@@ -46,7 +47,7 @@ export const NewListing = ({
     const postListing = () => {
         validate(newListing);
         if (validation.hasError) return;
-        api.poke( {
+        api.poke({
           app: 'bizbaz',
           mark: 'listing-action',
           json: { 
@@ -59,7 +60,7 @@ export const NewListing = ({
               }
             }
           }
-        } )
+        })
     
     }
 
