@@ -6,15 +6,12 @@
   ++  json
     =,  enjs:format
     ^-  ^json
-    ~&  upd
-    ~&  -.upd
-    ~&  reviews.upd
     ?+    -.upd  !!
         %init
-      =/  reviews  +.upd
       %+  frond  'review'
       :-  %a
-      %+  turn  reviews
+      ?~  reviews.upd  ~
+      %+  turn  reviews.upd
       |=  rev=review
       %-  pairs
       :~  ['reviewee' s+(scot %p reviewee.rev)]
