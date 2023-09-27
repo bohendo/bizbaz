@@ -31,7 +31,7 @@ export const Listings = ({
 
   useEffect(() => {
     async function init() {
-      api.subscribe( { app: "bizbaz", path: '/reviews', event: handleUpdate } )
+      api.subscribe( { app: "bizbaz", path: '/listings', event: handleUpdate } )
     }
     init();
   }, []);
