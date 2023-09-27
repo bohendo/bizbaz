@@ -39,22 +39,6 @@ export const App = () => {
     }
   };
 
-  // const postReview = () => {
-  //   api.poke( {
-  //     app: 'bizbaz',
-  //     mark: 'review-action',
-  //     json: { 
-  //       'post-review': { 
-  //         review: {
-  //           reviewee: "~nec",
-  //           reviewer: `~${window.ship}`,
-  //           what: "test review",
-  //           when: 1630471524
-  //         }
-  //       }
-  //     }
-  //   } )
-  // }
 
   const handleClickFab = () => {
     setOpenListingDialog(true);
@@ -63,7 +47,7 @@ export const App = () => {
   return (
     <ThemeProvider theme={theme}>
         <CssBaseline />
-        <NavBar />
+        <NavBar api={api}/>
         <NewListing
           open={openListingDialog} handleCloseDialog={() => setOpenListingDialog(false)}
           api={api}
