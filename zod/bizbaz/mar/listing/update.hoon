@@ -16,24 +16,6 @@
           ['description' s+description.listing.upd] :: TODO: change to wall
       ==
     ::
-        %delete
-      %+  frond  'listing'
-      %-  pairs
-      :~  ['who' s+(scot %p who.listing.upd)]
-          ['when' (sect when.listing.upd)]
-          ['tags' a+(turn (turn tags.listing.upd trip) tape)]
-          ['description' s+description.listing.upd] :: TODO: change to wall
-      ==
-    ::
-        %spread
-      %+  frond  'listing'
-      %-  pairs
-      :~  ['who' s+(scot %p who.listing.upd)]
-          ['when' (sect when.listing.upd)]
-          ['tags' a+(turn (turn tags.listing.upd trip) tape)]
-          ['description' s+description.listing.upd] :: TODO: change to wall
-      ==
-    ::
         %init
       %+  frond  'listings'
       :-  %a
