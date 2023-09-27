@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Box, styled, useTheme } from "@mui/material";
 
 // types
-import { Listing } from "../types";
+import { TListing } from "../types";
 
 // MUI
 import Typography from '@mui/material/Typography';
@@ -47,7 +47,7 @@ export const Listings = ({
         Listings
       </Typography>
       <Masonry columns={3} spacing={3}>
-        {listings.map((listing: Listing, index: number) => (
+        {listings.map((listing: TListing, index: number) => (
           <Item key={index} sx={{ marginTop: theme.spacing(3) , height: 150 }}>
             <Typography variant="body2">
 
