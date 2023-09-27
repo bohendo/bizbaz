@@ -9,6 +9,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from "@mui/material/Button";
 
+import { Listing, ListingValidation  } from "../types";
 
 export const NewListing = ({
     open,
@@ -19,9 +20,32 @@ export const NewListing = ({
     handleCloseDialog: () => void;
     api: any
 }) => {
+    const [validation, setValidation] = useState({
+        hasError: false,
+        errorMsgs: {
+            descriptionError: "",
+            tagsError: ""
+        }
+    } as ListingValidation)
+    const [newListing, setNewListing] = useState({
+        description: "",
+        tags: []
+    } as Listing);
+
+    const validate = (listing: Listing) => {
+       const descriptionError = !listing.description ? "Listing description is required" : "";
+       const tagsError = ""
+       const hasError = !!(descriptionError || tagsError);
+       setValidation({ hasError, errorMsgs: {descriptionError, tagsError}});
+    }
+    const syncNewListing = (listing: Listing) => {
+       validate(listing);
+       setNewListing(listing);
+    }
 
     const postListing = () => {
-        console.log("Creating new listing");
+        validate(newListing);
+        if (validation.hasError) return;
         api.poke( {
           app: 'bizbaz',
           mark: 'listing-action',
@@ -30,8 +54,8 @@ export const NewListing = ({
               listing: {
                 who: `~${window.ship}`,
                 tags: ["tag1", "tag2"],
-                description: "test listing",
-                when: 1630471524
+                description: newListing.description,
+                when: Math.floor((new Date()).getTime() / 1000)
               }
             }
           }
@@ -47,12 +71,17 @@ export const NewListing = ({
                </DialogContentText>
                <TextField
                     autoFocus
+                    error={!!validation.errorMsgs.descriptionError}
                     margin="dense"
                     id="description"
                     label="Description"
                     type="text"
                     fullWidth
                     variant="standard"
+                    onChange={(event) => {
+                        console.log(event);
+                        syncNewListing({...newListing, [event.target.id]: event.target.value})}
+                    }
                 />
             </DialogContent>
             <DialogActions>
