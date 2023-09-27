@@ -33,7 +33,9 @@ export const Listings = () => {
   }
 
   const handleUpdate = ( upd: any) => {
+    console.log(upd)
     if ( 'init' in upd ) {
+      console.log(upd);
       setListings(upd.listings)      
     }
   }
