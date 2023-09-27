@@ -9,7 +9,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from "@mui/material/Button";
 
-import { NewListing, ListingValidation  } from "../types";
+import { TNewListing, TListingValidation  } from "../types";
 
 export const NewListing = ({
     open,
@@ -24,22 +24,32 @@ export const NewListing = ({
     const [validation, setValidation] = useState({
         hasError: false,
         errorMsgs: {
+            titleError: "",
             descriptionError: "",
             tagsError: ""
         }
-    } as ListingValidation)
+    } as TListingValidation)
     const [newListing, setNewListing] = useState({
+        title: "",
         description: "",
         tags: []
-    } as NewListing);
+    } as TNewListing);
 
-    const validate = (listing: NewListing) => {
+    const validate = (listing: TNewListing) => {
+       const titleError = !listing.title ? "Listing must have a title" : "";
        const descriptionError = !listing.description ? "Listing description is required" : "";
-       const tagsError = ""
+       let tagsError = listing.tags.reduce((tagError, tag) =>
+            /^[a-z][a-z0-9-]*$/.test(tag) ? tagError : tagError + ` '${tag}'`,
+            "");
+    
+        if (tagsError) 
+            tagsError = "Tags must start with an alphabet and only contain alphanumeric and '-' symbols. \
+                         Following are invalid tags: "
+                        + tagsError;
        const hasError = !!(descriptionError || tagsError);
-       setValidation({ hasError, errorMsgs: {descriptionError, tagsError}});
+       setValidation({ hasError, errorMsgs: {titleError, descriptionError, tagsError}});
     }
-    const syncNewListing = (listing: NewListing) => {
+    const syncNewListing = (listing: TNewListing) => {
        validate(listing);
        setNewListing(listing);
     }
@@ -54,14 +64,14 @@ export const NewListing = ({
             'create': { 
               listing: {
                 who: `~${window.ship}`,
-                tags: ["tag1", "tag2"],
+                tags: newListing.tags,
                 description: newListing.description,
                 when: Math.floor((new Date()).getTime() / 1000)
               }
             }
           }
         })
-    
+        handleCloseDialog()
     }
 
     return (
@@ -72,18 +82,45 @@ export const NewListing = ({
                </DialogContentText>
                <TextField
                     autoFocus
+                    error={!!validation.errorMsgs.titleError}
+                    margin="dense"
+                    id="title"
+                    label="Title"
+                    type="text"
+                    fullWidth
+                    helperText={validation.errorMsgs.titleError}
+                    variant="standard"
+                    onChange={(event) => {
+                        syncNewListing({...newListing, [event.target.id]: event.target.value})}
+                    }
+               />
+               <TextField
                     error={!!validation.errorMsgs.descriptionError}
                     margin="dense"
                     id="description"
                     label="Description"
                     type="text"
                     fullWidth
+                    helperText={validation.errorMsgs.descriptionError}
                     variant="standard"
                     onChange={(event) => {
-                        console.log(event);
                         syncNewListing({...newListing, [event.target.id]: event.target.value})}
                     }
                 />
+                <TextField
+                    error={!!validation.errorMsgs.tagsError}
+                    margin="dense"
+                    id="tags"
+                    label="Tags"
+                    type="text"
+                    fullWidth
+                    helperText={validation.errorMsgs.tagsError}
+                    variant="standard"
+                    onChange={(event) => {
+                        syncNewListing({...newListing, [event.target.id]: event.target.value.toLowerCase().trim().split(" ")})}
+                    }
+                />
+
             </DialogContent>
             <DialogActions>
                 <Button variant="contained" onClick={postListing}>
