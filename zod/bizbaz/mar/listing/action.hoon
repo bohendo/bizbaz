@@ -13,10 +13,7 @@
     ^-  action
     %.  jon
     %-  of
-
-    :~  create+(ot ~[listing+(ot ~[who+(se %p) tags+(ar (se %tas)) description+so when+du])])
-        delete+(ot ~[listing+(ot ~[who+(se %p) tags+(ar (se %tas)) description+so when+du])])
-        spread+(ot ~[listing+(ot ~[who+(se %p) tags+(ar (se %tas)) description+so when+du])])
+    :~  create+(ot ~[listing+(ot ~[who+(se %p) when+du tags+(ar (se %tas)) description+so])])
     ==
   --
 ++  grad  %noun

@@ -40,8 +40,6 @@
       =/  act  !<(action:listing vase)
       ?-  -.act
           %create  [~ this(listings [listing.act listings])]
-          %delete  !!
-          %spread  !!
       == 
   ==
 ++  on-peek
