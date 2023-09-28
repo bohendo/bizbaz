@@ -94,19 +94,6 @@ export const NewListing = ({
                         syncNewListing({...newListing, [event.target.id]: event.target.value})}
                     }
                />
-               <TextField
-                    error={!!validation.errorMsgs.descriptionError}
-                    margin="dense"
-                    id="description"
-                    label="Description"
-                    type="text"
-                    fullWidth
-                    helperText={validation.errorMsgs.descriptionError}
-                    variant="standard"
-                    onChange={(event) => {
-                        syncNewListing({...newListing, [event.target.id]: event.target.value})}
-                    }
-                />
                 <TextField
                     error={!!validation.errorMsgs.tagsError}
                     margin="dense"
@@ -118,6 +105,19 @@ export const NewListing = ({
                     variant="standard"
                     onChange={(event) => {
                         syncNewListing({...newListing, [event.target.id]: event.target.value.toLowerCase().trim().split(" ")})}
+                    }
+                />
+               <TextField
+                    error={!!validation.errorMsgs.descriptionError}
+                    margin="dense"
+                    id="description"
+                    label="Description"
+                    type="text"
+                    fullWidth
+                    helperText={validation.errorMsgs.descriptionError}
+                    variant="standard"
+                    onChange={(event) => {
+                        syncNewListing({...newListing, [event.target.id]: event.target.value})}
                     }
                 />
 
