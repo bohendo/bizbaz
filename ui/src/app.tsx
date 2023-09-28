@@ -2,7 +2,6 @@ import React, { useEffect, useState, useReducer } from "react";
 
 // Urbit
 import Urbit from "@urbit/http-api";
-import { Charges, ChargeUpdateInitial, scryCharges } from "@urbit/api";
 
 // Components
 import { NavBar } from "./components/Navbar";
@@ -25,7 +24,6 @@ api.ship = window.ship;
 
 export const App = () => {
   const [theme, setTheme] = useState(savedTheme === "dark" || savedTheme === "" ? darkTheme : lightTheme);
-  const [apps, setApps] = useState<Charges>();
   const [openReviewDialog, setOpenReviewDialog] = useState(false);
   const [openListingDialog, setOpenListingDialog] = useState(false);
 
@@ -52,7 +50,7 @@ export const App = () => {
           open={openListingDialog} handleCloseDialog={() => setOpenListingDialog(false)}
           api={api}
         />
-        <Fab color='primary'>
+        <Fab color='primary' sx={{position: 'fixed', right: theme.spacing(4), bottom: theme.spacing(3)}}>
           <AddIcon onClick={() => { console.log(window.ship) 
           handleClickFab()
         }} />
