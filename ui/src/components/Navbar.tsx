@@ -6,11 +6,11 @@ import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import Typography from '@mui/material/Typography';
-import { styled, useTheme } from "@mui/material";
+import { useTheme } from "@mui/material";
 
 // Icons
 import HomeIcon from "@mui/icons-material/Home";
-import { AccountCircle, ExploreOutlined } from "@mui/icons-material";
+import ExploreOutlined from "@mui/icons-material/ExploreOutlined";
 
 import { Listings } from "../pages/Listings";
 
@@ -60,6 +60,7 @@ function a11yProps(index: number) {
 
 export const NavBar = ({api}:{api: any}) => {
     const [value, setValue] = useState(0);
+    // const [tab1View, setTab1View] = useState
     const theme = useTheme();
 
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
