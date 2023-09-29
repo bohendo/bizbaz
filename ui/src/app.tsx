@@ -37,7 +37,6 @@ export const App = () => {
     }
   };
 
-
   const handleClickFab = () => {
     setOpenListingDialog(true);
   }
@@ -50,10 +49,8 @@ export const App = () => {
           open={openListingDialog} handleCloseDialog={() => setOpenListingDialog(false)}
           api={api}
         />
-        <Fab color='primary' sx={{position: 'fixed', right: theme.spacing(4), bottom: theme.spacing(3)}}>
-          <AddIcon onClick={() => { console.log(window.ship) 
-          handleClickFab()
-        }} />
+        <Fab color='primary' sx={{position: 'fixed', right: theme.spacing(4), bottom: theme.spacing(3)}} onClick={() => { console.log(window.ship); handleClickFab() }} >
+          <AddIcon />
         </Fab>
     </ThemeProvider>
   );

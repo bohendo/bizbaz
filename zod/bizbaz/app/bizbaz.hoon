@@ -40,6 +40,8 @@
       =/  act  !<(action:listing vase)
       ?-  -.act
           %create  [~ this(listings [listing.act listings])]
+          %delete  [~ this(listings [listing.act listings])] :: find & rm the one w matching id
+          %update  [~ this(listings [listing.act listings])] :: find & replace the one w matching id
       == 
   ==
 ++  on-peek
