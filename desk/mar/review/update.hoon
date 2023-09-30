@@ -14,10 +14,23 @@
       %+  turn  reviews.upd
       |=  rev=review
       %-  pairs
-      :~  ['reviewee' s+(scot %p reviewee.rev)]
-          ['reviewer' s+(scot %p reviewer.rev)]
-          ['what' s+what.rev]
+      :~  ['reviewer' s+(scot %p reviewee.rev)]
+          ['digest' s+(scot %uv digest.rev)]
+          ['sig' s+(scot %uv sig.rev)]
           ['when' (sect when.rev)]
+          ['body' o+(
+            ['reviewee' s+(scot %p reviewee.body.rev)]
+            ['score' n+score.body.rev]
+            ['why' s+why.body.rev]
+          )]
+          ['commit' o+(
+            ['advert' s+(scot %uv advert.commit.rev)]
+            ['vendor' s+(scot %p vendor.commit.rev)]
+            ['vendor-sig' s+(scot %uv vendor-sig.commit.rev)]
+            ['client' s+(scot %p client.commit.rev)]
+            ['client-sig' s+(scot %uv client-sig.commit.rev)]
+            ['when' (sect when.commit.rev)]
+          )]
       ==
     ==
   --
