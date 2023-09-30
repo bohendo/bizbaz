@@ -14,9 +14,9 @@
       %+  turn  report.upd
       |=  rep=report
       %-  pairs
-      :~  ['digest' s+(scot %uv digest.rep)]
+      :~  ['digest' s+(scot %ux digest.rep)]
           ['tattle' s+(scot %p target.rep)]
-          ['sig' s+(scot %uv sig.rep)]
+          ['sig' s+(scot %ux sig.rep)]
           ['advert' s+(scot %p advert.rep)]
           ['target' s+(scot %p target.rep)]
       ==

@@ -35,9 +35,9 @@
       ?-  -.act
           %create 
             =/  body  body.act
-            :: TODO: digest body
             :: TODO: sign digest
-            =/  new-advert  [vendor=our.bowl digest=`@uw`0 sig=`@uw`0 when=now.bowl title=title.body cover=cover.body tags=`(list @tas)`tags.body description=description.body]
+            =/  advert-body  [title=title.body cover=cover.body tags=`(list @tas)`tags.body description=description.body]
+            =/  new-advert  [vendor=our.bowl digest=`@ux`(sham advert-body) sig=`@ux`0 when=now.bowl advert-body]
             [~ this(adverts [new-advert adverts])]
           %delete
             :: TODO: find & rm the one w matching digest
@@ -51,10 +51,10 @@
       ~&  act
       ?-  -.act
           %snitch
-            :: TODO: digest body
             :: TODO: sign digest
             :: TODO: fetch target from advert
-            =/  new-report  [tattle=our.bowl digest=`@uw`0 sig=`@uw`0 advert=advert.act target=~zod]
+            =/  report-body  [advert=`@ux`0 target=~zod]
+            =/  new-report  [tattle=our.bowl digest=`@ux`(sham report-body) sig=`@ux`0 advert=advert.act target=~zod]
             [~ this(reports [new-report reports])]
           %redact
             :: TODO: find & rm the one w matching digest

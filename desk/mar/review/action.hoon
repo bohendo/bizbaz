@@ -14,8 +14,8 @@
     %.  jon
     %-  of
     :~  [%commit (ot ~[advert+nu])]
-    :~  [%review (ot ~[reviewee+(se %p) score+ni why+so])]
-    :~  [%update (ot ~[digest+nu (ot ~[body+(ot ~[reviewee+(se %p) reviewer+(se %p) score+ni why+so])])])]
+        [%review (ot ~[reviewee+(se %p) score+ni why+so])]
+        [%update (ot ~[digest+(se %ux) (ot ~[body+(ot ~[reviewee+(se %p) reviewer+(se %p) score+ni why+so])])])]
     ==
   --
 ++  grad  %noun
