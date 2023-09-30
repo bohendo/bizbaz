@@ -7,7 +7,7 @@
     =,  enjs:format
     ^-  ^json
     ?+    -.upd  !!
-        %init
+        %gather
       %+  frond  'report'
       :-  %a
       ?~  report.upd  ~

@@ -1,4 +1,6 @@
 *.swp
+.direnv
+.vscode
 data
 libs
 node_modules

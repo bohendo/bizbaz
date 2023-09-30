@@ -9,3 +9,6 @@ start:
 bind:
   mkdir -p ./zod/bizbaz
   sudo mount --bind $(pwd)/desk $(pwd)/zod/bizbaz
+
+code:
+  codium .

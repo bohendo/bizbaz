@@ -13,7 +13,9 @@
     ^-  action
     %.  jon
     %-  of
-    :~  [%post-review (ot ~[review+(ot ~[reviewee+(se %p) reviewer+(se %p) what+so when+du])])]
+    :~  [%commit (ot ~[advert+nu])]
+    :~  [%review (ot ~[reviewee+(se %p) reviewer+(se %p) score+ni why+so])]
+    :~  [%update (ot ~[digest+nu (ot ~[body+(ot ~[reviewee+(se %p) reviewer+(se %p) score+ni why+so])])])]
     ==
   --
 ++  grad  %noun
