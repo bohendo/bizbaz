@@ -1,12 +1,12 @@
 /-  review
-/-  listing
+/-  advert
 /+  default-agent, dbug
 |%
 +$  versioned-state
   $%  state-0
   ==
 +$  state-0
-  $:  [%0 reviews=(list review:review) listings=(list listing:listing)]
+  $:  [%0 reviews=(list review:review) adverts=(list advert:advert)]
   ==
 +$  card  card:agent:gall
 --
@@ -26,7 +26,7 @@
 ++  on-poke
   |=  [=mark =vase]
   ^-  (quip card _this)
-  ?>  |(?=(%review-action mark) ?=(%listing-action mark))
+  ?>  |(?=(%review-action mark) ?=(%advert-action mark))
   ?+  mark
     !!
     %review-action
@@ -36,14 +36,14 @@
       ?-  -.act
           %post-review  [~ this(reviews [review.act reviews])]
       == 
-    %listing-action
-      =/  act  !<(action:listing vase)
+    %advert-action
+      =/  act  !<(action:advert vase)
       ?-  -.act
           %create 
-            =/  new-listing  [id=0x0 who=our.bowl when=now.bowl new-req.act]
-            [~ this(listings [new-listing listings])]
-          %delete  !!::[~ this(listings [listing.act listings])] :: find & rm the one w matching id
-          %update  !!::[~ this(listings [listing.act listings])] :: find & replace the one w matching id
+            =/  new-advert  [id=0x0 who=our.bowl when=now.bowl new-req.act]
+            [~ this(adverts [new-advert adverts])]
+          %delete  !!::[~ this(adverts [advert.act adverts])] :: find & rm the one w matching id
+          %update  !!::[~ this(adverts [advert.act adverts])] :: find & replace the one w matching id
       == 
   ==
 ++  on-peek
@@ -55,16 +55,16 @@
 ++  on-watch
   |=  =path
   ^-  (quip card _this)
-  :: ?>  |(?=(%reviews path) ?=(%listings path))
+  :: ?>  |(?=(%reviews path) ?=(%adverts path))
   :: ~&  path
   :_  this
   ?+  path  !!
     [%reviews ~]
       ~&  "watching reviews"
       [%give %fact ~ %review-update !>(`update:review`[%init reviews])]~
-    [%listings ~]
-      ~&  "watching listings"
-      [%give %fact ~ %listing-update !>(`update:listing`[%init listings])]~
+    [%adverts ~]
+      ~&  "watching adverts"
+      [%give %fact ~ %advert-update !>(`update:advert`[%init adverts])]~
   ==
 ++  on-arvo   on-arvo:default
 ++  on-leave  on-leave:default
