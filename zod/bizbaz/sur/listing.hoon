@@ -4,9 +4,9 @@
 +$  del-req  [id=@ux]
 +$  upd-req  [id=@ux new-req]
 +$  action
-  $%  [%create new-req]
-  $%  [%delete del-req]
-  $%  [%update upd-req]
+  $%  [%create =new-req]
+      [%delete =del-req]
+      [%update =upd-req]
   ==
 +$  update
   $%  [%init listings=(list listing)]
