@@ -1,4 +1,4 @@
-export type TListingValidation = {
+export type TAdvertValidation = {
     hasError: boolean;
     errorMsgs: {
         titleError: string;
@@ -7,13 +7,13 @@ export type TListingValidation = {
     }
 }
 
-export type TNewListing = {
+export type TNewAdvert = {
     title: string;
     description: string;
     tags: Array<string>;
 }
 
-export type TListing = {
+export type TAdvert = {
     title: string;
     description: string;
     tags: Array<string>;
