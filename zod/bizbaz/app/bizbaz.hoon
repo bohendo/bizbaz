@@ -39,9 +39,11 @@
     %listing-action
       =/  act  !<(action:listing vase)
       ?-  -.act
-          %create  [~ this(listings [listing.act listings])]
-          %delete  [~ this(listings [listing.act listings])] :: find & rm the one w matching id
-          %update  [~ this(listings [listing.act listings])] :: find & replace the one w matching id
+          %create 
+            =/  new-listing  [id=0x0 who=our.bowl when=now.bowl new-req.act]
+            [~ this(listings [new-listing listings])]
+          %delete  !!::[~ this(listings [listing.act listings])] :: find & rm the one w matching id
+          %update  !!::[~ this(listings [listing.act listings])] :: find & replace the one w matching id
       == 
   ==
 ++  on-peek
