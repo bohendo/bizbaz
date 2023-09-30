@@ -1,11 +1,11 @@
 |%
 +$  commit  [advert=@uw vendor=@p vendor-sig=@uw client=@p client-sig=@uw when=@da]  
 +$  review-body  [reviewee=@p score=@ud why=@t]
-+$  review  [commit=commit body=review-body reviewer=@p digest=@uw sig=@uw]
++$  review  [reviewer=@p digest=@uw sig=@uw when=@da body=review-body commit=commit]
 +$  action
   $%  [%commit advert=@uw]
-  $%  [%review review-body]
-  $%  [%update digest=@uw review-body]
+  $%  [%review body=review-body]
+  $%  [%update digest=@uw body=review-body]
   ==
 +$  update
   $%  [%gather reviews=(list review)]

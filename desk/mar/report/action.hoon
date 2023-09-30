@@ -13,7 +13,8 @@
     ^-  action
     %.  jon
     %-  of
-    :~  [%snitch (ot ~[report+(ot ~[advert-id+(se %uv) target+(se %p) tattle+(se %p)])])]
+    :~  [%snitch (ot ~[advert+(se %uw)])]
+        [%redact (ot ~[digest+(se %uw)])]
     ==
   --
 ++  grad  %noun

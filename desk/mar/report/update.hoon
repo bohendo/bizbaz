@@ -12,11 +12,13 @@
       :-  %a
       ?~  report.upd  ~
       %+  turn  report.upd
-      |=  rev=report
+      |=  rep=report
       %-  pairs
-      :~  ['target' s+(scot %p target.rev)]
-          ['tattle' s+(scot %p tattle.rev)]
-          ['advert-id' s+advert-id.rev]
+      :~  ['digest' s+(scot %uv digest.rep)]
+          ['tattle' s+(scot %p target.rep)]
+          ['sig' s+(scot %uv sig.rep)]
+          ['advert' s+(scot %p advert.rep)]
+          ['target' s+(scot %p target.rep)]
       ==
     ==
   --
