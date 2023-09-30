@@ -1,10 +1,5 @@
 *.swp
 data
-lib
+libs
 node_modules
-zod/garden
-zod/.bin
-zod/.http.ports
-zod/.run
-zod/.urb
-zod/.vere.lock
+zod
