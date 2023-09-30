@@ -3,7 +3,7 @@ import { Box, styled, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
 
 // types
-import { TListing } from "../types";
+import { TAdvert } from "../types";
 
 // MUI
 import Card from "@mui/material/Card";
@@ -21,56 +21,53 @@ const Item = styled(Paper)(({ theme }) => ({
   textAlign: 'center',
 }))
 
-export const Listings = ({
+export const Adverts = ({
   api
 }: { api: any }) => {
   const theme = useTheme();
-  const [listings, setListings] = useState([]);
+  const [adverts, setAdverts] = useState([]);
 
 
   const handleUpdate = ( upd: any) => {
     console.log(upd)
-    if ( 'listings' in upd ) {
-      console.log(upd);
-      setListings(upd.listings)      
-    }
+    setAdverts(upd)      
   }
 
   useEffect(() => {
     async function init() {
-      api.subscribe( { app: "bizbaz", path: '/listings', event: handleUpdate } )
+      api.subscribe( { app: "bizbaz", path: '/adverts', event: handleUpdate } )
     }
     init();
   }, []);
 
-  if(listings.length == 0) return (
+  if(adverts.length == 0) return (
     <Typography>
       Loading
     </Typography>
   )
 
   const config = {
-  point: '~talsyx-talsud', // or 'zod'
-  size: 24,
-  detail:'default',
-  space:'none',
+    point: '~talsyx-talsud', // or 'zod'
+    size: 24,
+    detail:'default',
+    space:'none',
   }
   return (
     <Box>
       <Typography variant="h2">
-        Listings
+        Adverts
       </Typography>
       <Masonry columns={3} spacing={2}>
-        {listings.map((listing: TListing, index: number) => {
+        {adverts.map((advert: TAdvert, index: number) => {
           // TODO set itemHeight based on cover image
-          const itemHeight = listing.description.length < 60 ? 200 : 260; 
+          const itemHeight = advert.description.length < 60 ? 200 : 260; 
           const descriptionCutOff = 60; 
           return (
             <Card key={index} sx={{ marginTop: theme.spacing(1) , height: itemHeight, width: 100 }}>
               <CardActionArea disableRipple
                 sx={{ width: "100%", alignItems: "center" }}
-                component={Link} to={'listing-id'/*`/${listing.id}`*/}>
-                <urbit-sigil point={listing.who} size={60} detail='default' space='large'/>
+                component={Link} to={'advert-id'/*`/${advert.id}`*/}>
+                <urbit-sigil point={advert.vendor} size={60} detail='default' space='large'/>
 
                 <CardContent
                   sx={{
@@ -80,20 +77,23 @@ export const Listings = ({
                     opacity: "0.99",
                     height: "420px",
                   }}>
-                    <Typography variant="caption" display="block">
-                      {listing.who}
-                    </Typography>
-                    <Typography variant="caption" display="block">
-                      {listing.tags.map((tag, index) => (
-                        `${tag} `
-                      ))}
-                    </Typography>
+
                     <Typography variant="body2">
-                      TODO: Add listing title in sur
+                      {advert.title}
                     </Typography>
+
+                    <Typography variant="caption" display="block">
+                      Cover image: {advert.cover}
+                    </Typography>
+
+                    <Typography variant="caption" display="block">
+                      Tags: {advert.tags.join(", ")}
+                    </Typography>
+
                     <Typography variant="caption" marginTop={theme.spacing(1)}>
-                      {listing.description.substring(0, descriptionCutOff)}
+                      {advert.description.substring(0, descriptionCutOff)}
                     </Typography>
+
                 </CardContent>
               </CardActionArea>
             </Card>

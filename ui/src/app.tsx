@@ -5,7 +5,7 @@ import Urbit from "@urbit/http-api";
 
 // Components
 import { NavBar } from "./components/Navbar";
-import { NewListing } from "./pages/NewListing";
+import { NewAdvert } from "./pages/NewAdvert";
 
 // MUI 
 import CssBaseline from "@mui/material/CssBaseline";
@@ -25,7 +25,7 @@ api.ship = window.ship;
 export const App = () => {
   const [theme, setTheme] = useState(savedTheme === "dark" || savedTheme === "" ? darkTheme : lightTheme);
   const [openReviewDialog, setOpenReviewDialog] = useState(false);
-  const [openListingDialog, setOpenListingDialog] = useState(false);
+  const [openAdvertDialog, setOpenAdvertDialog] = useState(false);
 
   const toggleTheme = () => {
     if (theme.palette.mode === "dark") {
@@ -38,15 +38,15 @@ export const App = () => {
   };
 
   const handleClickFab = () => {
-    setOpenListingDialog(true);
+    setOpenAdvertDialog(true);
   }
 
   return (
     <ThemeProvider theme={theme}>
         <CssBaseline />
         <NavBar api={api}/>
-        <NewListing
-          open={openListingDialog} handleCloseDialog={() => setOpenListingDialog(false)}
+        <NewAdvert
+          open={openAdvertDialog} handleCloseDialog={() => setOpenAdvertDialog(false)}
           api={api}
         />
         <Fab color='primary' sx={{position: 'fixed', right: theme.spacing(4), bottom: theme.spacing(3)}} onClick={() => { console.log(window.ship); handleClickFab() }} >

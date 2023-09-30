@@ -12,7 +12,7 @@ import { useTheme } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import ExploreOutlined from "@mui/icons-material/ExploreOutlined";
 
-import { Listings } from "../pages/Listings";
+import { Adverts } from "../pages/Adverts";
 
 import '@urbit/sigil-js'
 
@@ -90,7 +90,7 @@ export const NavBar = ({api}:{api: any}) => {
             </AppBar>
             <Box marginTop={theme.spacing(4)}>
                 <TabPanel value={value} index={0} dir={theme.direction}>
-                  <Listings api={api}/>
+                  <Adverts api={api}/>
                 </TabPanel>
                 <TabPanel value={value} index={1} dir={theme.direction}>
                   <Typography variant="h2">
