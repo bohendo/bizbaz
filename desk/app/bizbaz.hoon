@@ -7,7 +7,7 @@
   $%  state-0
   ==
 +$  state-0
-  $:  [%0 reviews=(list adverts=(list advert:advert) reports=(list report:report) review:review)]
+  $:  [%0 adverts=(list advert:advert) reports=(list report:report) reviews=(list review:review) commitments=(list commit:review)]
   ==
 +$  card  card:agent:gall
 --
@@ -34,24 +34,43 @@
       =/  act  !<(action:advert vase)
       ?-  -.act
           %create 
-            =/  new-advert  [id=0x0 who=our.bowl when=now.bowl new-req.act]
+            =/  body  body.act
+            :: TODO: digest body
+            :: TODO: sign digest
+            =/  new-advert  [vendor=our.bowl digest=`@uw`0 sig=`@uw`0 when=now.bowl title=title.body cover=cover.body tags=`(list @tas)`tags.body description=description.body]
             [~ this(adverts [new-advert adverts])]
-          %delete  !!::[~ this(adverts [advert.act adverts])] :: find & rm the one w matching id
-          %update  !!::[~ this(adverts [advert.act adverts])] :: find & replace the one w matching id
+          %delete
+            :: TODO: find & rm the one w matching digest
+            !! ::[~ this(adverts [advert.act adverts])]
+          %update
+            :: TODO: find & replace the one w matching digest
+            !! ::[~ this(adverts [advert.act adverts])]
       == 
     %report-action
       =/  act  !<(action:report vase)
       ~&  act
-      ~&  reportee.report.act
       ?-  -.act
-          %snitch  [~ this(reports [report.act reports])]
+          %snitch
+            :: TODO: digest body
+            :: TODO: sign digest
+            :: TODO: fetch target from advert
+            =/  new-report  [tattle=our.bowl digest=`@uw`0 sig=`@uw`0 advert=advert.act target=~zod]
+            [~ this(reports [new-report reports])]
+          %redact
+            :: TODO: find & rm the one w matching digest
+            !! :: [~ this(reports [new-report reports])]
       == 
     %review-action
       =/  act  !<(action:review vase)
       ~&  act
-      ~&  reviewee.review.act
       ?-  -.act
-          %post-review  [~ this(reviews [review.act reviews])]
+          %commit
+            !! :: [~ this(reviews [review.act reviews])]
+          %review
+            !! :: [~ this(reviews [review.act reviews])]
+          %update
+            :: TODO: find & replace the one w matching digest
+            !! :: [~ this(reviews [review.act reviews])]
       == 
   ==
 ++  on-peek
@@ -67,12 +86,15 @@
   :: ~&  path
   :_  this
   ?+  path  !!
-    [%reviews ~]
-      ~&  "watching reviews"
-      [%give %fact ~ %review-update !>(`update:review`[%init reviews])]~
     [%adverts ~]
       ~&  "watching adverts"
-      [%give %fact ~ %advert-update !>(`update:advert`[%init adverts])]~
+      [%give %fact ~ %advert-update !>(`update:advert`[%gather adverts])]~
+    [%reports ~]
+      ~&  "watching reports"
+      [%give %fact ~ %report-update !>(`update:report`[%gather reports])]~
+    [%reviews ~]
+      ~&  "watching reviews"
+      [%give %fact ~ %review-update !>(`update:review`[%gather reviews])]~
   ==
 ++  on-arvo   on-arvo:default
 ++  on-leave  on-leave:default
