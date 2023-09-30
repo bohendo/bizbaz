@@ -1,5 +1,5 @@
 |%
-+$  advert  [id=@ux who=@p when=@da new-req]
++$  advert   [id=@ux vendor=@p vendor-sig=@p when=@da new-req]
 +$  new-req  [title=@t cover=@t tags=(list @tas) description=@t]
 +$  del-req  [id=@ux]
 +$  upd-req  [id=@ux new-req]
@@ -9,7 +9,7 @@
       [%update =upd-req]
   ==
 +$  update
-  $%  [%init adverts=(list advert)]
+  $%  [%gather adverts=(list advert)]
       action
   ==
 --

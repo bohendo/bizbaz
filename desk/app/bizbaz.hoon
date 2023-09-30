@@ -1,12 +1,13 @@
-/-  review
 /-  advert
+/-  report
+/-  review
 /+  default-agent, dbug
 |%
 +$  versioned-state
   $%  state-0
   ==
 +$  state-0
-  $:  [%0 reviews=(list review:review) adverts=(list advert:advert)]
+  $:  [%0 reviews=(list adverts=(list advert:advert) reports=(list report:report) review:review)]
   ==
 +$  card  card:agent:gall
 --
@@ -29,13 +30,6 @@
   ?>  |(?=(%review-action mark) ?=(%advert-action mark))
   ?+  mark
     !!
-    %review-action
-      =/  act  !<(action:review vase)
-      ~&  act
-      ~&  reviewee.review.act
-      ?-  -.act
-          %post-review  [~ this(reviews [review.act reviews])]
-      == 
     %advert-action
       =/  act  !<(action:advert vase)
       ?-  -.act
@@ -44,6 +38,20 @@
             [~ this(adverts [new-advert adverts])]
           %delete  !!::[~ this(adverts [advert.act adverts])] :: find & rm the one w matching id
           %update  !!::[~ this(adverts [advert.act adverts])] :: find & replace the one w matching id
+      == 
+    %report-action
+      =/  act  !<(action:report vase)
+      ~&  act
+      ~&  reportee.report.act
+      ?-  -.act
+          %snitch  [~ this(reports [report.act reports])]
+      == 
+    %review-action
+      =/  act  !<(action:review vase)
+      ~&  act
+      ~&  reviewee.review.act
+      ?-  -.act
+          %post-review  [~ this(reviews [review.act reviews])]
       == 
   ==
 ++  on-peek
