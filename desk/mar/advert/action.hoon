@@ -1,4 +1,4 @@
-/-  *listing
+/-  *advert
 |_  act=action
 ++  grow
   |%
