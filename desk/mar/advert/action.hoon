@@ -13,9 +13,9 @@
     ^-  action
     %.  jon
     %-  of
-    :~  create+(ot ~[new-req+(ot ~[title+so cover+so tags+(ar (se %tas)) description+so])])
-        delete+(ot ~[del-req+(ot ~[id+nu])])
-        delete+(ot ~[upd-req+(ot ~[id+nu title+so cover+so tags+(ar (se %tas)) description+so])])
+    :~  create+(ot ~[title+so cover+so tags+(ar (se %tas)) description+so])
+        delete+(ot ~[digest+nu])
+        update+(ot ~[digest+nu title+so cover+so tags+(ar (se %tas)) description+so])
     ==
   --
 ++  grad  %noun

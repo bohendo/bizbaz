@@ -7,22 +7,13 @@
     =,  enjs:format
     ^-  ^json
     ?-    -.upd
-        %create
-      %+  frond  'advert'
-      %-  pairs
-      :~  ['who' s+(scot %p who.advert.upd)]
-          ['when' (sect when.advert.upd)]
-          ['tags' a+(turn (turn tags.advert.upd trip) tape)]
-          ['description' s+description.advert.upd] :: TODO: change to wall
-      ==
-    ::
-        %init
-      %+  frond  'adverts'
+        %gather
       :-  %a
       %+  turn  adverts.upd
       |=  adv=advert
       %-  pairs
-      :~  ['who' s+(scot %p who.adv)]
+      :~  ['id' s+(scot %uv id.adv)]
+          ['who' s+(scot %p who.adv)]
           ['when' (sect when.adv)]
           ['tags' a+(turn (turn tags.adv trip) tape)]
           ['description' s+description.adv] :: TODO: change to wall

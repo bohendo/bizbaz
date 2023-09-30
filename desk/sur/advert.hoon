@@ -1,15 +1,13 @@
 |%
-+$  advert   [id=@ux vendor=@p vendor-sig=@p when=@da new-req]
-+$  new-req  [title=@t cover=@t tags=(list @tas) description=@t]
-+$  del-req  [id=@ux]
-+$  upd-req  [id=@ux new-req]
++$  advert-body  [title=@t cover=@t tags=(list @tas) description=@t]
++$  advert       [digest=@ux vendor=@p vendor-sig=@p when=@da advert-body]
 +$  action
-  $%  [%create =new-req]
-      [%delete =del-req]
-      [%update =upd-req]
+  $%  [%create advert-body]
+      [%delete digest=@ux]
+      [%update [digest=@ux advert-body]
   ==
 +$  update
-  $%  [%gather adverts=(list advert)]
+  $%  [%gather (list advert)]
       action
   ==
 --
