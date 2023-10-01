@@ -1,4 +1,8 @@
 
+sync: 
+  rm -rf zod/bizbaz
+  cp -rf desk zod/bizbaz
+
 sync-lib dir: 
   rm -rf data/zod/{{dir}}
   cp -rf libs/{{dir}} data/zod/{{dir}}
@@ -7,11 +11,11 @@ start:
   bash start-fake-ship.sh
 
 bind-zod:
-  mkdir -p ./zod/bizbaz
-  sudo mount --bind $(pwd)/desk $(pwd)/zod/bizbaz
+  rm -rf zod/bizbaz
+  ln -s $(pwd)/desk zod/bizbaz
 
 unbind-zod:
-  sudo umount $(pwd)/zod/bizbaz
+  rm -rf zod/data
 
 bind-data-zod:
   mkdir -p ./data/zod/bizbaz
