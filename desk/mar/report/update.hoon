@@ -14,9 +14,9 @@
       %+  turn  report.upd
       |=  rep=report
       %-  pairs
-      :~  ['hash' s+(scot %uvH hash.rep)]
+      :~  ['hash' s+(scot %uv hash.rep)]
           ['tattle' s+(scot %p target.rep)]
-          ['sig' s+(scot %uvH sig.rep)]
+          ['sig' s+(scot %uv sig.rep)]
           ['advert' s+(scot %p advert.rep)]
           ['target' s+(scot %p target.rep)]
       ==
