@@ -1,6 +1,7 @@
 /-  advert
 /-  report
 /-  review
+/+  signatures
 /+  default-agent, dbug
 |%
 +$  versioned-state
@@ -34,16 +35,28 @@
       =/  act  !<(action:advert vase)
       ?-  -.act
           %create 
-            =/  body  body.act
-            :: TODO: sign digest
-            =/  advert-body  [title=title.body cover=cover.body tags=`(list @tas)`tags.body description=description.body]
-            =/  new-advert  [vendor=our.bowl digest=`@ux`(sham advert-body) sig=`@ux`0 when=now.bowl advert-body]
+            =/  advert-body
+              :*
+                title=title.body.act
+                cover=cover.body.act
+                tags=`(list @tas)`tags.body.act
+                description=description.body.act
+              ==
+            =/  hash  (sham advert-body)
+            =/  signature  (sign:signatures our.bowl now.bowl hash)
+            =/  new-advert
+              :*
+                hash=hash
+                sig=signature
+                when=now.bowl
+                advert-body
+              ==
             [~ this(adverts [new-advert adverts])]
           %delete
-            :: TODO: find & rm the one w matching digest
+            :: TODO: find & rm the one w matching hash
             !! ::[~ this(adverts [advert.act adverts])]
           %update
-            :: TODO: find & replace the one w matching digest
+            :: TODO: find & replace the one w matching hash
             !! ::[~ this(adverts [advert.act adverts])]
       == 
     %report-action
@@ -51,13 +64,19 @@
       ~&  act
       ?-  -.act
           %snitch
-            :: TODO: sign digest
-            :: TODO: fetch target from advert
             =/  report-body  [advert=`@ux`0 target=~zod]
-            =/  new-report  [tattle=our.bowl digest=`@ux`(sham report-body) sig=`@ux`0 advert=advert.act target=~zod]
+            =/  hash  (sham report-body)
+            =/  signature  (sign:signatures our.bowl now.bowl hash)
+            =/  new-report
+              :*
+                hash=(sham report-body)
+                sig=signature
+                advert=advert.act
+                target=~zod :: TODO: fetch target from advert
+              ==
             [~ this(reports [new-report reports])]
           %redact
-            :: TODO: find & rm the one w matching digest
+            :: TODO: find & rm the one w matching hash
             !! :: [~ this(reports [new-report reports])]
       == 
     %review-action
@@ -69,7 +88,7 @@
           %review
             !! :: [~ this(reviews [review.act reviews])]
           %update
-            :: TODO: find & replace the one w matching digest
+            :: TODO: find & replace the one w matching hash
             !! :: [~ this(reviews [review.act reviews])]
       == 
   ==
