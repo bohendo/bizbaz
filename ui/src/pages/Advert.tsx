@@ -10,14 +10,25 @@ export const Advert = ({ api }: { api: any }) => {
   const theme = useTheme();
   const { hash } = useParams();
   const [advert, setAdvert] = useState({});
+  const [reports, setReports] = useState([] as any[]);
 
-  const handleUpdate = ( upd: any) => {
+  const updateAdvert = ( upd: any) => {
     setAdvert(upd.find(u => u.hash === hash))      
+  }
+
+  const updateReports = (upd: any) => {
+    console.log(`Reports update:`, upd)
+    const filteredReports = upd.reports.filter(report =>
+      report.body.advert === hash
+    )
+    console.log(`Filtered reports:`, filteredReports)
+    setReports(filteredReports)
   }
 
   useEffect(() => {
     async function init() {
-      api.subscribe( { app: "bizbaz", path: '/adverts', event: handleUpdate } )
+      api.subscribe( { app: "bizbaz", path: '/adverts', event: updateAdvert } )
+      api.subscribe( { app: "bizbaz", path: '/reports', event: updateReports } )
     }
     init();
   }, []);
@@ -67,6 +78,10 @@ export const Advert = ({ api }: { api: any }) => {
       <Button variant="contained" onClick={()=>console.log("I'm reviewing!")} sx={{ m:2 }}>
         Review
       </Button>
+      <br/>
+      <Typography variant="p">
+        Reported by: {reports.map(r => r.sig.ship).join(", ")}
+      </Typography>
     </Paper>
   )
 }

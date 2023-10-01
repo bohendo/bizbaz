@@ -8,17 +8,25 @@
     ^-  ^json
     ?+    -.upd  !!
         %gather
-      %+  frond  'report'
+      %+  frond  'reports'
       :-  %a
-      ?~  report.upd  ~
-      %+  turn  report.upd
+      ?~  reports.upd  ~
+      %+  turn  reports.upd
       |=  rep=report
       %-  pairs
-      :~  ['hash' s+(scot %uv hash.rep)]
-          ['tattle' s+(scot %p target.rep)]
-          ['sig' s+(scot %uv sig.rep)]
-          ['advert' s+(scot %p advert.rep)]
-          ['target' s+(scot %p target.rep)]
+      :~ 
+        ['hash' s+(scot %uv hash.rep)]
+        :-  'sig'
+        %-  pairs
+        :~  ['sig' s+(scot %uv ship.sig.rep)]
+            ['ship' s+(scot %p ship.sig.rep)]
+            ['life' s+(scot %ud life.sig.rep)]
+        ==
+        :-  'body'
+        %-  pairs
+        :~  ['advert' s+(scot %uv advert.body.rep)]
+            ['target' s+(scot %p target.body.rep)]
+        ==
       ==
     ==
   --

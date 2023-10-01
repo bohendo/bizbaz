@@ -8,7 +8,7 @@
   $%  state-0
   ==
 +$  state-0
-  $:  [%0 adverts=(list advert:advert) reports=(list report:report) reviews=(list review:review) commitments=(list commit:review)]
+  $:  [%0 adverts=(list advert:advert) reports=(list report:report) reviews=(list review:review) commits=(list commit:review)]
   ==
 +$  card  card:agent:gall
 --
@@ -93,7 +93,7 @@
                   client-sig=(sign:signatures our.bowl now.bowl advert.act)
                   when=now.bowl
               ==
-            [~ this(commitments [new-commit commitments])]
+            [~ this(commits [new-commit commits])]
           %review
             !! :: [~ this(reviews [review.act reviews])]
           %update
