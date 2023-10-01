@@ -1,11 +1,10 @@
 import React, { useEffect, useState, useReducer } from "react";
-
-// Urbit
-import Urbit from "@urbit/http-api";
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
 // Components
 import { NavBar } from "./components/Navbar";
 import { NewAdvert } from "./pages/NewAdvert";
+import { Advert } from "./pages/Advert";
 
 // MUI 
 import CssBaseline from "@mui/material/CssBaseline";
@@ -19,10 +18,7 @@ import AddIcon from "@mui/icons-material/Add";
 
 const savedTheme = localStorage.getItem("theme") || "";
 
-const api = new Urbit('', '', window.desk);
-api.ship = window.ship;
-
-export const App = () => {
+export const App = ({ api }: { api: any }) => {
   const [theme, setTheme] = useState(savedTheme === "dark" || savedTheme === "" ? darkTheme : lightTheme);
   const [openReviewDialog, setOpenReviewDialog] = useState(false);
   const [openAdvertDialog, setOpenAdvertDialog] = useState(false);
@@ -55,4 +51,3 @@ export const App = () => {
     </ThemeProvider>
   );
 }
-

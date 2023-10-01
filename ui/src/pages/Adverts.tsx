@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { TAdvert } from "../types";
 
 // MUI
+import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardActionArea from "@mui/material/CardActionArea";
 import CardContent from "@mui/material/CardContent";
@@ -66,7 +67,7 @@ export const Adverts = ({
             <Card key={index} sx={{ marginTop: theme.spacing(1) , height: itemHeight, width: 100 }}>
               <CardActionArea disableRipple
                 sx={{ width: "100%", alignItems: "center" }}
-                component={Link} to={'advert-id'/*`/${advert.id}`*/}>
+              component={Link} to={`/advert/${advert.hash}`}>
                 <urbit-sigil point={advert.vendor} size={60} detail='default' space='large'/>
 
                 <CardContent
@@ -95,7 +96,13 @@ export const Adverts = ({
                     </Typography>
 
                 </CardContent>
+
               </CardActionArea>
+
+              <Button variant="contained" onClick={()=>console.log(`Omg I'm committing`)}>
+                Commit
+              </Button>
+
             </Card>
           )
         })}
