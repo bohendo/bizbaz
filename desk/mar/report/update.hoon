@@ -18,7 +18,7 @@
         ['hash' s+(scot %uv hash.rep)]
         :-  'sig'
         %-  pairs
-        :~  ['sig' s+(scot %uv ship.sig.rep)]
+        :~  ['sig' s+(scot %uv sig.sig.rep)]
             ['ship' s+(scot %p ship.sig.rep)]
             ['life' s+(scot %ud life.sig.rep)]
         ==
