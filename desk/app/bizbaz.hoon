@@ -63,15 +63,20 @@
       ~&  act
       ?-  -.act
           %snitch
+            =/  index  (find ~[advert.act] (turn adverts |=(ad=advert:advert hash.ad)))
+            ?~  index
+              ~|((weld "No advert with hash " (scow %uv advert.act)) !!)
+            =/  ad  (snag (need index) adverts)
+            =/  target  ship.sig.ad
             =/  report-body  [advert=advert.act]
             =/  hash  (sham report-body)
             =/  signature  (sign:signatures our.bowl now.bowl hash)
             =/  new-report
               :*
-                hash=(sham report-body)
+                hash
                 sig=signature
                 advert=advert.act
-                target=~zod :: TODO: fetch target from advert
+                target
               ==
             [~ this(reports [new-report reports])]
           %redact
