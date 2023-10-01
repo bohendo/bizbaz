@@ -22,8 +22,20 @@ export const Advert = ({ api }: { api: any }) => {
     init();
   }, []);
 
+  const report = () => {
+      api.poke({
+        app: 'bizbaz',
+        mark: 'report-action',
+        json: { 
+          'snitch': { 
+            advert: hash
+          }
+        }
+      })
+  }
+
   return (
-    <Paper>
+    <Paper sx={{ p: 8, m: 8 }}>
       <Typography variant="h2">
         Advert ...{hash.split(".")[5]}
       </Typography>
@@ -34,8 +46,14 @@ export const Advert = ({ api }: { api: any }) => {
         Description: {advert.description}
       </Typography>
       <br/>
-      <Button variant="contained" onClick={()=>console.log("I'm committing!")}>
+      <Button variant="contained" onClick={report} sx={{ m:2 }}>
+        Report
+      </Button>
+      <Button variant="contained" onClick={()=>console.log("I'm committing!")} sx={{ m:2 }}>
         Commit
+      </Button>
+      <Button variant="contained" onClick={()=>console.log("I'm reviewing!")} sx={{ m:2 }}>
+        Review
       </Button>
     </Paper>
   )

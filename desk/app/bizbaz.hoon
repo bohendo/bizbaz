@@ -28,7 +28,7 @@
 ++  on-poke
   |=  [=mark =vase]
   ^-  (quip card _this)
-  ?>  |(?=(%review-action mark) ?=(%advert-action mark))
+  ?>  |(?=(%advert-action mark) ?=(%report-action mark) ?=(%review-action mark))
   ?+  mark
     !!
     %advert-action
@@ -63,7 +63,7 @@
       ~&  act
       ?-  -.act
           %snitch
-            =/  report-body  [advert=`@ux`0 target=~zod]
+            =/  report-body  [advert=advert.act]
             =/  hash  (sham report-body)
             =/  signature  (sign:signatures our.bowl now.bowl hash)
             =/  new-report
