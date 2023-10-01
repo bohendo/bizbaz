@@ -17,11 +17,10 @@ export const Advert = ({ api }: { api: any }) => {
   }
 
   const updateReports = (upd: any) => {
-    console.log(`Reports update:`, upd)
     const filteredReports = upd.reports.filter(report =>
       report.body.advert === hash
     )
-    console.log(`Filtered reports:`, filteredReports)
+    console.log(`Relevant reports:`, filteredReports)
     setReports(filteredReports)
   }
 
