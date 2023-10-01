@@ -43,11 +43,10 @@
                 description=description.body.act
               ==
             =/  hash  (sham advert-body)
-            =/  signature  (sign:signatures our.bowl now.bowl hash)
             =/  new-advert
               :*
                 hash=hash
-                sig=signature
+                sig=(sign:signatures our.bowl now.bowl hash)
                 when=now.bowl
                 advert-body
               ==
