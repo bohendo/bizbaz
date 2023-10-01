@@ -52,8 +52,10 @@
               ==
             [~ this(adverts [new-advert adverts])]
           %delete
-            :: TODO: find & rm the one w matching hash
-            !! ::[~ this(adverts [advert.act adverts])]
+            =/  index  (find ~[hash.act] (turn adverts |=(ad=advert:advert hash.ad)))
+            ?~  index
+              ~|((weld "No advert with hash " (scow %uv hash.act)) !!)
+            [~ this(adverts (oust [(need index) 1] adverts))]
           %update
             :: TODO: find & replace the one w matching hash
             !! ::[~ this(adverts [advert.act adverts])]
