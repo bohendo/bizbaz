@@ -14,9 +14,9 @@
       %+  turn  reviews.upd
       |=  rev=review
       %-  pairs
-      :~  ['digest' s+(scot %ux digest.rev)]
+      :~  ['hash' s+(scot %uvH hash.rev)]
           ['reviewer' s+(scot %p reviewee.rev)]
-          ['sig' s+(scot %ux sig.rev)]
+          ['sig' s+(scot %uvH sig.rev)]
           ['when' (sect when.rev)]
           ['body' o+(
             ['reviewee' s+(scot %p reviewee.body.rev)]
@@ -24,11 +24,11 @@
             ['why' s+why.body.rev]
           )]
           ['commit' o+(
-            ['advert' s+(scot %ux advert.commit.rev)]
+            ['advert' s+(scot %uvH advert.commit.rev)]
             ['vendor' s+(scot %p vendor.commit.rev)]
-            ['vendor-sig' s+(scot %ux vendor-sig.commit.rev)]
+            ['vendor-sig' s+(scot %uvH vendor-sig.commit.rev)]
             ['client' s+(scot %p client.commit.rev)]
-            ['client-sig' s+(scot %ux client-sig.commit.rev)]
+            ['client-sig' s+(scot %uvH client-sig.commit.rev)]
             ['when' (sect when.commit.rev)]
           )]
       ==

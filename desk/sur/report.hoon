@@ -1,9 +1,10 @@
 |%
-+$  report-body  [advert=@ux target=@p]  
-+$  report  [tattle=@p digest=@ux sig=@ux body=report-body]  
++$  signature  [sig=@uvH =ship =life]
++$  report-body  [advert=@uvH target=@p]  
++$  report  [hash=@uvH sig=signature body=report-body]  
 +$  action
-  $%  [%snitch advert=@ux]
-      [%redact digest=@ux]
+  $%  [%snitch advert=@uvH]
+      [%redact hash=@uvH]
   ==
 +$  update
   $%  [%gather reports=(list report)]

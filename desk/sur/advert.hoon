@@ -1,10 +1,11 @@
 |%
++$  signature    [sig=@uvH =ship =life]
 +$  advert-body  [title=@t cover=@t tags=(list @tas) description=@t]
-+$  advert       [vendor=@p digest=@ux sig=@ux when=@da advert-body]
++$  advert       [hash=@uvH sig=signature when=@da advert-body]
 +$  action
   $%  [%create body=advert-body]
-      [%delete digest=@ux]
-      [%update digest=@ux advert-body]
+      [%delete hash=@uvH]
+      [%update hash=@uvH advert-body]
   ==
 +$  update
   $%  [%gather adverts=(list advert)]

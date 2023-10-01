@@ -14,8 +14,8 @@
     %.  jon
     %-  of
     :~  create+(ot ~[title+so cover+so tags+(ar (se %tas)) description+so])
-        delete+(ot ~[digest+(se %ux)])
-        update+(ot ~[digest+(se %ux) title+so cover+so tags+(ar (se %tas)) description+so])
+        delete+(ot ~[hash+(se %uvH)])
+        update+(ot ~[hash+(se %uvH) title+so cover+so tags+(ar (se %tas)) description+so])
     ==
   --
 ++  grad  %noun

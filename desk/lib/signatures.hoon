@@ -1,5 +1,5 @@
 |%
-+$  signature  [p=@uvH q=ship r=life]
++$  signature  [sig=@uvH =ship =life]
 +$  signatures  (set signature)
 +$  hash  @uvH
 ++  jael-scry
@@ -23,23 +23,23 @@
 ++  is-signature-valid
   |=  [our=ship =signature =hash now=time]
   ^-  ?
-  =+  (jael-scry ,lyf=(unit @) our %lyfe now /(scot %p q.signature))
+  =+  (jael-scry ,lyf=(unit @) our %lyfe now /(scot %p ship.signature))
   ::  we do not have a public key from ship at this life
   ::
   ?~  lyf  %.y
-  ?.  =(u.lyf r.signature)  %.y
+  ?.  =(u.lyf life.signature)  %.y
   =+  %:  jael-scry
         ,deed=[a=life b=pass c=(unit @uvH)]
-        our  %deed  now  /(scot %p q.signature)/(scot %ud r.signature)
+        our  %deed  now  /(scot %p ship.signature)/(scot %ud life.signature)
       ==
   ::  if signature is from a past life, skip validation
   ::  XX: should be visualised on frontend, not great.
-  ?.  =(a.deed r.signature)  %.y
+  ?.  =(a.deed life.signature)  %.y
   ::  verify signature from ship at life
   ::
   =/  them
     (com:nu:crub:crypto b.deed)
-  =(`hash (sure:as.them p.signature))
+  =(`hash (sure:as.them sig.signature))
 ::
 ++  are-signatures-valid
   |=  [our=ship =signatures =hash now=time]
