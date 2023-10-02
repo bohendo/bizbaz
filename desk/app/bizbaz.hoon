@@ -8,7 +8,7 @@
   $%  state-0
   ==
 +$  state-0
-  $:  [%0 adverts=(list advert:advert) reports=(list report:report) reviews=(list review:review) commitments=(list commit:review)]
+  $:  [%0 adverts=(list advert:advert) reports=(list report:report) reviews=(list review:review) commits=(list commit:review)]
   ==
 +$  card  card:agent:gall
 --
@@ -36,19 +36,17 @@
       ?-  -.act
           %create 
             =/  advert-body
-              :*
-                title=title.body.act
-                cover=cover.body.act
-                tags=`(list @tas)`tags.body.act
-                description=description.body.act
+              :*  title=title.body.act
+                  cover=cover.body.act
+                  tags=`(list @tas)`tags.body.act
+                  description=description.body.act
               ==
             =/  hash  (sham advert-body)
             =/  new-advert
-              :*
-                hash=hash
-                sig=(sign:signatures our.bowl now.bowl hash)
-                when=now.bowl
-                advert-body
+              :*  hash=hash
+                  sig=(sign:signatures our.bowl now.bowl hash)
+                  when=now.bowl
+                  advert-body
               ==
             [~ this(adverts [new-advert adverts])]
           %delete
@@ -70,15 +68,12 @@
               ~|((weld "No advert with hash " (scow %uv advert.act)) !!)
             =/  ad  (snag (need index) adverts)
             =/  target  ship.sig.ad
-            =/  report-body  [advert=advert.act]
+            =/  report-body  [advert=advert.act target]
             =/  hash  (sham report-body)
-            =/  signature  (sign:signatures our.bowl now.bowl hash)
             =/  new-report
-              :*
-                hash
-                sig=signature
-                advert=advert.act
-                target
+              :*  hash
+                  sig=(sign:signatures our.bowl now.bowl hash)
+                  report-body
               ==
             [~ this(reports [new-report reports])]
           %redact
@@ -90,7 +85,17 @@
       ~&  act
       ?-  -.act
           %commit
-            !! :: [~ this(reviews [review.act reviews])]
+            =/  index  (find ~[advert.act] (turn adverts |=(ad=advert:advert hash.ad)))
+            ?~  index
+              ~|((weld "No advert with hash " (scow %uv advert.act)) !!)
+            =/  ad  (snag (need index) adverts)
+            =/  new-commit
+              :*  advert=advert.act
+                  vendor-sig=sig.ad
+                  client-sig=(sign:signatures our.bowl now.bowl advert.act)
+                  when=now.bowl
+              ==
+            [~ this(commits [new-commit commits])]
           %review
             !! :: [~ this(reviews [review.act reviews])]
           %update

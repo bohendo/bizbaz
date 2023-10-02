@@ -13,9 +13,9 @@
     ^-  action
     %.  jon
     %-  of
-    :~  [%commit (ot ~[advert+nu])]
+    :~  [%commit (ot ~[advert+(se %uv)])]
         [%review (ot ~[reviewee+(se %p) score+ni why+so])]
-        [%update (ot ~[hash+(se %uv) (ot ~[body+(ot ~[reviewee+(se %p) reviewer+(se %p) score+ni why+so])])])]
+        [%update (ot ~[hash+(se %uv) reviewee+(se %p) score+ni why+so])]
     ==
   --
 ++  grad  %noun

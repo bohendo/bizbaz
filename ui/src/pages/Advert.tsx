@@ -10,14 +10,24 @@ export const Advert = ({ api }: { api: any }) => {
   const theme = useTheme();
   const { hash } = useParams();
   const [advert, setAdvert] = useState({});
+  const [reports, setReports] = useState([] as any[]);
 
-  const handleUpdate = ( upd: any) => {
+  const updateAdvert = ( upd: any) => {
     setAdvert(upd.find(u => u.hash === hash))      
+  }
+
+  const updateReports = (upd: any) => {
+    const filteredReports = upd.reports.filter(report =>
+      report.body.advert === hash
+    )
+    console.log(`Relevant reports:`, filteredReports)
+    setReports(filteredReports)
   }
 
   useEffect(() => {
     async function init() {
-      api.subscribe( { app: "bizbaz", path: '/adverts', event: handleUpdate } )
+      api.subscribe( { app: "bizbaz", path: '/adverts', event: updateAdvert } )
+      api.subscribe( { app: "bizbaz", path: '/reports', event: updateReports } )
     }
     init();
   }, []);
@@ -28,6 +38,18 @@ export const Advert = ({ api }: { api: any }) => {
         mark: 'report-action',
         json: { 
           'snitch': { 
+            advert: hash
+          }
+        }
+      })
+  }
+
+  const commit = () => {
+      api.poke({
+        app: 'bizbaz',
+        mark: 'review-action',
+        json: { 
+          'commit': { 
             advert: hash
           }
         }
@@ -49,12 +71,16 @@ export const Advert = ({ api }: { api: any }) => {
       <Button variant="contained" onClick={report} sx={{ m:2 }}>
         Report
       </Button>
-      <Button variant="contained" onClick={()=>console.log("I'm committing!")} sx={{ m:2 }}>
+      <Button variant="contained" onClick={commit} sx={{ m:2 }}>
         Commit
       </Button>
       <Button variant="contained" onClick={()=>console.log("I'm reviewing!")} sx={{ m:2 }}>
         Review
       </Button>
+      <br/>
+      <Typography variant="p">
+        Reported by: {reports.map(r => r.sig.ship).join(", ")}
+      </Typography>
     </Paper>
   )
 }
