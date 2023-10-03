@@ -3,7 +3,7 @@
 |%
 +|  %global
 ::
-++  arvo  %239
+++  arvo  %237
 ::
 ::  $arch: node identity
 ::  $axal: fundamental node, recursive (trie)
@@ -20,7 +20,7 @@
 ::  $mark: symbolic content type
 ::  $mien: orientation
 ::  $page: untyped cage
-::  +omen: namespace path and data
+::  $omen: fully-qualified namespace path
 ::  $ship: network identity
 ::  $sink: subscription
 ::
@@ -39,10 +39,12 @@
   $%  ::  %da:  date
       ::  %tas: label
       ::  %ud:  sequence
+      ::  %uv:  hash
       ::
       [%da p=@da]
       [%tas p=@tas]
       [%ud p=@ud]
+      [%uv p=@uv]
   ==
 +$  cage  (cask vase)
 ++  cask  |$  [a]  (pair mark a)
@@ -52,7 +54,7 @@
 +$  mark  @tas
 +$  mien  [our=ship now=@da eny=@uvJ]
 +$  page  (cask)
-++  omen  |$  [a]  (pair path (cask a))
++$  omen  [vis=view bem=beam]
 +$  ship  @p
 +$  sink  (trel bone ship path)
 ::
@@ -109,18 +111,18 @@
   |$  [a]
   $~  =>(~ |~(* ~))
   $-  $:  lyc=gang                                      ::  leakset
-          vis=view                                      ::  perspective
-          bem=beam                                      ::  path
+          pov=path                                      ::  provenance
+          omen                                          ::  perspective, path
       ==                                                ::
   %-  unit                                              ::  ~: unknown
   %-  unit                                              ::  ~ ~: invalid
-  (cask a)
+  (cask a)                                              ::
 +$  roon                                                ::  partial namespace
   $~  =>(~ |~(* ~))
-  $-  [lyc=gang car=term bem=beam]
+  $-  [lyc=gang pov=path car=term bem=beam]
   (unit (unit cage))
 +$  root  $-(^ (unit (unit)))
-+$  view  $@(term [way=term car=term])
++$  view  $@(term [way=term car=term])                  ::  perspective
 ::
 ++  wind
   |$  ::  a: forward
@@ -206,9 +208,9 @@
   ==
 +$  heir
   $%  $:  %grub
-          $%  [_arvo =grub]
+          $%  [?(%240 %239 %238 %237) =grub]
       ==  ==
-      [_arvo =debt =soul]
+      [?(%240 %239 %238 %237) =debt =soul]
   ==
 +$  plan  (pair germ (list move))
 +$  soul
@@ -313,11 +315,12 @@
   ^-  (unit case)
   ?^  num=(slaw %ud knot)  `[%ud u.num]
   ?^  wen=(slaw %da knot)  `[%da u.wen]
+  ?^  hax=(slaw %uv knot)  `[%uv u.hax]
   ?~  lab=(slaw %tas knot)  ~
   `[%tas u.lab]
 ::
 ++  en-omen
-  |=  [vis=view bem=beam]
+  |=  omen
   ^-  path
   :_  (en-beam bem)
   ?@  vis  vis
@@ -326,7 +329,7 @@
 ++  de-omen
   ~/  %de-omen
   |=  pax=path
-  ^-  (unit [vis=view bem=beam])
+  ^-  (unit omen)
   ?~  pax  ~
   ?~  bem=(de-beam t.pax)  ~
   ?:  ((sane %tas) i.pax)
@@ -340,13 +343,13 @@
 ::
 ++  look
   ~/  %look
-  |=  [rof=roof lyc=gang]
+  |=  [rof=roof lyc=gang pov=path]
   ^-  root
   ~/  %in
   |=  [ref=* raw=*]
   ?~  pax=((soft path) raw)  ~
   ?~  mon=(de-omen u.pax)  ~
-  ?~  dat=(rof lyc u.mon)  ~
+  ?~  dat=(rof lyc pov u.mon)  ~
   ?~  u.dat  [~ ~]
   =*  vax  q.u.u.dat
   ?.  ?&  ?=(^ ref)
@@ -773,6 +776,7 @@
       ::
       ~>  %slog.[0 leaf+"1-c (compiling compiler, wait a few minutes)"]
       =/  compiler-tool
+        ~>  %bout
         .*([compiler-gate noun/hoon.log] [%9 2 %10 [6 %0 3] %0 2])
       ::
       ::  switch to the second-generation compiler.  we want to be
@@ -781,7 +785,7 @@
       ::  generate last-generation spans for `!>`, etc.
       ::
       ~>  %slog.[0 leaf+"1-d"]
-      =.  compiler-gate  .*(0 +.compiler-tool)
+      =.  compiler-gate  ~>(%bout .*(0 +.compiler-tool))
       ::
       ::  get the span (type) of the kernel core, which is the context
       ::  of the compiler gate.  we just compiled the compiler,
@@ -791,17 +795,20 @@
       ::
       ~>  %slog.[0 leaf+"1-e"]
       =/  kernel-span
+        ~>  %bout
         -:.*([compiler-gate -.compiler-tool '+>'] [%9 2 %10 [6 %0 3] %0 2])
       ::
       ::  compile the arvo source against the kernel core.
       ::
       ~>  %slog.[0 leaf+"1-f"]
       =/  kernel-tool
+        ~>  %bout
         .*([compiler-gate kernel-span arvo.log] [%9 2 %10 [6 %0 3] %0 2])
       ::
       ::  create the arvo kernel, whose subject is the kernel core.
       ::
       ~>  %slog.[0 leaf+"1-g"]
+      ~>  %bout
       [.*(+>.compiler-gate +.kernel-tool) epic.log]
     --
   ::
@@ -1039,24 +1046,28 @@
   ::  |va: vane engine
   ::
   ++  va
-    =>  |%
+    =>  ~%  %va-ctx  ..va  ~
+        |%
         +$  vane-sample  [now=@da eny=@uvJ rof=rook]
         ::
         ++  smit
           |=  [cap=tape sub=vase pax=path txt=@t]
           ^-  vase
-          ~>  %slog.[0 leaf/"{cap}: {(scow p+(mug txt))}"]
+          ~>  %slog.[0 leaf/"{cap}: {(scow uv+(mug txt))}"]
+          ~>  %bout
           %-  road  |.
           ~_  leaf/"{cap}: build failed"
           (slap sub (rain pax txt))
         ::
         ++  create
+          ~/  %create
           |=  [our=ship zus=vase lal=term pax=path txt=@t]
           ^-  vase
           =/  cap  "vane: %{(trip lal)}"
           (slym (smit cap zus pax txt) our)
         ::
         ++  settle
+          ~/  %settle
           |=  van=vase
           ^-  (pair vase worm)
           =|  sac=worm
@@ -1068,6 +1079,7 @@
         ::  XX pass identity to preserve behavior?
         ::
         ++  update
+          ~/  %update
           |=  [las=vase nex=vase]
           ^-  vase
           =/  sam=vase  (slap (slym las *vane-sample) [%limb %stay])
@@ -1081,13 +1093,16 @@
     ::  |plow:va: operate in time and space
     ::
     ++  plow
+      ~/  %plow
       |=  [now=@da rok=rook]
+      ~%  %plow-core  +  ~
       |%
       ::  +peek:plow:va: read from a local namespace
       ::
       ++  peek
+        ~/  %peek
         ^-  rook
-        |=  [lyc=gang vis=view bem=beam]
+        |=  [lyc=gang pov=path omen]
         ^-  (unit (unit (cask meta)))
         ::  namespace reads receive no entropy
         ::
@@ -1099,7 +1114,7 @@
           ~>  %mean.'peek: pull failed'
           (~(slap wa sac) rig [%limb %scry])
         ::
-        =/  mas=[gang view beam]  [lyc vis bem]
+        =/  mas=[gang path view beam]  [lyc pov vis bem]
         ::
         =^  pro  sac
           ~>  %mean.'peek: call failed'
@@ -1279,7 +1294,7 @@
           :^  %pass  [vane.gem vane]
             ?:  ?=(?(%deal %deal-gall) +>-.task)
               :-  :-  +>-.task
-                  ;;([[ship ship] term term] [+>+< +>+>- +>+>+<]:task)
+                  ;;([[ship ship path] term term] [+>+< +>+>- +>+>+<]:task)
               wire
             [(symp +>-.task) wire]
           duct
@@ -1355,11 +1370,11 @@
       ::
       %+  turn
         (sort ~(tap by van.mod) |=([[a=@tas *] [b=@tas *]] (aor a b)))
-      =/  bem=beam  [[our %base da+now] /whey]  ::TODO  %base?
+      =/  bem=beam  [[our %$ da+now] //whey]
       |=  [nam=term =vane]
       =;  mas=(list mass)
         nam^|+(welp mas [dot+&+q.vase typ+&+p.vase sac+&+worm ~]:vane)
-      ?~  met=(peek [~ ~] nam bem)  ~
+      ?~  met=(peek [~ ~] / [nam %x] bem)  ~
       ?~  u.met  ~
       ~|  mass+nam
       ;;((list mass) q.q.u.u.met)
@@ -1367,7 +1382,7 @@
     ::
     ++  peek
       ^-  rook
-      |=  [lyc=gang vis=view bem=beam]
+      |=  [lyc=gang pov=path omen]
       ^-  (unit (unit (cask meta)))
       ::  vane and care may be concatenated
       ::
@@ -1378,12 +1393,12 @@
         [(end 3 vis) (rsh 3 vis)]
       ::
       ?:  ?=(%$ way)
-        (peek:pith lyc car bem)
+        (peek:pith lyc pov car bem)
       ::
       =.  way  (grow way)
       ?~  van=(~(get by van.mod) way)
         ~
-      %.  [lyc car bem]
+      %.  [lyc pov car bem]
       peek:spin:(~(plow va [vil u.van]) now peek)
     ::  +call: advance to target
     ::
@@ -1538,11 +1553,11 @@
       ::
       ++  peek
         ^-  roon
-        |=  [lyc=gang car=term bem=beam]
+        |=  [lyc=gang pov=path car=term bem=beam]
         ^-  (unit (unit cage))
-        ?.  ?|  =(our p.bem)
+        ?.  ?&  =(our p.bem)
                 ?=(%$ q.bem)
-                =([%da now] p.r.bem)
+                =([%da now] r.bem)
             ==
           ~
         ?+  s.bem  ~
@@ -1623,6 +1638,7 @@
   ?~  hun
     =/  gat
       ~>  %slog.[0 'arvo: compiling next arvo']
+      ~>  %bout
       %-  road  |.
       (slap !>(..ride) (rain /sys/arvo/hoon van))
     =/  lod
@@ -1640,6 +1656,7 @@
     ::
     =/  raw
       ~>  %slog.[0 'arvo: compiling hoon']
+      ~>  %bout
       (road |.((ride %noun u.hun)))
     ::  activate the new compiler gate, producing +ride
     ::
@@ -1665,6 +1682,7 @@
         [raw cop]
       =/  hot
         ~>  %slog.[0 leaf/"arvo: recompiling hoon %{(scow %ud nex)}"]
+        ~>  %bout
         (road |.((slum cop [%noun u.hun])))
       [hot .*(0 +.hot)]
     ::  extract the hoon core from the outer gate (+ride)
@@ -1680,6 +1698,7 @@
   ::
   =/  rav
     ~>  %slog.[0 'arvo: compiling next arvo']
+    ~>  %bout
     (road |.((slum cop [hyp van])))
   ::  activate arvo and extract the arvo core from the outer gate
   ::
@@ -1719,11 +1738,11 @@
     %c  %clay
     %d  %dill
     %e  %eyre
-    %f  %ford
     %g  %gall
     %i  %iris
     %j  %jael
     %k  %khan
+    %l  %lick
   ==
 --  =>
 ::
@@ -1747,7 +1766,7 @@
   ::
   =.  sol
     ?-  -.hir
-      _arvo  soul.hir
+      ?(%240 %239 %238 %237)  soul.hir
     ==
   ::  clear compiler caches
   ::
@@ -1776,11 +1795,11 @@
           $=  nom
           %+  each  path
           $%  [%once vis=view syd=desk tyl=spur]
-              [%beam vis=view bem=beam]
+              [%beam omen]  :: XX unfortunate naming
           ==
       ==
   ^-  (unit (cask))
-  =/  hap=(unit [pat=? vis=view bem=beam])
+  =/  hap=(unit [pat=? omen])
     ?-  nom
       [%& *]        ?~(mon=(de-omen p.nom) ~ `[| u.mon])
       [%| %beam *]  `[| vis bem]:p.nom
@@ -1788,7 +1807,7 @@
     ==
   ::
   ?~  hap  ~
-  =/  pro  (~(peek le:part [pit vil] sol) lyc [vis bem]:u.hap)
+  =/  pro  (~(peek le:part [pit vil] sol) lyc / [vis bem]:u.hap)
   ?:  |(?=(~ pro) ?=(~ u.pro))  ~
   =/  dat=(cask)  [p q.q]:u.u.pro
   ?.  pat.u.hap  `dat
@@ -1862,7 +1881,7 @@
           ++  smit
             |=  [cap=tape sub=(trap vase) pax=path txt=@t]
             ^-  (trap vase)
-            ~>  %slog.[0 leaf/"{cap}: {(scow p+(mug txt))}"]
+            ~>  %slog.[0 leaf/"{cap}: {(scow uv+(mug txt))}"]
             %-  road  |.
             ~_  leaf/"{cap}: build failed"
             (swat sub (rain pax txt))

@@ -8,14 +8,12 @@
 --                                                      ::
 =>  |%                                                  ::  console protocol
 +$  axle                                                ::
-  $:  %6                                                ::
+  $:  %7                                                ::
       hey=(unit duct)                                   ::  default duct
       dug=(map @tas axon)                               ::  conversations
-      eye=(jug @tas duct)                               ::  outside listeners
+      eye=(jug @tas duct)                               ::  outside observers
+      ear=(set duct)                                    ::  syslog listeners
       lit=?                                             ::  boot in lite mode
-      $=  veb                                           ::  vane verbosities
-      $~  (~(put by *(map @tas log-level)) %hole %soft) ::  quiet packet crashes
-      (map @tas log-level)                              ::
       egg=_|                                            ::  see +take, removeme
   ==                                                    ::
 +$  axon                                                ::  dill session
@@ -97,10 +95,6 @@
         ?+    -.kyz  ~&  [%strange-kiss -.kyz]  +>
           %hail  (send %hey ~)
           %belt  (send `dill-belt`p.kyz)
-          %talk  (talk p.kyz)
-          %text  (fore (tuba p.kyz) ~)
-          %crud  ::  (send `dill-belt`[%cru p.kyz q.kyz])
-                 (crud p.kyz q.kyz)
           %blew  (send(wid p.p.kyz) %rez p.p.kyz q.p.kyz)
           %heft  (pass /whey %$ whey/~)
           %meld  (dump kyz)
@@ -110,30 +104,16 @@
         ::
             %seat
           %^  pass  /seat  %g
-          :+  %deal   [our our]
+          :+  %deal   [our our /dill]
           [%hood %poke %kiln-install !>([desk.kyz our desk.kyz])]
         ==
       ::
       ++  crud
-        |=  [err=@tas tac=(list tank)]
-        ::  unknown errors default to %loud
-        ::
-        =/  lev=log-level  (~(gut by veb.all) err %loud)
-        ::  apply log level for this error tag
-        ::
-        ?-  lev
-          %hush  +>.$
-          %soft  (fore (tuba "crud: %{(trip err)} event failed") ~)
-          %loud  (talk leaf+"crud: %{(trip err)} event failed" (flop tac))
-        ==
-      ::
-      ++  talk
-        |=  tac=(list tank)
-        %-  fore
-        %-  zing
-        %+  turn  tac
-        |=  a=tank
-        (turn (~(win re a) [0 wid]) tuba)
+        |=  [err=@tas tac=tang]
+        =-  +>.$(moz (weld - moz))
+        %+  turn
+          ~(tap in ear.all)
+        (late %give %logs %crud err tac)
       ::
       ++  dump                                          ::  pass down to hey
         |=  git=gift
@@ -149,35 +129,11 @@
       ::
       ++  deal                                          ::  pass to %gall
         |=  [=wire =deal:gall]
-        (pass wire [%g %deal [our our] ram deal])
+        (pass wire [%g %deal [our our /dill] ram deal])
       ::
       ++  pass                                          ::  pass note
         |=  [=wire =note]
         +>(moz :_(moz [hen %pass wire note]))
-      ::
-      ++  fore                                          ::  send dill output
-        ::NOTE  there are still implicit assumptions
-        ::      about the underlying console app's
-        ::      semantics here. specifically, trailing
-        ::      newlines are important to not getting
-        ::      overwritten by the drum prompt, and a
-        ::      bottom-of-screen cursor position gives
-        ::      nicest results. a more agnostic solution
-        ::      will need to replace this arm, someday.
-        ::      perhaps +send this to .ram instead?
-        ::
-        |=  liz=(list (list @c))
-        ~?  !=(%$ ses)  [%d %foreing-in-session ses]
-        ^+  +>
-        =.  +>
-          =|  biz=(list blit)
-          |-  ^+  +>.^$
-          ?~  liz  (done %blit [%hop 0] [%wyp ~] biz)
-          $(liz t.liz, biz (welp biz [%put i.liz] [%nel ~] ~))
-        ::  since dill is acting on its own accord,
-        ::  we %hey the term app so it may clean up.
-        ::
-        (send %hey ~)
       ::
       ++  from                                          ::  receive blit
         |=  bit=dill-blit
@@ -190,7 +146,7 @@
       ++  sponsor
         ^-  ship
         =/  dat=(unit (unit cage))
-          (rof `[our ~ ~] j/[[our sein/da/now] /(scot %p our)])
+          (rof `[our ~ ~] /dill j/[[our sein/da/now] /(scot %p our)])
         ;;(ship q.q:(need (need dat)))
       ::
       ++  init                                          ::  initialize
@@ -294,8 +250,10 @@
           wrapped-task=(hobo task)
       ==
   ^+  [*(list move) ..^$]
-  ~|  wrapped-task
-  =/  task=task  ((harden task) wrapped-task)
+  =/  task=task
+    ~|  wrapped-task
+    ((harden task) wrapped-task)
+  ~|  -.task
   ::  unwrap session tasks, default to session %$
   ::
   =^  ses=@tas  task
@@ -349,10 +307,13 @@
   ::
   ?:  ?=(?(%trim %vega) -.task)
     [~ ..^$]
-  ::  %knob sets a verbosity level for an error tag
+  ::  %knob used to set a verbosity level for an error tag,
+  ::  but dill no longer prints errors itself, so implementing %knob
+  ::  has become a recommendation to error printers (like drum).
+  ::  remove this when %knob gets removed from lull, next™ kelvin release.
   ::
   ?:  ?=(%knob -.task)
-    =.  veb.all  (~(put by veb.all) tag.task level.task)
+    ~&  [%dill %knob-deprecated]
     [~ ..^$]
   ::  %open opens a new dill session
   ::
@@ -400,6 +361,18 @@
   ?:  ?=(%flee -.task)
     :-  ~
     ..^$(eye.all (~(del ju eye.all) ses hen))
+  ::  %logs opens or closes a subscription to system output
+  ::
+  ?:  ?=(%logs -.task)
+    =.  ear.all
+      ?~  p.task  (~(del in ear.all) hen)
+      (~(put in ear.all) hen)
+    [~ ..^$]
+  ::  if we were $told something, give %logs to all interested parties
+  ::
+  ?:  ?=(?(%crud %talk %text) -.task)
+    :_  ..^$
+    (turn ~(tap in ear.all) (late %give %logs task))
   ::
   =/  nus
     (ax hen ses)
@@ -408,8 +381,7 @@
     ::  could be before %boot (or %boot failed)
     ::
     ~&  [%dill-call-no-session ses hen -.task]
-    =/  tan  ?:(?=(%crud -.task) q.task ~)
-    [((slog (flop tan)) ~) ..^$]
+    [~ ..^$]
   ::
   =^  moz  all  abet:(call:u.nus task)
   [moz ..^$]
@@ -417,12 +389,28 @@
 ++  load                                                ::  import old state
   =<  |=  old=any-axle
       ?-  -.old
-        %6  ..^$(all old)
+        %7  ..^$(all old)
+        %6  $(old (axle-6-to-7 old))
         %5  $(old (axle-5-to-6 old))
         %4  $(old (axle-4-to-5 old))
       ==
   |%
-  +$  any-axle  $%(axle axle-5 axle-4)
+  +$  any-axle  $%(axle axle-6 axle-5 axle-4)
+  ::
+  +$  axle-6
+    $:  %6
+        hey=(unit duct)
+        dug=(map @tas axon)
+        eye=(jug @tas duct)
+        lit=?
+        veb=(map @tas log-level)
+        egg=_|
+    ==
+  ::
+  ++  axle-6-to-7
+    |=  a=axle-6
+    ^-  axle
+    [%7 hey dug eye ~ lit egg]:a
   ::
   +$  axle-5
     $:  %5
@@ -435,7 +423,7 @@
   ::
   ++  axle-5-to-6
     |=  a=axle-5
-    ^-  axle
+    ^-  axle-6
     :: [%6 hey `(map @tas axon)`dug eye lit veb |]
     a(- %6, veb [veb.a &])
   ::
@@ -491,7 +479,7 @@
 ::
 ++  scry
   ^-  roon
-  |=  [lyc=gang car=term bem=beam]
+  |=  [lyc=gang pov=path car=term bem=beam]
   ^-  (unit (unit cage))
   =*  ren  car
   =*  why=shop  &/p.bem
@@ -501,14 +489,7 @@
   ::
   ?.  ?=(%& -.why)  ~
   =*  his  p.why
-  ::TODO  don't special-case whey scry
   ::
-  ?:  &(=(ren %$) =(tyl /whey))
-    =/  maz=(list mass)
-      :~  hey+&+hey.all
-          dug+&+dug.all
-      ==
-    ``mass+!>(maz)
   ::  only respond for the local identity, %$ desk, current timestamp
   ::
   ?.  ?&  =(&+our why)
@@ -516,10 +497,14 @@
           =(%$ syd)
       ==
     ~
+  ::  /%x//whey           (list mass)   memory usage labels
   ::  /dy/sessions        (set @tas)    all existing sessions
   ::  /du/sessions/[ses]  ?             does session ses exist?
   ::
   ?+  [ren tyl]  ~
+    [%x %$ %whey ~]     =-  ``mass+!>(`(list mass)`-)
+                        [hey+&+hey.all dug+&+dug.all ~]
+  ::
     [%y %sessions ~]    ``noun+!>(~(key by dug.all))
     [%u %sessions @ ~]  ``noun+!>((~(has by dug.all) (snag 1 tyl)))
   ==
@@ -540,9 +525,10 @@
       ::  only the new-style subscription.
       ::
       =/  hey  (need hey.all.lax)
-      :*  [hey %pass / %g %deal [our our] %hood %leave ~]
-          [hey %pass [%peer %$ ~] %g %deal [our our] %hood %leave ~]
-          [hey %pass [%peer %$ ~] %g %deal [our our] %hood %watch [%dill %$ ~]]
+      =/  =sack  [our our /dill]
+      :*  [hey %pass / %g %deal sack %hood %leave ~]
+          [hey %pass [%peer %$ ~] %g %deal sack %hood %leave ~]
+          [hey %pass [%peer %$ ~] %g %deal sack %hood %watch [%dill %$ ~]]
           moz
       ==
     =.  egg.all.lax  |
