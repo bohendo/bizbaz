@@ -11,6 +11,7 @@ import Urbit from "@urbit/http-api";
 
 import { App } from './app';
 import { Advert } from './pages/Advert';
+import { Adverts } from "./pages/Adverts";
 
 const api = new Urbit('', '', window.desk);
 api.ship = window.ship;
@@ -19,9 +20,16 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <App api={api} />,
-  }, {
-    path: "/advert/:hash",
-    element: <Advert api={api} />,
+    children: [
+      {
+        path: "/advert/:hash",
+        element: <Advert api={api} />,
+      },
+      {
+        path: "/adverts",
+        element: <Adverts api={api} />,
+      },
+    ]
   },
 ], { basename: "/apps/bizbaz" });
 

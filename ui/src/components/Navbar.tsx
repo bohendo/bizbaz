@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { ReactComponentElement, useState } from "react";
+import { Link } from "react-router-dom";
 
 // MUI 
 import AppBar from "@mui/material/AppBar";
@@ -11,8 +12,6 @@ import { useTheme } from "@mui/material";
 // Icons
 import HomeIcon from "@mui/icons-material/Home";
 import ExploreOutlined from "@mui/icons-material/ExploreOutlined";
-
-import { Adverts } from "../pages/Adverts";
 
 import '@urbit/sigil-js'
 
@@ -58,18 +57,17 @@ function a11yProps(index: number) {
   };
 }
 
-export const NavBar = ({api}:{api: any}) => {
+export const NavBar = ({api, tabPage}
+  :{api: any, tabPage: ReactComponentElement<any>}) => {
     const [value, setValue] = useState(0);
     // const [tab1View, setTab1View] = useState
+
+    console.log(tabPage);
     const theme = useTheme();
 
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         console.log(`Setting newValue: ${newValue}`)
         setValue(newValue);
-    };
-
-    const handleChangeIndex = (index: number) => {
-        setValue(index);
     };
 
     return (
@@ -84,13 +82,14 @@ export const NavBar = ({api}:{api: any}) => {
                     variant="fullWidth"
                     aria-label="full width tabs example"
                 >
-                    <Tab icon={<ExploreOutlined />} {...a11yProps(0)} />
+                    <Tab component={Link} to={'/adverts'} icon={<ExploreOutlined />} {...a11yProps(0)} />
                     <Tab icon={<urbit-sigil {...config} />} {...a11yProps(2)} />
                 </Tabs>
             </AppBar>
             <Box marginTop={theme.spacing(4)}>
                 <TabPanel value={value} index={0} dir={theme.direction}>
-                  <Adverts api={api}/>
+                  {/* <Adverts api={api}/> */}
+                  {tabPage}
                 </TabPanel>
                 <TabPanel value={value} index={1} dir={theme.direction}>
                   <Typography variant="h2">

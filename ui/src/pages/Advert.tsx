@@ -5,6 +5,7 @@ import { Paper, styled, useTheme } from "@mui/material";
 // MUI
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress';
 
 export const Advert = ({ api }: { api: any }) => {
   const theme = useTheme();
@@ -56,8 +57,14 @@ export const Advert = ({ api }: { api: any }) => {
       })
   }
 
-  return (
-    <Paper sx={{ p: 8, m: 8 }}>
+  console.log(advert);
+
+  if (advert === undefined) {
+    // TODO: create error 404 not found page
+    return <div> Advert does not exist </div>
+  } else if (advert) {
+    return (
+    <Paper variant="outlined" sx={{ p: 8, m: 8 }}>
       <Typography variant="h2">
         Advert ...{hash.split(".")[5]}
       </Typography>
@@ -82,6 +89,8 @@ export const Advert = ({ api }: { api: any }) => {
         Reported by: {reports.map(r => r.sig.ship).join(", ")}
       </Typography>
     </Paper>
+  )} else return (
+    <CircularProgress color="inherit" />
   )
 }
 

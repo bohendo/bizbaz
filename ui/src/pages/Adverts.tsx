@@ -30,7 +30,6 @@ export const Adverts = ({
 
 
   const handleUpdate = ( upd: any) => {
-    console.log(upd)
     setAdverts(upd)      
   }
 
@@ -67,7 +66,7 @@ export const Adverts = ({
             <Card key={index} sx={{ marginTop: theme.spacing(1) , height: itemHeight, width: 100 }}>
               <CardActionArea disableRipple
                 sx={{ width: "100%", alignItems: "center" }}
-              component={Link} to={`/advert/${advert.hash}`}>
+                component={Link} to={`/advert/${advert.hash}`}>
                 <urbit-sigil point={advert.vendor} size={60} detail='default' space='large'/>
 
                 <CardContent

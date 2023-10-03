@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useReducer } from "react";
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 
 // Components
 import { NavBar } from "./components/Navbar";
@@ -40,7 +40,7 @@ export const App = ({ api }: { api: any }) => {
   return (
     <ThemeProvider theme={theme}>
         <CssBaseline />
-        <NavBar api={api}/>
+        <NavBar api={api} tabPage={<Outlet />}/>
         <NewAdvert
           open={openAdvertDialog} handleCloseDialog={() => setOpenAdvertDialog(false)}
           api={api}
