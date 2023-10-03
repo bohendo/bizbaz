@@ -16,6 +16,7 @@ import Fab from "@mui/material/Fab";
 // Icons
 import AddIcon from "@mui/icons-material/Add";
 import ExploreOutlined from "@mui/icons-material/ExploreOutlined";
+import EditIcon from '@mui/icons-material/Edit';
 
 import '@urbit/sigil-js'
 
@@ -65,12 +66,12 @@ export const NavBar = ({api, tabPage}
                 {tabPage}
           </Box>
           
-          {Object.keys(params).length === 0 ? 
             <Fab color='primary' sx={{position: 'fixed', right: theme.spacing(4), bottom: theme.spacing(3)}}
               onClick={() => setOpenNewAdvertDialog(true)}>
-              <AddIcon />
-            </Fab> : null
-          }
+              {Object.keys(params).length === 0 ? 
+              <AddIcon /> : <EditIcon />
+              }
+            </Fab>
           <NewAdvert
             open={openNewAdvertDialog} handleCloseDialog={() => setOpenNewAdvertDialog(false)}
             api={api}

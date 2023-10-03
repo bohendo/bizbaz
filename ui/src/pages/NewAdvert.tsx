@@ -12,10 +12,12 @@ import Button from "@mui/material/Button";
 import { TNewAdvert, TAdvertValidation  } from "../types";
 
 export const NewAdvert = ({
+    editAdvert,
     open,
     handleCloseDialog,
     api
 }: {
+    editAdvert?: TNewAdvert;
     open: boolean;
     handleCloseDialog: () => void;
     // TODO: Fix api type
@@ -39,7 +41,7 @@ export const NewAdvert = ({
 
     const validate = (advert: TNewAdvert) => {
        const titleError = !advert.title ? "Advert must have a title" : "";
-       const coverError = !advert.cover ? "Advert must have a cover" : "";
+       const coverError = !advert.cover ? "Advert cover must be a url" : "";
        const descriptionError = !advert.description ? "Advert description is required" : "";
        let tagsError = advert.tags.reduce((tagError, tag) =>
             /^[a-z][a-z0-9-]*$/.test(tag) ? tagError : tagError + ` '${tag}'`,
@@ -50,7 +52,7 @@ export const NewAdvert = ({
                          Following are invalid tags: "
                         + tagsError;
        const hasError = !!(descriptionError || tagsError);
-       setValidation({ hasError, errorMsgs: {titleError, descriptionError, tagsError}});
+       setValidation({ hasError, errorMsgs: {coverError, titleError, descriptionError, tagsError}});
     }
     const syncNewAdvert = (advert: TNewAdvert) => {
        validate(advert);

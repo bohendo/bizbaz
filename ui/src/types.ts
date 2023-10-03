@@ -1,22 +1,25 @@
 export type TAdvertValidation = {
     hasError: boolean;
     errorMsgs: {
-        titleError: string;
+        coverError: string;
         descriptionError: string;
         tagsError: string;
+        titleError: string;
     }
 }
 
 export type TNewAdvert = {
-    title: string;
+    cover: string;
     description: string;
     tags: Array<string>;
+    title: string;
 }
 
 export type TAdvert = {
-    title: string;
+    cover: string;
     description: string;
     tags: Array<string>;
+    title: string;
     when: number;
     who: string;
 }

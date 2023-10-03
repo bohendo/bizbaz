@@ -11,7 +11,6 @@ import Fab from '@mui/material/Fab'
 import { TAdvert } from "../types";
 
 // Icons
-import EditIcon from '@mui/icons-material/Edit';
 
 export const Advert = ({ api }: { api: any }) => {
   const theme = useTheme();
@@ -94,13 +93,13 @@ export const Advert = ({ api }: { api: any }) => {
       <Typography variant="body1">
         Reported by: {reports.map(r => r.sig.ship).join(", ")}
       </Typography>
-      <Fab color='primary' sx={{
+      {/* <Fab color='primary' sx={{
         position: 'fixed',
         right: theme.spacing(4),
         bottom: theme.spacing(3)
       }} onClick={() => console.log(`edit advert ${JSON.stringify(advert)}`)}>
         <EditIcon />
-      </Fab>
+      </Fab> */}
     </Paper>
   )} else return (
     <CircularProgress color="inherit" />
