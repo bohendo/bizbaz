@@ -5,7 +5,7 @@
 +$  action
   $%  [%create body=advert-body]
       [%delete hash=@uvH]
-      [%update hash=@uvH advert-body]
+      [%update hash=@uvH body=advert-body]
   ==
 +$  update
   $%  [%gather adverts=(list advert)]

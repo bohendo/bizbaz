@@ -55,8 +55,23 @@
               ~|((weld "No advert with hash " (scow %uv hash.act)) !!)
             [~ this(adverts (oust [(need index) 1] adverts))]
           %update
-            :: TODO: find & replace the one w matching hash
-            !! ::[~ this(adverts [advert.act adverts])]
+            =/  index  (find ~[hash.act] (turn adverts |=(ad=advert:advert hash.ad)))
+            ?~  index
+              ~|((weld "No advert with hash " (scow %uv hash.act)) !!)
+            =/  advert-body
+              :*  title=title.body.act
+                  cover=cover.body.act
+                  tags=`(list @tas)`tags.body.act
+                  description=description.body.act
+              ==
+            =/  hash  (sham advert-body)
+            =/  new-advert
+              :*  hash=hash
+                  sig=(sign:signatures our.bowl now.bowl hash)
+                  when=now.bowl
+                  advert-body
+              ==
+            [~ this(adverts (snap adverts (need index) new-advert))]
       == 
     %report-action
       =/  act  !<(action:report vase)
