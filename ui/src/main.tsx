@@ -12,6 +12,7 @@ import Urbit from "@urbit/http-api";
 import { App } from './app';
 import { Advert } from './pages/Advert';
 import { Adverts } from "./pages/Adverts";
+import { Profile } from "./pages/Profile";
 
 const api = new Urbit('', '', window.desk);
 api.ship = window.ship;
@@ -28,6 +29,10 @@ const router = createBrowserRouter([
       {
         path: "/adverts",
         element: <Adverts api={api} />,
+      },
+      {
+        path: "/profile",
+        element: <Profile api={api} />,
       },
     ]
   },

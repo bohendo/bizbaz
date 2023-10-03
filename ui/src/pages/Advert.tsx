@@ -1,16 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Paper, styled, useTheme } from "@mui/material";
 
 // MUI
+import { useTheme } from "@mui/material/styles"
+import Paper from "@mui/material/Paper";
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
+import Fab from '@mui/material/Fab'
+import { TAdvert } from "../types";
+
+// Icons
+import EditIcon from '@mui/icons-material/Edit';
 
 export const Advert = ({ api }: { api: any }) => {
   const theme = useTheme();
   const { hash } = useParams();
-  const [advert, setAdvert] = useState({});
+  const [advert, setAdvert] = useState({} as TAdvert);
   const [reports, setReports] = useState([] as any[]);
 
   const updateAdvert = ( upd: any) => {
@@ -71,7 +77,7 @@ export const Advert = ({ api }: { api: any }) => {
       <Typography variant="h5">
         Tags: {advert.tags?.join(", ")}
       </Typography>
-      <Typography variant="p">
+      <Typography variant="body1">
         Description: {advert.description}
       </Typography>
       <br/>
@@ -85,12 +91,18 @@ export const Advert = ({ api }: { api: any }) => {
         Review
       </Button>
       <br/>
-      <Typography variant="p">
+      <Typography variant="body1">
         Reported by: {reports.map(r => r.sig.ship).join(", ")}
       </Typography>
+      <Fab color='primary' sx={{
+        position: 'fixed',
+        right: theme.spacing(4),
+        bottom: theme.spacing(3)
+      }} onClick={() => console.log(`edit advert ${JSON.stringify(advert)}`)}>
+        <EditIcon />
+      </Fab>
     </Paper>
   )} else return (
     <CircularProgress color="inherit" />
   )
 }
-
