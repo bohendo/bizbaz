@@ -17,6 +17,7 @@ export const Advert = ({ api }: { api: any }) => {
   const { hash } = useParams();
   const [advert, setAdvert] = useState({} as TAdvert);
   const [reports, setReports] = useState([] as any[]);
+  const [commits, setCommits] = useState([] as any[]);
 
   const updateAdvert = ( upd: any) => {
     setAdvert(upd.find(u => u.hash === hash))      
@@ -30,10 +31,20 @@ export const Advert = ({ api }: { api: any }) => {
     setReports(filteredReports)
   }
 
+  const updateReviews = (upd: any) => {
+    console.log(`Got reviews update:`, upd)
+    const filteredCommits = upd.commits.filter(commit =>
+      commit.advert === hash
+    )
+    console.log(`Relevant commits:`, filteredCommits)
+    setCommits(filteredCommits)
+  }
+
   useEffect(() => {
     async function init() {
       api.subscribe( { app: "bizbaz", path: '/adverts', event: updateAdvert } )
       api.subscribe( { app: "bizbaz", path: '/reports', event: updateReports } )
+      api.subscribe( { app: "bizbaz", path: '/reviews', event: updateReviews } )
     }
     init();
   }, []);
@@ -90,9 +101,15 @@ export const Advert = ({ api }: { api: any }) => {
         Review
       </Button>
       <br/>
+
       <Typography variant="body1">
         Reported by: {reports.map(r => r.sig.ship).join(", ")}
       </Typography>
+
+      <Typography variant="body1">
+        Commited to by: {commits.map(c => c["client-sig"].ship).join(", ")}
+      </Typography>
+
       {/* <Fab color='primary' sx={{
         position: 'fixed',
         right: theme.spacing(4),

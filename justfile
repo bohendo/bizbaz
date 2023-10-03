@@ -1,4 +1,10 @@
 
+start:
+  bash start-fake-ship.sh
+
+start-ui:
+  cd ui && npm run dev
+
 sync: 
   rm -rf zod/bizbaz
   cp -rf desk zod/bizbaz
@@ -6,9 +12,6 @@ sync:
 sync-lib dir: 
   rm -rf data/zod/{{dir}}
   cp -rf libs/{{dir}} data/zod/{{dir}}
-
-start:
-  bash start-fake-ship.sh
 
 bind-zod:
   rm -rf zod/bizbaz

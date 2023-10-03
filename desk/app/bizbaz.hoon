@@ -138,8 +138,8 @@
       ~&  "watching reports"
       [%give %fact ~ %report-update !>(`update:report`[%gather reports])]~
     [%reviews ~]
-      ~&  "watching reviews"
-      [%give %fact ~ %review-update !>(`update:review`[%gather reviews])]~
+      ~&  "watching reviews & commits"
+      [%give %fact ~ %review-update !>(`update:review`[%gather reviews commits])]~
   ==
 ++  on-arvo   on-arvo:default
 ++  on-leave  on-leave:default

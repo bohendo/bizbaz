@@ -9,7 +9,7 @@
       [%update hash=@uvH body=review-body]
   ==
 +$  update
-  $%  [%gather reviews=(list review)]
+  $%  [%gather reviews=(list review) commits=(list commit)]
       action
   ==
 --
