@@ -8,7 +8,11 @@
   $%  state-0
   ==
 +$  state-0
-  $:  [%0 adverts=(list advert:advert) reports=(list report:report) reviews=(list review:review) commits=(list commit:review)]
+  $:  %0
+      adverts=(list advert:advert)
+      reports=(list report:report)
+      reviews=(list review:review)
+      commits=(list commit:review)
   ==
 +$  card  card:agent:gall
 --
