@@ -11,7 +11,10 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import Fab from '@mui/material/Fab'
+
 import { TAdvert } from "../types";
+
+import { NewReview } from "./NewReview";
 
 // Icons
 import EditIcon from '@mui/icons-material/Edit';
@@ -23,6 +26,7 @@ export const Advert = ({ api }: { api: any }) => {
   const [reports, setReports] = useState([] as any[]);
   const [commits, setCommits] = useState([] as any[]);
   const [openNewAdvertDialog, setOpenNewAdvertDialog] = useState(false);
+  const [openNewReviewDialog, setOpenNewReviewDialog] = useState(false);
 
   const updateAdvert = ( upd: any) => {
     setAdvert(upd.find(u => u.hash === hash))      
@@ -100,7 +104,7 @@ export const Advert = ({ api }: { api: any }) => {
       <Button variant="contained" onClick={commit} sx={{ m:2 }}>
         Commit
       </Button>
-      <Button variant="contained" onClick={()=>console.log("I'm reviewing!")} sx={{ m:2 }}>
+      <Button variant="contained" onClick={()=>setOpenNewReviewDialog(true)} sx={{ m:2 }}>
         Review
       </Button>
       <br/>
@@ -120,6 +124,7 @@ export const Advert = ({ api }: { api: any }) => {
       }} onClick={() => setOpenNewAdvertDialog(true)}>
         <EditIcon />
       </Fab>
+
       <NewAdvert
         editAdvert={{
           title: advert.title,
@@ -132,6 +137,15 @@ export const Advert = ({ api }: { api: any }) => {
         open={openNewAdvertDialog} handleCloseDialog={() => setOpenNewAdvertDialog(false)}
         api={api}
       /> 
+
+      <NewReview
+        advert={hash}
+        reviewee={advert?.sig?.ship || null}
+        open={openNewReviewDialog}
+        handleCloseDialog={() => setOpenNewReviewDialog(false)}
+        api={api}
+      />
+
     </Paper>
   )} else return (
     <CircularProgress color="inherit" />

@@ -33,8 +33,7 @@ function a11yProps(index: number) {
   };
 }
 
-export const NavBar = ({api, tabPage}
-  :{api: any, tabPage: ReactComponentElement<any>}) => {
+export const NavBar = ({api, tabPage}:{api: any, tabPage: ReactComponentElement<any>}) => {
     const [value, setValue] = useState(0);
     const [openNewAdvertDialog, setOpenNewAdvertDialog] = useState(false);
     const location = useLocation();

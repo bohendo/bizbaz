@@ -14,7 +14,7 @@
     %.  jon
     %-  of
     :~  [%commit (ot ~[advert+(se %uv)])]
-        [%review (ot ~[reviewee+(se %p) score+ni why+so])]
+        [%review (ot ~[advert+(se %uv) body+(ot ~[reviewee+(se %p) score+ni why+so])])]
         [%update (ot ~[hash+(se %uv) reviewee+(se %p) score+ni why+so])]
     ==
   --

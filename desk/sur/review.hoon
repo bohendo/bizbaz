@@ -5,7 +5,7 @@
 +$  review  [hash=@uvH sig=signature when=@da body=review-body commit=commit]
 +$  action
   $%  [%commit advert=@uvH]
-      [%review body=review-body]
+      [%review advert=@uvH body=review-body]
       [%update hash=@uvH body=review-body]
   ==
 +$  update

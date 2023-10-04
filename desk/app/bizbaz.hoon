@@ -112,7 +112,20 @@
               ==
             [~ this(commits [new-commit commits])]
           %review
-            !! :: [~ this(reviews [review.act reviews])]
+            =/  index  (find ~[advert.act] (turn commits |=(cmt=commit:review advert.cmt)))
+            ?~  index
+              ~|((weld "No commit matches advert " (scow %uv advert.act)) !!)
+            =/  commit  (snag (need index) commits)
+            =/  review-body  [reviewee=reviewee.body.act score=score.body.act why=why.body.act]
+            =/  hash  (sham review-body)
+            =/  new-review
+              :*  hash=hash
+                  sig=(sign:signatures our.bowl now.bowl hash)
+                  when=now.bowl
+                  body=review-body
+                  commit=commit
+              ==
+            [~ this(reviews [new-review reviews])]
           %update
             :: TODO: find & replace the one w matching hash
             !! :: [~ this(reviews [review.act reviews])]
