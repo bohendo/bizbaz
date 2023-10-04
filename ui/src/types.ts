@@ -9,6 +9,7 @@ export type TAdvertValidation = {
 }
 
 export type TNewAdvert = {
+    hash?: string;
     cover: string;
     description: string;
     tags: Array<string>;
@@ -16,6 +17,7 @@ export type TNewAdvert = {
 }
 
 export type TAdvert = {
+    hash: string;
     cover: string;
     description: string;
     tags: Array<string>;

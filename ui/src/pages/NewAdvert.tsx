@@ -13,11 +13,13 @@ import { TNewAdvert, TAdvertValidation  } from "../types";
 
 export const NewAdvert = ({
     editAdvert,
+    edit,
     open,
     handleCloseDialog,
     api
 }: {
     editAdvert?: TNewAdvert;
+    edit?: boolean;
     open: boolean;
     handleCloseDialog: () => void;
     // TODO: Fix api type
@@ -32,12 +34,17 @@ export const NewAdvert = ({
             tagsError: ""
         }
     } as TAdvertValidation)
-    const [newAdvert, setNewAdvert] = useState({
+    const [newAdvert, setNewAdvert] = useState(editAdvert || {
         title: "Advert Title",
         cover: "link to cover image",
         description: "Description of the stuff I'm selling",
         tags: ["example"]
     } as TNewAdvert);
+
+    useEffect(() => {
+        if (editAdvert)
+            setNewAdvert(editAdvert);
+    }, [editAdvert]);
 
     const validate = (advert: TNewAdvert) => {
        const titleError = !advert.title ? "Advert must have a title" : "";
@@ -62,18 +69,36 @@ export const NewAdvert = ({
     const postAdvert = () => {
         validate(newAdvert);
         if (validation.hasError) return;
-        api.poke({
-          app: 'bizbaz',
-          mark: 'advert-action',
-          json: { 
-            'create': { 
-              title: newAdvert.title,
-              cover: newAdvert.cover,
-              tags: newAdvert.tags,
-              description: newAdvert.description,
+
+        if (edit) {
+            console.log(newAdvert);
+            api.poke({
+                app: 'bizbaz',
+                mark: 'advert-action',
+                json: {
+                    'update': {
+                        hash: newAdvert.hash,
+                        title: newAdvert.title,
+                        cover: newAdvert.cover,
+                        tags: newAdvert.tags,
+                        description: newAdvert.description,
+                    }
+                }
+            })
+        } else {
+            api.poke({
+            app: 'bizbaz',
+            mark: 'advert-action',
+            json: { 
+                'create': { 
+                title: newAdvert.title,
+                cover: newAdvert.cover,
+                tags: newAdvert.tags,
+                description: newAdvert.description,
+                }
             }
-          }
-        })
+            })
+        }
         handleCloseDialog()
     }
 
@@ -81,7 +106,10 @@ export const NewAdvert = ({
         <Dialog open={open} onClose={handleCloseDialog}>
             <DialogContent>
                <DialogContentText>
-                  Create New Advert
+                  {edit ? 
+                    <>Edit Advert {newAdvert.hash}</>
+                    : <> Create New Advert </>
+                  }
                </DialogContentText>
                <TextField
                  autoFocus

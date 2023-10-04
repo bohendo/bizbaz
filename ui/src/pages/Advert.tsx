@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
+// Pages
+import { NewAdvert } from "../pages/NewAdvert";
+
 // MUI
 import { useTheme } from "@mui/material/styles"
 import Paper from "@mui/material/Paper";
@@ -11,6 +14,7 @@ import Fab from '@mui/material/Fab'
 import { TAdvert } from "../types";
 
 // Icons
+import EditIcon from '@mui/icons-material/Edit';
 
 export const Advert = ({ api }: { api: any }) => {
   const theme = useTheme();
@@ -18,6 +22,7 @@ export const Advert = ({ api }: { api: any }) => {
   const [advert, setAdvert] = useState({} as TAdvert);
   const [reports, setReports] = useState([] as any[]);
   const [commits, setCommits] = useState([] as any[]);
+  const [openNewAdvertDialog, setOpenNewAdvertDialog] = useState(false);
 
   const updateAdvert = ( upd: any) => {
     setAdvert(upd.find(u => u.hash === hash))      
@@ -73,8 +78,6 @@ export const Advert = ({ api }: { api: any }) => {
       })
   }
 
-  console.log(advert);
-
   if (advert === undefined) {
     // TODO: create error 404 not found page
     return <div> Advert does not exist </div>
@@ -110,13 +113,25 @@ export const Advert = ({ api }: { api: any }) => {
         Commited to by: {commits.map(c => c["client-sig"].ship).join(", ")}
       </Typography>
 
-      {/* <Fab color='primary' sx={{
+      <Fab color='primary' sx={{
         position: 'fixed',
         right: theme.spacing(4),
         bottom: theme.spacing(3)
-      }} onClick={() => console.log(`edit advert ${JSON.stringify(advert)}`)}>
+      }} onClick={() => setOpenNewAdvertDialog(true)}>
         <EditIcon />
-      </Fab> */}
+      </Fab>
+      <NewAdvert
+        editAdvert={{
+          title: advert.title,
+          hash: advert.hash,
+          tags: advert.tags,
+          description: advert.description,
+          cover: advert.cover
+        }}
+        edit={true}
+        open={openNewAdvertDialog} handleCloseDialog={() => setOpenNewAdvertDialog(false)}
+        api={api}
+      /> 
     </Paper>
   )} else return (
     <CircularProgress color="inherit" />

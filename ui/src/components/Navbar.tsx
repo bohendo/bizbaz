@@ -1,5 +1,5 @@
-import React, { ReactComponentElement, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import React, { ReactComponentElement, useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 
 // Pages
 import { NewAdvert } from "../pages/NewAdvert";
@@ -16,7 +16,6 @@ import Fab from "@mui/material/Fab";
 // Icons
 import AddIcon from "@mui/icons-material/Add";
 import ExploreOutlined from "@mui/icons-material/ExploreOutlined";
-import EditIcon from '@mui/icons-material/Edit';
 
 import '@urbit/sigil-js'
 
@@ -38,8 +37,8 @@ export const NavBar = ({api, tabPage}
   :{api: any, tabPage: ReactComponentElement<any>}) => {
     const [value, setValue] = useState(0);
     const [openNewAdvertDialog, setOpenNewAdvertDialog] = useState(false);
-    const params = useParams();
-
+    const location = useLocation();
+    
     const theme = useTheme();
 
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -66,16 +65,16 @@ export const NavBar = ({api, tabPage}
                 {tabPage}
           </Box>
           
+          { location.pathname === "/adverts" || location.pathname === "/profile" ?
             <Fab color='primary' sx={{position: 'fixed', right: theme.spacing(4), bottom: theme.spacing(3)}}
               onClick={() => setOpenNewAdvertDialog(true)}>
-              {Object.keys(params).length === 0 ? 
-              <AddIcon /> : <EditIcon />
-              }
-            </Fab>
+                <AddIcon />
+            </Fab> : null
+          }
           <NewAdvert
             open={openNewAdvertDialog} handleCloseDialog={() => setOpenNewAdvertDialog(false)}
             api={api}
-          />
+          /> 
         </Box>
     )
 }
