@@ -12,20 +12,21 @@
       :-  %a
       ?~  votes.upd  ~
       %+  turn  votes.upd
-      |=  rep=vote
+      |=  =vote
       %-  pairs
       :~ 
-        ['hash' s+(scot %uv hash.rep)]
+        ['hash' s+(scot %uv hash.vote)]
         :-  'sig'
         %-  pairs
-        :~  ['sig' s+(scot %uv sig.sig.rep)]
-            ['ship' s+(scot %p ship.sig.rep)]
-            ['life' s+(scot %ud life.sig.rep)]
+        :~  ['sig' s+(scot %uv sig.sig.vote)]
+            ['ship' s+(scot %p ship.sig.vote)]
+            ['life' s+(scot %ud life.sig.vote)]
         ==
         :-  'body'
         %-  pairs
-        :~  ['advert' s+(scot %uv advert.body.rep)]
-            ['target' s+(scot %p target.body.rep)]
+        :~  ['advert' s+(scot %uv advert.body.vote)]
+            ['vendor' s+(scot %p vendor.body.vote)]
+            ['when' (sect when.body.vote)]
         ==
       ==
     ==

@@ -23,7 +23,7 @@ export const Advert = ({ api }: { api: any }) => {
   const theme = useTheme();
   const { hash } = useParams();
   const [advert, setAdvert] = useState({} as TAdvert);
-  const [reports, setReports] = useState([] as any[]);
+  const [votes, setVotes] = useState([] as any[]);
   const [commits, setCommits] = useState([] as any[]);
   const [openNewAdvertDialog, setOpenNewAdvertDialog] = useState(false);
   const [openNewReviewDialog, setOpenNewReviewDialog] = useState(false);
@@ -33,12 +33,12 @@ export const Advert = ({ api }: { api: any }) => {
     setAdvert(upd.adverts.find(u => u.hash === hash))      
   }
 
-  const updateReports = (upd: any) => {
-    const filteredReports = upd.reports.filter(report =>
-      report.body.advert === hash
+  const updateVotes = (upd: any) => {
+    const filteredVotes = upd.votes.filter(vote =>
+      vote.body.advert === hash
     )
-    console.log(`Relevant reports:`, filteredReports)
-    setReports(filteredReports)
+    console.log(`Relevant votes:`, filteredVotes)
+    setVotes(filteredVotes)
   }
 
   const updateReviews = (upd: any) => {
@@ -53,18 +53,18 @@ export const Advert = ({ api }: { api: any }) => {
   useEffect(() => {
     async function init() {
       api.subscribe( { app: "bizbaz", path: '/adverts', event: updateAdvert } )
-      api.subscribe( { app: "bizbaz", path: '/reports', event: updateReports } )
+      api.subscribe( { app: "bizbaz", path: '/votes', event: updateVotes } )
       api.subscribe( { app: "bizbaz", path: '/reviews', event: updateReviews } )
     }
     init();
   }, []);
 
-  const report = () => {
+  const vote = () => {
       api.poke({
         app: 'bizbaz',
-        mark: 'report-action',
+        mark: 'vote-action',
         json: { 
-          'snitch': { 
+          'upvote': { 
             advert: hash
           }
         }
@@ -99,8 +99,8 @@ export const Advert = ({ api }: { api: any }) => {
         Description: {advert.description}
       </Typography>
       <br/>
-      <Button variant="contained" onClick={report} sx={{ m:2 }}>
-        Report
+      <Button variant="contained" onClick={vote} sx={{ m:2 }}>
+        Vote
       </Button>
       <Button variant="contained" onClick={commit} sx={{ m:2 }}>
         Commit
@@ -111,7 +111,7 @@ export const Advert = ({ api }: { api: any }) => {
       <br/>
 
       <Typography variant="body1">
-        Reported by: {reports.map(r => r.sig.ship).join(", ")}
+        Voted by: {votes.map(r => r.sig.ship).join(", ")}
       </Typography>
 
       <Typography variant="body1">

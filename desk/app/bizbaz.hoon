@@ -88,8 +88,19 @@
       ~&  act
       ?-  -.act
           %upvote
-            :: TODO: find & rm the one w matching hash
-            !! :: [~ this(votes [new-vote votes])]
+            =/  index  (find ~[advert.act] (turn adverts |=(ad=advert:advert hash.ad)))
+            ?~  index
+              ~|((weld "No advert with hash " (scow %uv advert.act)) !!)
+            =/  ad  (snag (need index) adverts)
+            =/  target  ship.vendor.ad
+            =/  vote-body  [advert=advert.act vendor=target when=now.bowl]
+            =/  hash  (sham vote-body)
+            =/  new-vote
+              :*  hash
+                  vendor=(sign:signatures our.bowl now.bowl hash)
+                  body=vote-body
+              ==
+            [~ this(votes [new-vote votes])]
           %downvote
             =/  index  (find ~[advert.act] (turn adverts |=(ad=advert:advert hash.ad)))
             ?~  index
