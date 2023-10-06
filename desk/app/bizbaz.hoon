@@ -1,5 +1,5 @@
 /-  advert
-/-  report
+/-  vote
 /-  review
 /+  signatures
 /+  default-agent, dbug
@@ -10,9 +10,10 @@
 +$  state-0
   $:  %0
       adverts=(list advert:advert)
-      reports=(list report:report)
-      reviews=(list review:review)
+      votes=(list vote:vote)
+      intents=(list intent:review)
       commits=(list commit:review)
+      reviews=(list review:review)
   ==
 +$  card  card:agent:gall
 --
@@ -37,7 +38,7 @@
 ++  on-poke
   |=  [=mark =vase]
   ^-  (quip card _this)
-  ?>  |(?=(%advert-action mark) ?=(%report-action mark) ?=(%review-action mark))
+  ?>  |(?=(%advert-action mark) ?=(%vote-action mark) ?=(%review-action mark))
   ?+  mark
     !!
     %advert-action
@@ -54,19 +55,19 @@
             =/  hash  (sham advert-body)
             =/  new-advert
               :*  hash=hash
-                  sig=(sign:signatures our.bowl now.bowl hash)
+                  vendor=(sign:signatures our.bowl now.bowl hash)
                   advert-body
               ==
             [~ this(adverts [new-advert adverts])]
           %delete
-            =/  index  (find ~[hash.act] (turn adverts |=(ad=advert:advert hash.ad)))
+            =/  index  (find ~[advert.act] (turn adverts |=(ad=advert:advert hash.ad)))
             ?~  index
-              ~|((weld "No advert with hash " (scow %uv hash.act)) !!)
+              ~|((weld "No advert with hash " (scow %uv advert.act)) !!)
             [~ this(adverts (oust [(need index) 1] adverts))]
           %update
-            =/  index  (find ~[hash.act] (turn adverts |=(ad=advert:advert hash.ad)))
+            =/  index  (find ~[advert.act] (turn adverts |=(ad=advert:advert hash.ad)))
             ?~  index
-              ~|((weld "No advert with hash " (scow %uv hash.act)) !!)
+              ~|((weld "No advert with hash " (scow %uv advert.act)) !!)
             =/  advert-body
               :*  title=title.body.act
                   cover=cover.body.act
@@ -77,66 +78,91 @@
             =/  hash  (sham advert-body)
             =/  new-advert
               :*  hash=hash
-                  sig=(sign:signatures our.bowl now.bowl hash)
+                  vendor=(sign:signatures our.bowl now.bowl hash)
                   advert-body
               ==
             [~ this(adverts (snap adverts (need index) new-advert))]
       == 
-    %report-action
-      =/  act  !<(action:report vase)
+    %vote-action
+      =/  act  !<(action:vote vase)
       ~&  act
       ?-  -.act
-          %gloom
+          %upvote
+            :: TODO: find & rm the one w matching hash
+            !! :: [~ this(votes [new-vote votes])]
+          %downvote
             =/  index  (find ~[advert.act] (turn adverts |=(ad=advert:advert hash.ad)))
             ?~  index
               ~|((weld "No advert with hash " (scow %uv advert.act)) !!)
             =/  ad  (snag (need index) adverts)
-            =/  target  ship.sig.ad
-            =/  report-body  [advert=advert.act vendor=target when=now.bowl]
-            =/  hash  (sham report-body)
-            =/  new-report
+            =/  target  ship.vendor.ad
+            =/  vote-body  [advert=advert.act vendor=target when=now.bowl]
+            =/  hash  (sham vote-body)
+            =/  new-vote
               :*  hash
-                  sig=(sign:signatures our.bowl now.bowl hash)
-                  body=report-body
+                  vendor=(sign:signatures our.bowl now.bowl hash)
+                  body=vote-body
               ==
-            [~ this(reports [new-report reports])]
-          %abate
+            [~ this(votes [new-vote votes])]
+          %unvote
             :: TODO: find & rm the one w matching hash
-            !! :: [~ this(reports [new-report reports])]
-          %cheer
-            :: TODO: find & rm the one w matching hash
-            !! :: [~ this(reports [new-report reports])]
+            !! :: [~ this(votes [new-vote votes])]
       == 
     %review-action
       =/  act  !<(action:review vase)
       ~&  act
       ?-  -.act
-          %commit
-            :: TODO: find & rm the one w matching hash
-            !! :: [~ this(reports [new-report reports])]
           %intent
             =/  index  (find ~[advert.act] (turn adverts |=(ad=advert:advert hash.ad)))
             ?~  index
               ~|((weld "No advert with hash " (scow %uv advert.act)) !!)
             =/  ad  (snag (need index) adverts)
-            =/  new-commit
+            =/  intent-body 
               :*  advert=advert.act
-                  vendor-sig=sig.ad
-                  client-sig=(sign:signatures our.bowl now.bowl advert.act)
+                  vendor=vendor.ad
                   when=now.bowl
               ==
-            [~ this(commits [new-commit commits])]
-          %review
-            =/  index  (find ~[advert.act] (turn commits |=(cmt=commit:review advert.cmt)))
+            =/  hash  (sham intent-body)
+            =/  new-intent
+              :*  hash=hash
+                  client=(sign:signatures our.bowl now.bowl advert.act)
+                  body=intent-body
+              ==
+            [~ this(intents [new-intent intents])]
+          %commit
+            =/  index  (find ~[intent.act] (turn intents |=(ad=intent:review hash.ad)))
             ?~  index
-              ~|((weld "No commit matches advert " (scow %uv advert.act)) !!)
+              ~|((weld "No intent with hash " (scow %uv intent.act)) !!)
+            =/  intent  (snag (need index) intents)
+            =/  commit-body
+              :*  intent=intent.act
+                  client=client.intent
+                  when=now.bowl
+              ==
+            =/  hash  (sham commit-body)
+            =/  new-commit
+              :*  hash=hash
+                  vendor=(sign:signatures our.bowl now.bowl intent.act)
+                  body=commit-body
+                  intent=body.intent
+              ==
+            [~ this(commits [new-commit commits])] :: todo: remove relevant intent from state
+          %review
+            =/  index  (find ~[commit.act] (turn commits |=(cmt=commit:review hash.cmt)))
+            ?~  index
+              ~|((weld "No commit with hash " (scow %uv commit.act)) !!)
             =/  commit  (snag (need index) commits)
-            =/  review-body  [reviewee=reviewee.body.act score=score.body.act why=why.body.act]
+            =/  review-body
+              :*  commit=hash.commit
+                  reviewee=reviewee.body.act
+                  score=score.body.act
+                  why=why.body.act
+                  when=now.bowl
+              ==
             =/  hash  (sham review-body)
             =/  new-review
               :*  hash=hash
-                  sig=(sign:signatures our.bowl now.bowl hash)
-                  when=now.bowl
+                  reviewer=(sign:signatures our.bowl now.bowl hash)
                   body=review-body
                   commit=commit
               ==
@@ -162,9 +188,9 @@
     [%adverts ~]
       ~&  "watching adverts"
       [%give %fact ~ %advert-update !>(`update:advert`[%gather adverts])]~
-    [%reports ~]
-      ~&  "watching reports"
-      [%give %fact ~ %report-update !>(`update:report`[%gather reports])]~
+    [%votes ~]
+      ~&  "watching votes"
+      [%give %fact ~ %vote-update !>(`update:vote`[%gather votes])]~
     [%reviews ~]
       ~&  "watching reviews & commits"
       [%give %fact ~ %review-update !>(`update:review`[%gather reviews commits])]~

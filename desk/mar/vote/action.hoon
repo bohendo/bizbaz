@@ -1,4 +1,4 @@
-/-  *report
+/-  *vote
 |_  act=action
 ++  grow
   |%
@@ -13,8 +13,9 @@
     ^-  action
     %.  jon
     %-  of
-    :~  [%snitch (ot ~[advert+(se %uv)])]
-        [%redact (ot ~[hash+(se %uv)])]
+    :~  [%upvote (ot ~[advert+(se %uv)])]
+        [%downvote (ot ~[hash+(se %uv)])]
+        [%unvote (ot ~[hash+(se %uv)])]
     ==
   --
 ++  grad  %noun

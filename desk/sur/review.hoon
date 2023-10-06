@@ -4,7 +4,7 @@
 ::
 ::  a client expresses intent to consume the vendor's goods/services
 +$  intent-body  [advert=hash vendor=signature when=@da]
-+$  intent  [=hash client=signature intent-body]
++$  intent  [=hash client=signature body=intent-body]
 ::  an intent is valid if:
 ::  - the advert hash matches a known, valid advert
 ::  - hash.intent matches sham(intent-body)

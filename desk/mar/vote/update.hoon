@@ -1,4 +1,4 @@
-/-  *report
+/-  *vote
 |_  upd=update
 ++  grow
   |%
@@ -8,11 +8,11 @@
     ^-  ^json
     ?+    -.upd  !!
         %gather
-      %+  frond  'reports'
+      %+  frond  'votes'
       :-  %a
-      ?~  reports.upd  ~
-      %+  turn  reports.upd
-      |=  rep=report
+      ?~  votes.upd  ~
+      %+  turn  votes.upd
+      |=  rep=vote
       %-  pairs
       :~ 
         ['hash' s+(scot %uv hash.rep)]
