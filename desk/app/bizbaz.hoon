@@ -49,13 +49,13 @@
                   cover=cover.body.act
                   tags=`(list @tas)`tags.body.act
                   description=description.body.act
+                  when=now.bowl
               ==
             =/  hash  (sham advert-body)
             =/  new-advert
               :*  hash=hash
                   sig=(sign:signatures our.bowl now.bowl hash)
                   advert-body
-                  when=now.bowl
               ==
             [~ this(adverts [new-advert adverts])]
           %delete
@@ -72,12 +72,12 @@
                   cover=cover.body.act
                   tags=`(list @tas)`tags.body.act
                   description=description.body.act
+                  when=now.bowl
               ==
             =/  hash  (sham advert-body)
             =/  new-advert
               :*  hash=hash
                   sig=(sign:signatures our.bowl now.bowl hash)
-                  when=now.bowl
                   advert-body
               ==
             [~ this(adverts (snap adverts (need index) new-advert))]
@@ -86,21 +86,24 @@
       =/  act  !<(action:report vase)
       ~&  act
       ?-  -.act
-          %snitch
+          %gloom
             =/  index  (find ~[advert.act] (turn adverts |=(ad=advert:advert hash.ad)))
             ?~  index
               ~|((weld "No advert with hash " (scow %uv advert.act)) !!)
             =/  ad  (snag (need index) adverts)
             =/  target  ship.sig.ad
-            =/  report-body  [advert=advert.act target]
+            =/  report-body  [advert=advert.act vendor=target when=now.bowl]
             =/  hash  (sham report-body)
             =/  new-report
               :*  hash
                   sig=(sign:signatures our.bowl now.bowl hash)
-                  report-body
+                  body=report-body
               ==
             [~ this(reports [new-report reports])]
-          %redact
+          %abate
+            :: TODO: find & rm the one w matching hash
+            !! :: [~ this(reports [new-report reports])]
+          %cheer
             :: TODO: find & rm the one w matching hash
             !! :: [~ this(reports [new-report reports])]
       == 
@@ -109,6 +112,9 @@
       ~&  act
       ?-  -.act
           %commit
+            :: TODO: find & rm the one w matching hash
+            !! :: [~ this(reports [new-report reports])]
+          %intent
             =/  index  (find ~[advert.act] (turn adverts |=(ad=advert:advert hash.ad)))
             ?~  index
               ~|((weld "No advert with hash " (scow %uv advert.act)) !!)

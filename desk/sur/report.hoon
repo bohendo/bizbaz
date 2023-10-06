@@ -1,8 +1,8 @@
 |%
 +$  signature  [sig=@uvH =ship =life]
 ::
-+$  vote-body  [advert=@uvH vendor=@p when=@da]  
-+$  report  [hash=@uvH sig=signature body=vote-body]
++$  report-body  [advert=@uvH vendor=@p when=@da]  
++$  report  [hash=@uvH sig=signature body=report-body]
 ::
 +$  action
   $%  [%cheer advert=@uvH]  :: up vote
