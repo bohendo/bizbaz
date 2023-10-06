@@ -69,35 +69,37 @@ export const NewAdvert = ({
     const postAdvert = () => {
         validate(newAdvert);
         if (validation.hasError) return;
+        const body = {
+          title: newAdvert.title,
+          cover: newAdvert.cover,
+          tags: newAdvert.tags,
+          description: newAdvert.description,
+          when: Date.now(),
+        };
 
         if (edit) {
-            console.log(newAdvert);
+            const req = {
+                'update': {
+                    hash: newAdvert.hash,
+                    ...body,
+                }
+            }
+            console.log(req);
             api.poke({
                 app: 'bizbaz',
                 mark: 'advert-action',
-                json: {
-                    'update': {
-                        hash: newAdvert.hash,
-                        title: newAdvert.title,
-                        cover: newAdvert.cover,
-                        tags: newAdvert.tags,
-                        description: newAdvert.description,
-                    }
-                }
+                json: req,
             })
         } else {
+            const req = {
+                'create': body
+            }
+            console.log(req);
             api.poke({
             app: 'bizbaz',
             mark: 'advert-action',
-            json: { 
-                'create': { 
-                title: newAdvert.title,
-                cover: newAdvert.cover,
-                tags: newAdvert.tags,
-                description: newAdvert.description,
-                }
-            }
-            })
+            json: req,
+          })
         }
         handleCloseDialog()
     }

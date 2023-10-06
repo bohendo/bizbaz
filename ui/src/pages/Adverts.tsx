@@ -30,7 +30,8 @@ export const Adverts = ({
 
 
   const handleUpdate = ( upd: any) => {
-    setAdverts(upd)      
+    console.log(`Got new adverts:`, upd.adverts)
+    setAdverts(upd.adverts || [])      
   }
 
   useEffect(() => {
@@ -60,14 +61,14 @@ export const Adverts = ({
       <Masonry columns={3} spacing={2}>
         {adverts.map((advert: TAdvert, index: number) => {
           // TODO set itemHeight based on cover image
-          const itemHeight = advert.description.length < 60 ? 200 : 260; 
+          const itemHeight = advert.body.description.length < 60 ? 200 : 260; 
           const descriptionCutOff = 60; 
           return (
             <Card key={index} sx={{ marginTop: theme.spacing(1) , height: itemHeight, width: 100 }}>
               <CardActionArea disableRipple
                 sx={{ width: "100%", alignItems: "center" }}
                 component={Link} to={`/advert/${advert.hash}`}>
-                <urbit-sigil point={advert.vendor} size={60} detail='default' space='large'/>
+                <urbit-sigil point={advert.vendor.ship} size={60} detail='default' space='large'/>
 
                 <CardContent
                   sx={{
@@ -79,28 +80,24 @@ export const Adverts = ({
                   }}>
 
                     <Typography variant="body2">
-                      {advert.title}
+                      {advert.body.title}
                     </Typography>
 
                     <Typography variant="caption" display="block">
-                      Cover image: {advert.cover}
+                      Cover image: {advert.body.cover}
                     </Typography>
 
                     <Typography variant="caption" display="block">
-                      Tags: {advert.tags.join(", ")}
+                      Tags: {advert.body.tags.join(", ")}
                     </Typography>
 
                     <Typography variant="caption" marginTop={theme.spacing(1)}>
-                      {advert.description.substring(0, descriptionCutOff)}
+                      {advert.body.description.substring(0, descriptionCutOff)}
                     </Typography>
 
                 </CardContent>
 
               </CardActionArea>
-
-              <Button variant="contained" onClick={()=>console.log(`Omg I'm committing`)}>
-                Commit
-              </Button>
 
             </Card>
           )
