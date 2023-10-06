@@ -192,8 +192,8 @@
       ~&  "watching votes"
       [%give %fact ~ %vote-update !>(`update:vote`[%gather votes])]~
     [%reviews ~]
-      ~&  "watching reviews & commits"
-      [%give %fact ~ %review-update !>(`update:review`[%gather reviews commits])]~
+      ~&  "watching intents & commits & reviews"
+      [%give %fact ~ %review-update !>(`update:review`[%gather intents commits reviews])]~
   ==
 ++  on-arvo   on-arvo:default
 ++  on-leave  on-leave:default

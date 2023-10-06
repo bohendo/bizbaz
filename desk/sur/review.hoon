@@ -61,7 +61,7 @@
       [%update review=hash body=review-body]
   ==
 +$  update
-  $%  [%gather reviews=(list review) commits=(list commit)]
+  $%  [%gather intents=(list intent) commits=(list commit) reviews=(list review)]
       action
   ==
 --

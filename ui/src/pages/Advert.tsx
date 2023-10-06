@@ -29,7 +29,8 @@ export const Advert = ({ api }: { api: any }) => {
   const [openNewReviewDialog, setOpenNewReviewDialog] = useState(false);
 
   const updateAdvert = ( upd: any) => {
-    setAdvert(upd.find(u => u.hash === hash))      
+    console.log(`Got advert update:`, upd)
+    setAdvert(upd.adverts.find(u => u.hash === hash))      
   }
 
   const updateReports = (upd: any) => {
