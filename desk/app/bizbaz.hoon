@@ -23,7 +23,12 @@
 |_  =bowl:gall
 +*  this     .
     default  ~(. (default-agent this %|) bowl)
-++  on-init   on-init:default
+++  on-init
+  ^-  (quip card _this)
+  ~&  >  "%bizbaz initialized successfully."
+  :_  this
+  :~  [%pass /eyre %arvo %e %connect [~ /apps/bizbaz] %bizbaz]
+  ==
 ++  on-save   !>(state)
 ++  on-load
   |=  old=vase
@@ -49,8 +54,8 @@
             =/  new-advert
               :*  hash=hash
                   sig=(sign:signatures our.bowl now.bowl hash)
-                  when=now.bowl
                   advert-body
+                  when=now.bowl
               ==
             [~ this(adverts [new-advert adverts])]
           %delete
