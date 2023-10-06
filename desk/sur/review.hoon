@@ -57,7 +57,7 @@
 +$  action
   $%  [%intent advert=hash]
       [%commit intent=hash]
-      [%review commit=hash body=review-body]
+      [%review body=review-body]
       [%update review=hash body=review-body]
   ==
 +$  update

@@ -24,7 +24,9 @@ export const Advert = ({ api }: { api: any }) => {
   const { hash } = useParams();
   const [advert, setAdvert] = useState({} as TAdvert);
   const [votes, setVotes] = useState([] as any[]);
+  const [intents, setIntents] = useState([] as any[]);
   const [commits, setCommits] = useState([] as any[]);
+  const [reviews, setReviews] = useState([] as any[]);
   const [openNewAdvertDialog, setOpenNewAdvertDialog] = useState(false);
   const [openNewReviewDialog, setOpenNewReviewDialog] = useState(false);
 
@@ -43,11 +45,24 @@ export const Advert = ({ api }: { api: any }) => {
 
   const updateReviews = (upd: any) => {
     console.log(`Got reviews update:`, upd)
+    const filteredIntents = upd.intents.filter(intent =>
+      intent.body.advert === hash
+    )
+    console.log(`Relevant intents:`, filteredIntents)
+    setIntents(filteredIntents)
+
     const filteredCommits = upd.commits.filter(commit =>
-      commit.advert === hash
+        commit.intent.advert === hash
     )
     console.log(`Relevant commits:`, filteredCommits)
     setCommits(filteredCommits)
+
+    const filteredReviews = upd.reviews.filter(review =>
+      review.commit.intent.advert === hash
+    )
+    console.log(`Relevant reviews:`, filteredReviews)
+    setReviews(filteredReviews)
+
   }
 
   useEffect(() => {
@@ -59,7 +74,7 @@ export const Advert = ({ api }: { api: any }) => {
     init();
   }, []);
 
-  const vote = () => {
+  const upvote = () => {
       api.poke({
         app: 'bizbaz',
         mark: 'vote-action',
@@ -71,14 +86,54 @@ export const Advert = ({ api }: { api: any }) => {
       })
   }
 
-  const commit = () => {
+  const downvote = () => {
+      api.poke({
+        app: 'bizbaz',
+        mark: 'vote-action',
+        json: { 
+          'downvote': { 
+            advert: hash
+          }
+        }
+      })
+  }
+
+  const unvote = () => {
+      api.poke({
+        app: 'bizbaz',
+        mark: 'vote-action',
+        json: { 
+          'unvote': { 
+            advert: hash
+          }
+        }
+      })
+  }
+
+  const intent = () => {
       api.poke({
         app: 'bizbaz',
         mark: 'review-action',
         json: { 
-          'commit': { 
+          'intent': { 
             advert: hash
           }
+        }
+      })
+  }
+
+  const commit = () => {
+      const intent = intents[0]?.hash
+      if (!intent) {
+          console.log(`No intent exists to commit to`)
+          return
+      }
+      console.log(`Committing to intent ${intent}`)
+      api.poke({
+        app: 'bizbaz',
+        mark: 'review-action',
+        json: { 
+          'commit': { intent }
         }
       })
   }
@@ -99,13 +154,28 @@ export const Advert = ({ api }: { api: any }) => {
         Description: {advert.description}
       </Typography>
       <br/>
-      <Button variant="contained" onClick={vote} sx={{ m:2 }}>
-        Vote
+
+      <Button variant="contained" disabled={votes.length !== 0}onClick={upvote} sx={{ m:2 }}>
+        Up Vote
       </Button>
-      <Button variant="contained" onClick={commit} sx={{ m:2 }}>
-        Commit
+
+      <Button variant="contained" disabled={votes.length !== 0}onClick={downvote} sx={{ m:2 }}>
+        Down Vote
       </Button>
-      <Button variant="contained" onClick={()=>setOpenNewReviewDialog(true)} sx={{ m:2 }}>
+
+      <Button variant="contained" disabled={votes.length === 0} onClick={unvote} sx={{ m:2 }}>
+        Un Vote
+      </Button>
+
+      <br/>
+      <Button variant="contained" disabled={intents.length !== 0} onClick={intent} sx={{ m:2 }}>
+        Express Intent to Buy
+      </Button>
+      <Button variant="contained" disabled={intents.length === 0 || commits.length !== 0} onClick={commit} sx={{ m:2 }}>
+        Commit to Sell
+      </Button>
+      <br/>
+      <Button variant="contained" disabled={commits.length === 0} onClick={()=>setOpenNewReviewDialog(true)} sx={{ m:2 }}>
         Review
       </Button>
       <br/>
@@ -115,7 +185,15 @@ export const Advert = ({ api }: { api: any }) => {
       </Typography>
 
       <Typography variant="body1">
-        Commited to by: {commits.map(c => c["client-sig"].ship).join(", ")}
+        Intents to buy by: {intents.map(i => i.client.ship).join(", ")}
+      </Typography>
+
+      <Typography variant="body1">
+        Commitments to sell by: {commits.map(c => c.vendor.ship).join(", ")}
+      </Typography>
+
+      <Typography variant="body1">
+        Reviews by: {reviews.map(r => r.reviewer.ship).join(", ")}
       </Typography>
 
       <Fab color='primary' sx={{
@@ -140,8 +218,8 @@ export const Advert = ({ api }: { api: any }) => {
       /> 
 
       <NewReview
-        advert={hash}
-        reviewee={advert?.sig?.ship || null}
+        commit={commits[0]}
+        reviewee={advert?.vendor?.ship || null}
         open={openNewReviewDialog}
         handleCloseDialog={() => setOpenNewReviewDialog(false)}
         api={api}

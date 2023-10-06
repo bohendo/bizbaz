@@ -16,15 +16,16 @@ export const NewReview = ({
     handleCloseDialog,
     api,
     reviewee,
-    advert
+    commit
 }: {
     editReview?: any;
     open: boolean;
     handleCloseDialog: () => void;
     api: any // TODO: Fix api type
     reviewee: string,
-    advert: string
+    commit: any
 }) => {
+    console.log(`Reviewing commit`, commit)
     const [newReview, setNewReview] = useState({
         score: 3,
         why: "",
@@ -41,11 +42,12 @@ export const NewReview = ({
           mark: 'review-action',
           json: { 
             'review': { 
-              advert: advert,
               body: {
+                commit: commit.hash,
                 reviewee: reviewee,
                 score: newReview.score,
                 why: newReview.why,
+                when: Date.now(),
               }
             }
           }
@@ -83,7 +85,7 @@ export const NewReview = ({
 
             </DialogContent>
             <DialogActions>
-                <Button variant="contained" onClick={postReview}>
+                <Button variant="contained" onClick={postReview} disabled={!commit}>
                     Submit
                 </Button>
             </DialogActions>

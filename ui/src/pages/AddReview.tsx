@@ -5,7 +5,7 @@ export const AddReview = ({
 // TODO: Fix api type
 }: {api: any}) => {
 
-const postReview = () => {
+  const postReview = () => {
     api.poke({
         app: 'bizbaz',
         mark: 'review-action',

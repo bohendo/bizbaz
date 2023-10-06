@@ -116,8 +116,10 @@
               ==
             [~ this(votes [new-vote votes])]
           %unvote
-            :: TODO: find & rm the one w matching hash
-            !! :: [~ this(votes [new-vote votes])]
+            =/  index  (find ~[hash.act] (turn votes |=(vote=vote:vote hash.vote)))
+            ?~  index
+              ~|((weld "No vote with hash " (scow %uv hash.act)) !!)
+            [~ this(votes (oust [(need index) 1] votes))]
       == 
     %review-action
       =/  act  !<(action:review vase)
@@ -159,9 +161,9 @@
               ==
             [~ this(commits [new-commit commits])] :: todo: remove relevant intent from state
           %review
-            =/  index  (find ~[commit.act] (turn commits |=(cmt=commit:review hash.cmt)))
+            =/  index  (find ~[commit.body.act] (turn commits |=(cmt=commit:review hash.cmt)))
             ?~  index
-              ~|((weld "No commit with hash " (scow %uv commit.act)) !!)
+              ~|((weld "No commit with hash " (scow %uv commit.body.act)) !!)
             =/  commit  (snag (need index) commits)
             =/  review-body
               :*  commit=hash.commit
