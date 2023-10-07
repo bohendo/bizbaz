@@ -111,7 +111,7 @@
             =/  hash  (sham vote-body)
             =/  new-vote
               :*  hash
-                  vendor=(sign:signatures our.bowl now.bowl hash)
+                  voter=(sign:signatures our.bowl now.bowl hash)
                   body=vote-body
               ==
             [~ this(votes [new-vote votes])]
@@ -125,7 +125,7 @@
             =/  hash  (sham vote-body)
             =/  new-vote
               :*  hash
-                  vendor=(sign:signatures our.bowl now.bowl hash)
+                  voter=(sign:signatures our.bowl now.bowl hash)
                   body=vote-body
               ==
             [~ this(votes [new-vote votes])]
@@ -259,6 +259,9 @@
             [~ this(adverts +.upd)]  :: todo: don't do this
               %create
             ~&  "%create: new advert received"
+            :: validate that this advert is valid, if not drop it
+            :: if (came from a pal) broadcast to all other pals
+            :: else don't
             [~ this(adverts [+.upd adverts])]
           ==
         ==
@@ -286,3 +289,4 @@
 ++  on-fail  :: runs during certain types of crashes
   on-fail:default
 --
+

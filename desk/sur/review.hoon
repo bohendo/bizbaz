@@ -1,6 +1,5 @@
+/-  *signature
 |%
-+$  hash  @uvH
-+$  signature  [sig=@uvH =ship =life]
 ::
 ::  a client expresses intent to consume the vendor's goods/services
 +$  intent-body  [advert=hash vendor=signature when=@da]

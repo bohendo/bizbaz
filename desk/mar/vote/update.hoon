@@ -1,4 +1,5 @@
 /-  *vote
+/+  signatures
 |_  upd=update
 ++  grow
   |%
@@ -16,12 +17,7 @@
       %-  pairs
       :~ 
         ['hash' s+(scot %uv hash.vote)]
-        :-  'sig'
-        %-  pairs
-        :~  ['sig' s+(scot %uv sig.sig.vote)]
-            ['ship' s+(scot %p ship.sig.vote)]
-            ['life' s+(scot %ud life.sig.vote)]
-        ==
+        ['voter' (to-json:signatures voter.adv)]
         :-  'body'
         %-  pairs
         :~  ['advert' s+(scot %uv advert.body.vote)]

@@ -1,4 +1,5 @@
 /-  *review
+/+  signatures
 |_  upd=update
 ++  grow
   |%
@@ -18,21 +19,11 @@
         |=  int=intent
         %-  pairs
         :~  ['hash' s+(scot %uv hash.int)]
-            :-  'client'
-            %-  pairs
-            :~  ['sig' s+(scot %uv sig.client.int)]
-                ['ship' s+(scot %p ship.client.int)]
-                ['life' s+(scot %ud life.client.int)]
-            ==
+            ['client' (to-json:signatures client.int)]
             :-  'body'
             %-  pairs
             :~  ['advert' s+(scot %uv advert.body.int)]
-                :-  'vendor'
-                %-  pairs
-                :~  ['sig' s+(scot %uv sig.vendor.body.int)]
-                    ['ship' s+(scot %p ship.vendor.body.int)]
-                    ['life' s+(scot %ud life.vendor.body.int)]
-                ==
+                ['vendor' (to-json:signatures vendor.body.int)]
                 ['when' (sect when.body.int)]
             ==
         ==
@@ -44,32 +35,17 @@
         |=  cmt=commit
         %-  pairs
         :~  ['hash' s+(scot %uv hash.cmt)]
-            :-  'vendor'
-            %-  pairs
-            :~  ['sig' s+(scot %uv sig.vendor.cmt)]
-                ['ship' s+(scot %p ship.vendor.cmt)]
-                ['life' s+(scot %ud life.vendor.cmt)]
-            ==
+            ['vendor' (to-json:signatures vendor.cmt)]
             :-  'body'
             %-  pairs
             :~  ['intent' s+(scot %uv intent.body.cmt)]
-                :-  'client'
-                %-  pairs
-                :~  ['sig' s+(scot %uv sig.client.body.cmt)]
-                    ['ship' s+(scot %p ship.client.body.cmt)]
-                    ['life' s+(scot %ud life.client.body.cmt)]
-                ==
+                ['client' (to-json:signatures client.body.cmt)]
                 ['when' (sect when.body.cmt)]
             ==
             :-  'intent'
             %-  pairs
             :~  ['advert' s+(scot %uv advert.intent.cmt)]
-                :-  'vendor'
-                %-  pairs
-                :~  ['sig' s+(scot %uv sig.vendor.intent.cmt)]
-                    ['ship' s+(scot %p ship.vendor.intent.cmt)]
-                    ['life' s+(scot %ud life.vendor.intent.cmt)]
-                ==
+                ['vendor' (to-json:signatures vendor.intent.cmt)]
                 ['when' (sect when.intent.cmt)]
             ==
         ==
@@ -81,12 +57,7 @@
         |=  rev=review
         %-  pairs
         :~  ['hash' s+(scot %uv hash.rev)]
-            :-  'reviewer'
-            %-  pairs
-            :~  ['sig' s+(scot %uv sig.reviewer.rev)]
-                ['ship' s+(scot %p ship.reviewer.rev)]
-                ['life' s+(scot %ud life.reviewer.rev)]
-            ==
+            ['reviewer' (to-json:signatures reviewer.rev)]
             :-  'body'
             %-  pairs
             :~  ['commit' s+(scot %uv commit.body.rev)]
@@ -98,32 +69,17 @@
             :-  'commit'
             %-  pairs
             :~  ['hash' s+(scot %uv hash.commit.rev)]
-                :-  'vendor'
-                %-  pairs
-                :~  ['sig' s+(scot %uv sig.vendor.commit.rev)]
-                    ['ship' s+(scot %p ship.vendor.commit.rev)]
-                    ['life' s+(scot %ud life.vendor.commit.rev)]
-                ==
+                ['vendor' (to-json:signatures vendor.commit.rev)]
                 :-  'body'
                 %-  pairs
                 :~  ['intent' s+(scot %uv intent.body.commit.rev)]
-                    :-  'client'
-                    %-  pairs
-                    :~  ['sig' s+(scot %uv sig.client.body.commit.rev)]
-                        ['ship' s+(scot %p ship.client.body.commit.rev)]
-                        ['life' s+(scot %ud life.client.body.commit.rev)]
-                    ==
+                    ['client' (to-json:signatures client.body.commit.rev)]
                     ['when' (sect when.body.commit.rev)]
                 ==
                 :-  'intent'
                 %-  pairs
                 :~  ['advert' s+(scot %uv advert.intent.commit.rev)]
-                    :-  'vendor'
-                    %-  pairs
-                    :~  ['sig' s+(scot %uv sig.vendor.intent.commit.rev)]
-                        ['ship' s+(scot %p ship.vendor.intent.commit.rev)]
-                        ['life' s+(scot %ud life.vendor.intent.commit.rev)]
-                    ==
+                    ['vendor' (to-json:signatures vendor.intent.commit.rev)]
                     ['when' (sect when.intent.commit.rev)]
                 ==
             ==

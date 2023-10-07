@@ -1,4 +1,5 @@
 /-  *advert
+/+  signatures
 |_  upd=update
 ++  grow
   |%
@@ -17,12 +18,7 @@
       |=  adv=advert
       %-  pairs
       :~  ['hash' s+(scot %uv hash.adv)]
-          :-  'vendor'
-          %-  pairs
-          :~  ['sig' s+(scot %uv ship.vendor.adv)]
-              ['ship' s+(scot %p ship.vendor.adv)]
-              ['life' s+(scot %ud life.vendor.adv)]
-          ==
+          ['vendor' (to-json:signatures vendor.adv)]
           :-  'body'
           %-  pairs
           :~  ['title' s+title.adv]

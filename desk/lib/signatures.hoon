@@ -1,7 +1,5 @@
+/-  *signature
 |%
-+$  signature  [sig=@uvH =ship =life]
-+$  signatures  (set signature)
-+$  hash  @uvH
 ++  jael-scry
   |*  [=mold our=ship desk=term now=time =path]
   .^  mold
@@ -51,4 +49,25 @@
   ?:  (is-signature-valid our i.signature-list hash now)
     $(signature-list t.signature-list)
   %.n
+::
+++  to-json
+  =,  enjs:format
+  |=  sig=signature
+  ^-  json
+  %-  pairs
+  :~  ['sig' s+(scot %uv ship.sig)]
+      ['ship' s+(scot %p ship.sig)]
+      ['life' s+(scot %ud life.sig)]
+  ==
+::
+++  from-json
+  =,  dejs:format
+  |=  jon=json
+  ^-  signature
+  %.  jon
+  %-  ot
+  :~  [%sig (se %uv)]
+      [%ship (se %p)]
+      [%life ni]
+  ==
 --
