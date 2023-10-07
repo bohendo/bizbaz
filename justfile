@@ -5,27 +5,27 @@ start:
 start-ui:
   cd ui && npm run dev
 
-sync: 
-  rm -rf zod/bizbaz
-  cp -rf desk zod/bizbaz
+sync-app ship: 
+  rm -rf {{ship}}/bizbaz
+  cp -rf desk {{ship}}/bizbaz
 
-sync-lib dir: 
-  rm -rf data/zod/{{dir}}
-  cp -rf libs/{{dir}} data/zod/{{dir}}
+sync-lib ship dir: 
+  rm -rf data/{{ship}}/{{dir}}
+  cp -rf libs/{{dir}} data/{{ship}}/{{dir}}
 
-bind-zod:
-  rm -rf zod/bizbaz
-  ln -s $(pwd)/desk zod/bizbaz
+symlink ship:
+  rm -rf {{ship}}/bizbaz
+  ln -s $(pwd)/desk {{ship}}/bizbaz
 
-unbind-zod:
-  rm -rf zod/data
+unsymlink ship:
+  rm -rf {{ship}}/bizbaz
 
-bind-data-zod:
-  mkdir -p ./data/zod/bizbaz
-  sudo mount --bind $(pwd)/desk $(pwd)/data/zod/bizbaz
+bind ship:
+  mkdir -p ./data/{{ship}}/bizbaz
+  sudo mount --bind $(pwd)/desk $(pwd)/data/{{ship}}/bizbaz
 
-unbind-data-zod:
-  sudo umount $(pwd)/data/zod/bizbaz
+unbind ship:
+  sudo umount $(pwd)/data/{{ship}}/bizbaz
 
 code:
   codium .
