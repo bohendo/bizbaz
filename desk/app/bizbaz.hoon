@@ -1,6 +1,7 @@
 /-  advert
 /-  vote
 /-  review
+/-  pals
 /+  signatures
 /+  default-agent, dbug
 |%
@@ -58,7 +59,9 @@
                   vendor=(sign:signatures our.bowl now.bowl hash)
                   advert-body
               ==
-            [~ this(adverts [new-advert adverts])]
+              :_  this(adverts [new-advert adverts])
+              :~  [%give %fact ~[/adverts] %advert-update !>(`update:advert`[%gather [new-advert adverts]])]
+              ==
           %delete
             =/  index  (find ~[advert.act] (turn adverts |=(ad=advert:advert hash.ad)))
             ?~  index
@@ -208,8 +211,54 @@
       ~&  "watching intents & commits & reviews"
       [%give %fact ~ %review-update !>(`update:review`[%gather intents commits reviews])]~
   ==
-++  on-arvo   on-arvo:default
+++  on-arvo
+  |=  [=wire =sign-arvo]
+  ^-  (quip card _this)
+  ?.  ?=([%eyre %bound *] sign-arvo)
+    (on-arvo:default [wire sign-arvo])
+  ?:  accepted.sign-arvo
+    %-  (slog leaf+"/apps/bizbaz bound successfully!" ~)
+    `this
+  %-  (slog leaf+"Binding /apps/bizbaz failed!" ~)
+  `this
 ++  on-leave  on-leave:default
-++  on-agent  on-agent:default
+++  on-agent  
+    |=  [=wire =sign:agent:gall]
+    ^-  (quip card _this)
+    ?+  wire  (on-agent:default wire sign)
+      [%adverts ~]
+      ?+  -.sign  (on-agent:default wire sign)
+        %fact
+        ?+  p.cage.sign  (on-agent:default wire sign)
+          %advert-update
+            :: =/  upd  !<(update:advert q.cage.sign)
+            ~&  !<(update:advert q.cage.sign)
+            :: ?>  ?=(-.upd %gather)
+            ~&  "%gather:  new advert received"
+            `this
+            :: [~ this(adverts adverts.upd)]
+        ==
+      ==
+      :: [%newpals ~]
+      :: ?+  -.sign  `this
+      ::   %fact
+      ::   ?+  p.cage.sign  `this
+      ::       %pals-effect
+      ::     =/  fx  !<(effect:pals q.cage.sign)
+      ::     ?+    -.fx  (on-agent:default wire sign)
+      ::         %meet
+      ::       :_  this ::(adverts adverts.upd)
+      ::       :~  [%pass /bizbaz %agent [+.fx %gather] %watch /bizbaz]
+      ::       ==
+      ::         %part
+      ::       :_  this(adverts adverts.upd)
+      ::       :~  [%pass /bizbaz %agent [+.fx %gather] %leave /bizbaz]
+      ::       ==
+      ::     ==
+      ::   ==
+      :: ==
+    ==
+
+    :: on-agent:default
 ++  on-fail   on-fail:default
 --
