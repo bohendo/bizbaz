@@ -12,9 +12,7 @@
         |=  upd=update:vote
         ^-  json
         ?-    -.upd
-            %upvote  !!
-            %downvote  !!
-            %unvote  !!
+            %vote  !!
             %gather  (parse-votes votes.upd)
         ==
     ::
@@ -49,15 +47,19 @@
     =,  dejs:format
     |%
     ::
-    ++  parse-action  !!
-        :: |=  jon=json
+    ++  parse-action
+        |=  jon=json
         :: ^-  action:vote
-        :: %.  jon
-        :: %-  of
-        :: :~  [%upvote parse-upvote]
-        ::     [%downvote parse-downvote]
-        ::     [%unvote parse-unvote]
-        :: ==
+        %.  jon
+        %-  of
+        :~  [%vote parse-vote]
+        ==
+    ::
+    ++  parse-vote
+        %-  ot
+        :~  advert+(se %uv)
+            choice+(se %tas)
+        ==
     ::
     --
 ::

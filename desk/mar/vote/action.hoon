@@ -1,4 +1,5 @@
 /-  *vote
+/+  vote
 |_  act=action
 ++  grow
   |%
@@ -7,16 +8,7 @@
 ++  grab
   |%
   ++  noun  action
-  ++  json
-    =,  dejs:format
-    |=  jon=json
-    ^-  action
-    %.  jon
-    %-  of
-    :~  [%upvote (ot ~[advert+(se %uv)])]
-        [%downvote (ot ~[hash+(se %uv)])]
-        [%unvote (ot ~[hash+(se %uv)])]
-    ==
+  ++  json  parse-action:from-json:vote
   --
 ++  grad  %noun
 --
