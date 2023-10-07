@@ -25,23 +25,33 @@
 |_  =bowl:gall
 +*  this     .
     default  ~(. (default-agent this %|) bowl)
-++  on-init
+++  on-init  :: runs one time after installing to set up the initial state
   ^-  (quip card _this)
   ~&  >  "%bizbaz initialized successfully."
   :_  this
   :~  [%pass /eyre %arvo %e %connect [~ /apps/bizbaz] %bizbaz]
   ==
-++  on-save   !>(state)
-++  on-load
+++  on-save  :: exports the state before suspending or uninstalling
+  !>(state)  
+++  on-load  :: imports the state after resuming or reinstalling
   |=  old=vase
   ^-  (quip card _this)
   `this(state !<(state-0 old))
-++  on-poke
+++  on-poke  :: handles one-off requests that may change the data
   |=  [=mark =vase]
   ^-  (quip card _this)
+  ?:  ?=(%resubscribe mark)
+    =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
+    ~&  (weld "mutual pals: " (spud (turn ~(tap in pals) |=(pal=ship (scot %p pal)))))
+    :_  this
+    (turn ~(tap in pals) |=(pal=ship [%pass /noun/adverts %agent [pal %bizbaz] %watch /noun/adverts]))
+  ?:  ?=(%syncsubs mark)
+    =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
+    ~&  (weld "mutual pals: " (spud (turn ~(tap in pals) |=(pal=ship (scot %p pal)))))
+    :_  this
+    (turn ~(tap in pals) |=(pal=ship [%give %fact ~[/noun/adverts] %advert-update !>(`update:advert`[%gather adverts])]))
   ?>  |(?=(%advert-action mark) ?=(%vote-action mark) ?=(%review-action mark))
-  ?+  mark
-    !!
+  ?+  mark  !!
     %advert-action
       =/  act  !<(action:advert vase)
       ?-  -.act
@@ -60,7 +70,8 @@
                   advert-body
               ==
               :_  this(adverts [new-advert adverts])
-              :~  [%give %fact ~[/adverts] %advert-update !>(`update:advert`[%gather [new-advert adverts]])]
+              :~  [%give %fact ~[/json/adverts] %advert-update !>(`update:advert`[%gather [new-advert adverts]])]
+                  [%give %fact ~[/noun/adverts] %advert-update !>(`update:advert`[%create new-advert])]
               ==
           %delete
             =/  index  (find ~[advert.act] (turn adverts |=(ad=advert:advert hash.ad)))
@@ -188,19 +199,25 @@
             !! :: [~ this(reviews [review.act reviews])]
       == 
   ==
-++  on-peek
+++  on-peek  :: handles one-off read-only requests
   |=  =path
   ^-  (unit (unit cage))
   ?+  path  (on-peek:default path)
     [%x %review ~]  ``noun+!>(reviews)
   ==
-++  on-watch
+++  on-watch  :: handles subscription requests
   |=  =path
   ^-  (quip card _this)
   :: ?>  |(?=(%reviews path) ?=(%adverts path))
   :: ~&  path
   :_  this
   ?+  path  (on-watch:default path)
+    :: paths for serving noun data to other ships
+    [%noun %adverts ~]
+      =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
+      ?>  (~(has in pals) src.bowl)
+      [%give %fact ~ %advert-update !>(`update:advert`[%gather adverts])]~
+    :: paths for serving json data to the UI
     [%json %adverts ~]
       =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
       ~&  (weld "mutual pals: " (spud (turn ~(tap in pals) |=(pal=ship (scot %p pal)))))
@@ -213,7 +230,7 @@
       ~&  "watching intents & commits & reviews"
       [%give %fact ~ %review-update !>(`update:review`[%gather intents commits reviews])]~
   ==
-++  on-arvo
+++  on-arvo  :: handles responses from vanes
   |=  [=wire =sign-arvo]
   ^-  (quip card _this)
   ?.  ?=([%eyre %bound *] sign-arvo)
@@ -223,22 +240,27 @@
     `this
   %-  (slog leaf+"Binding /apps/bizbaz failed!" ~)
   `this
-++  on-leave  on-leave:default
-++  on-agent  
+++  on-leave  :: handles unsubscription notifications, etc
+  on-leave:default
+++  on-agent  :: handles subscription updates and request acknowledgements from other agents
     |=  [=wire =sign:agent:gall]
     ^-  (quip card _this)
     ?+  wire  (on-agent:default wire sign)
-      [%adverts ~]
+        [%noun %adverts ~]
       ?+  -.sign  (on-agent:default wire sign)
         %fact
         ?+  p.cage.sign  (on-agent:default wire sign)
-          %advert-update
-            :: =/  upd  !<(update:advert q.cage.sign)
-            ~&  !<(update:advert q.cage.sign)
-            :: ?>  ?=(-.upd %gather)
-            ~&  "%gather:  new advert received"
-            `this
-            :: [~ this(adverts adverts.upd)]
+            %advert-update
+          =/  upd  !<(update:advert q.cage.sign)
+          ~&  upd
+          ?+  -.upd  !!
+              %gather
+            ~&  "%gather: new adverts received"
+            [~ this(adverts +.upd)]  :: todo: don't do this
+              %create
+            ~&  "%create: new advert received"
+            [~ this(adverts [+.upd adverts])]
+          ==
         ==
       ==
       :: [%newpals ~]
@@ -261,6 +283,6 @@
       :: ==
     ==
 
-    :: on-agent:default
-++  on-fail   on-fail:default
+++  on-fail  :: runs during certain types of crashes
+  on-fail:default
 --

@@ -10,6 +10,8 @@
   ==
 +$  update
   $%  [%gather adverts=(list advert)]
-      action
+      [%create advert=advert]
+      [%delete advert=hash]
+      [%update old=hash new=advert]
   ==
 --
