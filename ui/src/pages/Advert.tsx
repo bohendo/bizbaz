@@ -67,9 +67,9 @@ export const Advert = ({ api }: { api: any }) => {
 
   useEffect(() => {
     async function init() {
-      api.subscribe( { app: "bizbaz", path: '/adverts', event: updateAdvert } )
-      api.subscribe( { app: "bizbaz", path: '/votes', event: updateVotes } )
-      api.subscribe( { app: "bizbaz", path: '/reviews', event: updateReviews } )
+      api.subscribe( { app: "bizbaz", path: '/json/adverts', event: updateAdvert } )
+      api.subscribe( { app: "bizbaz", path: '/json/votes', event: updateVotes } )
+      api.subscribe( { app: "bizbaz", path: '/json/reviews', event: updateReviews } )
     }
     init();
   }, []);

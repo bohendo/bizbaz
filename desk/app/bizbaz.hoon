@@ -200,14 +200,16 @@
   :: ?>  |(?=(%reviews path) ?=(%adverts path))
   :: ~&  path
   :_  this
-  ?+  path  !!
-    [%adverts ~]
+  ?+  path  (on-watch:default path)
+    [%json %adverts ~]
+      =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
+      ~&  (weld "mutual pals: " (spud (turn ~(tap in pals) |=(pal=ship (scot %p pal)))))
       ~&  "watching adverts"
       [%give %fact ~ %advert-update !>(`update:advert`[%gather adverts])]~
-    [%votes ~]
+    [%json %votes ~]
       ~&  "watching votes"
       [%give %fact ~ %vote-update !>(`update:vote`[%gather votes])]~
-    [%reviews ~]
+    [%json %reviews ~]
       ~&  "watching intents & commits & reviews"
       [%give %fact ~ %review-update !>(`update:review`[%gather intents commits reviews])]~
   ==
