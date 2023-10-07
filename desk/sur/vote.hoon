@@ -2,6 +2,7 @@
 |%
 +$  vote-body  [advert=hash vendor=@p when=@da]  
 +$  vote  [hash=hash voter=signature body=vote-body]
++$  votes  (list vote)
 ::
 +$  action
   $%  [%upvote advert=hash]

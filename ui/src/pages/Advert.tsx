@@ -181,7 +181,7 @@ export const Advert = ({ api }: { api: any }) => {
       <br/>
 
       <Typography variant="body1">
-        Voted by: {votes.map(r => r.sig.ship).join(", ")}
+        Voted by: {votes.map(v => v.voter.ship).join(", ")}
       </Typography>
 
       <Typography variant="body1">

@@ -17,6 +17,7 @@
             %delete  !!
             %gather  (parse-adverts adverts.upd)
         ==
+    ::
     ++  parse-adverts
         |=  advs=adverts:advert
         ^-  json
@@ -43,6 +44,7 @@
             ['description' s+description.body] :: TODO: change to wall?
             ['when' (sect when.body)]
         ==
+    ::
     --
 ::
 ++  from-json
@@ -58,6 +60,7 @@
             [%update parse-update]
             [%delete parse-delete]
         ==
+    ::
     ++  parse-create
         %-  ot
         :~  title+so
@@ -81,5 +84,7 @@
         %-  ot
         :~  hash+(se %uv)
         ==
+    ::
     --
+::
 --
