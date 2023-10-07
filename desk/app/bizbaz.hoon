@@ -101,13 +101,13 @@
       =/  act  !<(action:vote vase)
       ~&  act
       ?-  -.act
-          %upvote
+          %vote
             =/  index  (find ~[advert.act] (turn adverts |=(ad=advert:advert hash.ad)))
             ?~  index
               ~|((weld "No advert with hash " (scow %uv advert.act)) !!)
             =/  ad  (snag (need index) adverts)
             =/  target  ship.vendor.ad
-            =/  vote-body  [advert=advert.act vendor=target when=now.bowl]
+            =/  vote-body  [advert=advert.act vendor=target when=now.bowl choice=choice.act]
             =/  hash  (sham vote-body)
             =/  new-vote
               :*  hash
@@ -115,25 +115,6 @@
                   body=vote-body
               ==
             [~ this(votes [new-vote votes])]
-          %downvote
-            =/  index  (find ~[advert.act] (turn adverts |=(ad=advert:advert hash.ad)))
-            ?~  index
-              ~|((weld "No advert with hash " (scow %uv advert.act)) !!)
-            =/  ad  (snag (need index) adverts)
-            =/  target  ship.vendor.ad
-            =/  vote-body  [advert=advert.act vendor=target when=now.bowl]
-            =/  hash  (sham vote-body)
-            =/  new-vote
-              :*  hash
-                  voter=(sign:signatures our.bowl now.bowl hash)
-                  body=vote-body
-              ==
-            [~ this(votes [new-vote votes])]
-          %unvote
-            =/  index  (find ~[hash.act] (turn votes |=(vote=vote:vote hash.vote)))
-            ?~  index
-              ~|((weld "No vote with hash " (scow %uv hash.act)) !!)
-            [~ this(votes (oust [(need index) 1] votes))]
       == 
     %review-action
       =/  act  !<(action:review vase)
