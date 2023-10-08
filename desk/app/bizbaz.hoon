@@ -29,9 +29,12 @@
 ++  on-init  :: runs one time after installing to set up the initial state
   ^-  (quip card _this)
   ~&  >  "%bizbaz initialized successfully."
+  =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
+  ~&  (weld "mutual pals: " (spud (turn ~(tap in pals) |=(pal=ship (scot %p pal)))))
+  =/  pal-cards  (turn ~(tap in pals) |=(pal=ship [%pass /noun/adverts %agent [pal %bizbaz] %watch /noun/adverts]))
   :_  this
-  :~  [%pass /eyre %arvo %e %connect [~ /apps/bizbaz] %bizbaz]
-  ==
+  (into `(list card)`pal-cards 0 `card`[%pass /eyre %arvo %e %connect [~ /apps/bizbaz] %bizbaz])
+::
 ++  on-save  :: exports the state before suspending or uninstalling
   !>(state)  
 ++  on-load  :: imports the state after resuming or reinstalling
@@ -41,7 +44,7 @@
 ++  on-poke  :: handles one-off requests that may change the data
   |=  [=mark =vase]
   ^-  (quip card _this)
-  ?:  ?=(%resubscribe mark)
+  ?:  ?=(%sub-to-pals mark)
     =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
     ~&  (weld "mutual pals: " (spud (turn ~(tap in pals) |=(pal=ship (scot %p pal)))))
     :_  this
