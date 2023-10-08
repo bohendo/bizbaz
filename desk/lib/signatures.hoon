@@ -19,16 +19,16 @@
   life
 ::
 ++  is-signature-valid
-  |=  [our=ship =signature =hash now=time]
+  |=  [=hash =ship =signature now=time]
   ^-  ?
-  =+  (jael-scry ,lyf=(unit @) our %lyfe now /(scot %p ship.signature))
+  =+  (jael-scry ,lyf=(unit @) ship %lyfe now /(scot %p ship.signature))
   ::  we do not have a public key from ship at this life
   ::
   ?~  lyf  %.y
   ?.  =(u.lyf life.signature)  %.y
   =+  %:  jael-scry
         ,deed=[a=life b=pass c=(unit @uvH)]
-        our  %deed  now  /(scot %p ship.signature)/(scot %ud life.signature)
+        ship  %deed  now  /(scot %p ship.signature)/(scot %ud life.signature)
       ==
   ::  if signature is from a past life, skip validation
   ::  XX: should be visualised on frontend, not great.
@@ -40,13 +40,13 @@
   =(`hash (sure:as.them sig.signature))
 ::
 ++  are-signatures-valid
-  |=  [our=ship =signatures =hash now=time]
+  |=  [=ship =signatures =hash now=time]
   ^-  ?
   =/  signature-list  ~(tap in signatures)
   |-
   ?~  signature-list
     %.y
-  ?:  (is-signature-valid our i.signature-list hash now)
+  ?:  (is-signature-valid hash ship i.signature-list now)
     $(signature-list t.signature-list)
   %.n
 ::

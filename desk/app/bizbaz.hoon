@@ -2,6 +2,7 @@
 /-  vote
 /-  review
 /-  pals
+/+  vote-lib=vote
 /+  signatures
 /+  default-agent, dbug
 |%
@@ -115,11 +116,14 @@
                   voter=(sign:signatures our.bowl now.bowl hash)
                   body=vote-body
               ==
-            =/  existing-vote  (find ~[advert.act src.bowl] (turn votes |=(vote=vote:vote [advert.body.vote ship.voter.vote])))
+            ?>  (validate:vote-lib new-vote)
+            =/  haystack  (reel votes |:([cur=new-vote cum=`(list @)`~] [`@`advert.body.cur `@`ship.voter.cur cum]))
+            =/  existing-vote  (find ~[advert.act ship.voter.new-vote] haystack)
             ?~  existing-vote
-              ~&  "did not find existing vote"  !!
-            ~&  existing-vote
-            [~ this(votes [new-vote votes])]
+              ~&  "did not find existing vote, adding a new one"
+              [~ this(votes [new-vote votes])]
+            ~&  "found an existing vote, updating it"
+            [~ this(votes (snap votes (need existing-vote) new-vote))]
       == 
     %review-action
       =/  act  !<(action:review vase)
@@ -275,4 +279,3 @@
 ++  on-fail  :: runs during certain types of crashes
   on-fail:default
 --
-
