@@ -132,11 +132,11 @@ export const Advert = ({ api }: { api: any }) => {
       </Typography>
       <br/>
 
-      <Button variant="contained" disabled={votes.length !== 0}onClick={() => vote("up")} sx={{ m:2 }}>
+      <Button variant="contained" disabled={votes.length === 1 && votes[0].body.choice === "up"}onClick={() => vote("up")} sx={{ m:2 }}>
         Up Vote
       </Button>
 
-      <Button variant="contained" disabled={votes.length !== 0}onClick={() => vote("down")} sx={{ m:2 }}>
+      <Button variant="contained" disabled={votes.length === 1 && votes[0].body.choice === "down"}onClick={() => vote("down")} sx={{ m:2 }}>
         Down Vote
       </Button>
 

@@ -46,6 +46,7 @@
         %-  pairs
         :~  ['advert' s+(scot %uv advert.body)]
             ['vendor' s+(scot %p vendor.body)]
+            ['choice' s+choice.body]
             ['when' (sect when.body)]
         ==
     ::

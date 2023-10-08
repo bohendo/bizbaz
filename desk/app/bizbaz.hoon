@@ -117,12 +117,19 @@
                   body=vote-body
               ==
             ?>  (validate:vote-lib new-vote)
+            ~&  new-vote
             =/  haystack  (reel votes |:([cur=new-vote cum=`(list @)`~] [`@`advert.body.cur `@`ship.voter.cur cum]))
             =/  existing-vote  (find ~[advert.act ship.voter.new-vote] haystack)
             ?~  existing-vote
               ~&  "did not find existing vote, adding a new one"
+              ?:  ?=(%un choice.body.new-vote)
+                ~&  "wait this is a new unvote, that doesn't make sense"
+                !!
               [~ this(votes [new-vote votes])]
             ~&  "found an existing vote, updating it"
+            ?:  ?=(%un choice.body.new-vote)
+              ~&  "removing unvote"
+              [~ this(votes (oust [(need existing-vote) 1] votes))]
             [~ this(votes (snap votes (need existing-vote) new-vote))]
       == 
     %review-action
@@ -253,6 +260,12 @@
             :: if (came from a pal) broadcast to all other pals
             :: else don't
             [~ this(adverts [+.upd adverts])]
+            ::   %update
+            :: ~&  "%update: replacemet advert received"
+            :: !!
+            ::   %delete
+            :: ~&  "%delete: removing old advert"
+            :: !!
           ==
         ==
       ==
