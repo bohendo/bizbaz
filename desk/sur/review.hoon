@@ -4,6 +4,7 @@
 ::  a client expresses intent to consume the vendor's goods/services
 +$  intent-body  [advert=hash vendor=signature when=@da]
 +$  intent  [=hash client=signature body=intent-body]
++$  intents  (list intent)
 ::  an intent is valid if:
 ::  - the advert hash matches a known, valid advert
 ::  - hash.intent matches sham(intent-body)
@@ -21,6 +22,7 @@
 ::  a vendor commits to to producing goods/services for the client
 +$  commit-body  [intent=hash client=signature when=@da]
 +$  commit  [=hash vendor=signature body=commit-body intent=intent-body]
++$  commits  (list commit)
 ::  a commit is valid if:
 ::  - the intent hash matches to a known, valid intent
 ::  - hash.commit matches sham(commit-body)
@@ -40,6 +42,7 @@
 ::  either the vendor or the client submits a review of the other party
 +$  review-body  [commit=hash reviewee=ship score=@ud why=@t when=@da]
 +$  review  [=hash reviewer=signature body=review-body commit=commit]
++$  reviews  (list review)
 ::  a review is valid if:
 ::  - the commit hash matches a known, valid commit
 ::  - hash.review matches sham(review-body)
@@ -60,7 +63,7 @@
       [%update review=hash body=review-body]
   ==
 +$  update
-  $%  [%gather intents=(list intent) commits=(list commit) reviews=(list review)]
+  $%  [%gather intents=intents commits=commits reviews=reviews]
       action
   ==
 --
