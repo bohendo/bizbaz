@@ -74,37 +74,14 @@ export const Advert = ({ api }: { api: any }) => {
     init();
   }, []);
 
-  const upvote = () => {
+  const vote = (choice: string) => {
       api.poke({
         app: 'bizbaz',
         mark: 'vote-action',
         json: { 
-          'upvote': { 
-            advert: hash
-          }
-        }
-      })
-  }
-
-  const downvote = () => {
-      api.poke({
-        app: 'bizbaz',
-        mark: 'vote-action',
-        json: { 
-          'downvote': { 
-            advert: hash
-          }
-        }
-      })
-  }
-
-  const unvote = () => {
-      api.poke({
-        app: 'bizbaz',
-        mark: 'vote-action',
-        json: { 
-          'unvote': { 
-            advert: hash
+          'vote': { 
+            advert: hash,
+            choice: choice
           }
         }
       })
@@ -155,15 +132,15 @@ export const Advert = ({ api }: { api: any }) => {
       </Typography>
       <br/>
 
-      <Button variant="contained" disabled={votes.length !== 0}onClick={upvote} sx={{ m:2 }}>
+      <Button variant="contained" disabled={votes.length !== 0}onClick={() => vote("up")} sx={{ m:2 }}>
         Up Vote
       </Button>
 
-      <Button variant="contained" disabled={votes.length !== 0}onClick={downvote} sx={{ m:2 }}>
+      <Button variant="contained" disabled={votes.length !== 0}onClick={() => vote("down")} sx={{ m:2 }}>
         Down Vote
       </Button>
 
-      <Button variant="contained" disabled={votes.length === 0} onClick={unvote} sx={{ m:2 }}>
+      <Button variant="contained" disabled={votes.length === 0} onClick={() => vote("un")} sx={{ m:2 }}>
         Un Vote
       </Button>
 

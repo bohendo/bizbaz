@@ -108,12 +108,17 @@
             =/  ad  (snag (need index) adverts)
             =/  target  ship.vendor.ad
             =/  vote-body  [advert=advert.act vendor=target when=now.bowl choice=choice.act]
+            :: check if user has already voted on the advert and update if so else add new vote
             =/  hash  (sham vote-body)
             =/  new-vote
               :*  hash
                   voter=(sign:signatures our.bowl now.bowl hash)
                   body=vote-body
               ==
+            =/  existing-vote  (find ~[advert.act src.bowl] (turn votes |=(vote=vote:vote [advert.body.vote ship.voter.vote])))
+            ?~  existing-vote
+              ~&  "did not find existing vote"  !!
+            ~&  existing-vote
             [~ this(votes [new-vote votes])]
       == 
     %review-action
