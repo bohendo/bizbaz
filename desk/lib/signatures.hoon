@@ -21,9 +21,10 @@
 ++  is-signature-valid
   |=  [=hash =ship =signature now=time]
   ^-  ?
+  ::  ~&  (weld (weld (weld "validating signature by " (scow %p ship)) " on ") (scow %da now))
   =+  (jael-scry ,lyf=(unit @) ship %lyfe now /(scot %p ship.signature))
-  ::  we do not have a public key from ship at this life
   ::
+  ::  we do not have a public key from ship at this life
   ?~  lyf  %.y
   ?.  =(u.lyf life.signature)  %.y
   =+  %:  jael-scry

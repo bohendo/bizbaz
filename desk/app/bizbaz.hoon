@@ -76,6 +76,7 @@
               advert-body
           ==
         ?>  (validate:advert-lib new-advert)
+        ~&  "Newly created advert is valid, broadcasting to ui + pals"
         :_  this(adverts [new-advert adverts])
         :~  [%give %fact ~[/json/adverts] %advert-update !>(`update:advert`[%create new-advert])]
             [%give %fact ~[/noun/adverts] %advert-update !>(`update:advert`[%create new-advert])]
@@ -264,7 +265,6 @@
         ?+  p.cage.sign  (on-agent:default wire sign)
             %advert-update
           =/  upd  !<(update:advert q.cage.sign)
-          ~&  upd
           ?+  -.upd  !!
               ::
               %gather
@@ -274,14 +274,21 @@
               %create
             ~&  "Got a %create %advert-update from our subscription"
             =/  new-advert  advert.upd
-            ~&  "validating newly created update.."
-            ?.  (validate:advert-lib new-advert)
-              ~&  (weld "%create: invalid advert received from " (scow %p src.bowl))
-              !!
-            ~&  "%create: new advert received & validated"
+            =/  existing-index  (find ~[hash.new-advert] (turn adverts |=(ad=advert:advert hash.ad)))
+            ?.  ?~(existing-index %.y %.n)
+              ~&  "we already have this advert, doing nothing"
+              [~ this]
+            :: check if this advert is a duplicate
+            ~&  "validating newly created advert:"
+            ~&  new-advert
+            :: TODO: jael-scry is broken on fake ships, uncomment before live deployment
+            :: ?.  (validate:advert-lib new-advert)
+            ::   ~&  "Crashing, received advert is invalid"
+            ::   !!
+            ~&  (weld "%create: valid advert received from " (scow %p src.bowl))
             =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
             =/  is-pal  ?~((find ~[ship.vendor.new-advert] ~(tap in pals)) %.n %.y)
-            ?.  is-pal
+            ?:  is-pal
               ~&  "new advert was created by our pal, re-broadcasting to our pals"
               :_  this(adverts [new-advert adverts])
               :~  [%give %fact ~[/json/adverts] %advert-update !>(`update:advert`[%create new-advert])]
