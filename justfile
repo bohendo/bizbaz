@@ -14,11 +14,11 @@ sync-lib ship dir:
   cp -rf libs/{{dir}} data/{{ship}}/{{dir}}
 
 symlink ship:
-  rm -rf {{ship}}/bizbaz
-  ln -s $(pwd)/desk {{ship}}/bizbaz
+  rm -rf data/{{ship}}/bizbaz
+  ln -s $(pwd)/desk data/{{ship}}/bizbaz
 
 unsymlink ship:
-  rm -rf {{ship}}/bizbaz
+  rm -rf data/{{ship}}/bizbaz
 
 bind ship:
   mkdir -p ./data/{{ship}}/bizbaz

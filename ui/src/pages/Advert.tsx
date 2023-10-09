@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 // Pages
 import { NewAdvert } from "../pages/NewAdvert";
@@ -22,6 +22,7 @@ import EditIcon from '@mui/icons-material/Edit';
 export const Advert = ({ api }: { api: any }) => {
   const theme = useTheme();
   const { hash } = useParams();
+  const navigate = useNavigate();
   const [advert, setAdvert] = useState({} as TAdvert);
   const [votes, setVotes] = useState([] as any[]);
   const [intents, setIntents] = useState([] as any[]);
@@ -32,7 +33,14 @@ export const Advert = ({ api }: { api: any }) => {
 
   const updateAdvert = ( upd: any) => {
     console.log(`Got advert update:`, upd)
-    setAdvert(upd.adverts.find(u => u.hash === hash))      
+
+    if (upd.gather) {
+      setAdvert(upd.gather.adverts.find(u => u.hash === hash))      
+    } else if (upd.update) {
+      navigate(`advert/${upd.update.update.new.hash}`)
+    } else {
+      console.log(`Got unknown advert update:`, upd)
+    }
   }
 
   const updateVotes = (upd: any) => {
@@ -118,17 +126,20 @@ export const Advert = ({ api }: { api: any }) => {
   if (advert === undefined) {
     // TODO: create error 404 not found page
     return <div> Advert does not exist </div>
-  } else if (advert) {
+  } else if (advert.body) {
     return (
     <Paper variant="outlined" sx={{ p: 8, m: 8 }}>
       <Typography variant="h2">
-        Advert ...{hash.split(".")[5]}
+        {advert.body.title}
+      </Typography>
+      <Typography variant="caption">
+        Posted by: {advert.vendor.ship}
       </Typography>
       <Typography variant="h5">
-        Tags: {advert.tags?.join(", ")}
+        Tags: {advert.body.tags?.join(", ")}
       </Typography>
       <Typography variant="body1">
-        Description: {advert.description}
+        Description: {advert.body.description}
       </Typography>
       <br/>
 
@@ -183,11 +194,14 @@ export const Advert = ({ api }: { api: any }) => {
 
       <NewAdvert
         editAdvert={{
-          title: advert.title,
           hash: advert.hash,
-          tags: advert.tags,
-          description: advert.description,
-          cover: advert.cover
+          body: {
+            title: advert.body.title,
+            tags: advert.body.tags,
+            description: advert.body.description,
+            cover: advert.body.cover,
+            when: Date.now()
+          }
         }}
         edit={true}
         open={openNewAdvertDialog} handleCloseDialog={() => setOpenNewAdvertDialog(false)}
@@ -204,6 +218,6 @@ export const Advert = ({ api }: { api: any }) => {
 
     </Paper>
   )} else return (
-    <CircularProgress color="inherit" />
+    <CircularProgress color="inherit" sx={{margin: theme.spacing(16)}} />
   )
 }
