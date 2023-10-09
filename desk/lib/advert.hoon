@@ -2,7 +2,15 @@
 /+  signatures
 |% 
 ::
-++  validate  !!
+++  validate
+    |=  advert=advert:advert
+    ^-  @f
+    =/  true-hash  (sham body.advert)
+    ?.  =(hash.advert true-hash)
+      %.n
+    ?.  (is-signature-valid:signatures [hash.advert ship.vendor.advert vendor.advert when.body.advert])
+      %.n
+    %.y
 ::
 ++  to-json
     =,  enjs:format
@@ -12,10 +20,19 @@
         |=  upd=update:advert
         ^-  json
         ?-    -.upd
-            %create  !!
-            %update  !!
-            %delete  !!
-            %gather  (parse-adverts adverts.upd)
+            %create  (frond 'create' (frond 'advert' (parse-advert advert.upd)))
+            %update  (frond 'update' (en-update +.upd))
+            %delete  (frond 'delete' (frond 'advert' (parse-hash advert.upd)))
+            %gather  (frond 'gather' (parse-adverts adverts.upd))
+        ==
+    ::
+    ++  en-update
+        |=  [old=hash:signatures new=advert:advert]
+        ^-  json
+        %+  frond  'update'
+        %-  pairs
+        :~  ['old' (parse-hash old)]
+            ['new' (parse-advert new)]
         ==
     ::
     ++  parse-adverts
@@ -44,6 +61,10 @@
             ['description' s+description.body] :: TODO: change to wall?
             ['when' (sect when.body)]
         ==
+    ::
+    ++  parse-hash
+        |=  hash=hash:signatures
+        s+(scot %uv hash)
     ::
     --
 ::

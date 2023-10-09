@@ -9,9 +9,9 @@
       [%delete advert=hash]
   ==
 +$  update
-  $%  [%gather adverts=adverts]
-      [%create advert=advert]
+  $%  [%create advert=advert]
       [%update old=hash new=advert]
       [%delete advert=hash]
+      [%gather adverts=adverts]
   ==
 --

@@ -3,6 +3,7 @@
 /-  review
 /-  pals
 /+  vote-lib=vote
+/+  advert-lib=advert
 /+  signatures
 /+  default-agent, dbug
 |%
@@ -10,7 +11,7 @@
   $%  state-0
   ==
 +$  state-0
-  $:  %0
+  $:  %0 :: todo: split adverts into myAdverts w sigs & palAdverts where the sigs are validated and then dropped
       adverts=(list advert:advert)
       votes=(list vote:vote)
       intents=(list intent:review)
@@ -59,47 +60,58 @@
     %advert-action
       =/  act  !<(action:advert vase)
       ?-  -.act
+          ::
           %create 
-            =/  advert-body
-              :*  title=title.body.act
-                  cover=cover.body.act
-                  tags=`(list @tas)`tags.body.act
-                  description=description.body.act
-                  when=now.bowl
-              ==
-            =/  hash  (sham advert-body)
-            =/  new-advert
-              :*  hash=hash
-                  vendor=(sign:signatures our.bowl now.bowl hash)
-                  advert-body
-              ==
-              :_  this(adverts [new-advert adverts])
-              :~  [%give %fact ~[/json/adverts] %advert-update !>(`update:advert`[%gather [new-advert adverts]])]
-                  [%give %fact ~[/noun/adverts] %advert-update !>(`update:advert`[%create new-advert])]
-              ==
-          %delete
-            =/  index  (find ~[advert.act] (turn adverts |=(ad=advert:advert hash.ad)))
-            ?~  index
-              ~|((weld "No advert with hash " (scow %uv advert.act)) !!)
-            [~ this(adverts (oust [(need index) 1] adverts))]
+        =/  advert-body
+          :*  title=title.body.act
+              cover=cover.body.act
+              tags=`(list @tas)`tags.body.act
+              description=description.body.act
+              when=now.bowl
+          ==
+        =/  hash  (sham advert-body)
+        =/  new-advert
+          :*  hash=hash
+              vendor=(sign:signatures our.bowl now.bowl hash)
+              advert-body
+          ==
+        ?>  (validate:advert-lib new-advert)
+        :_  this(adverts [new-advert adverts])
+        :~  [%give %fact ~[/json/adverts] %advert-update !>(`update:advert`[%create new-advert])]
+            [%give %fact ~[/noun/adverts] %advert-update !>(`update:advert`[%create new-advert])]
+        ==
+          ::
           %update
-            =/  index  (find ~[advert.act] (turn adverts |=(ad=advert:advert hash.ad)))
-            ?~  index
-              ~|((weld "No advert with hash " (scow %uv advert.act)) !!)
-            =/  advert-body
-              :*  title=title.body.act
-                  cover=cover.body.act
-                  tags=`(list @tas)`tags.body.act
-                  description=description.body.act
-                  when=now.bowl
-              ==
-            =/  hash  (sham advert-body)
-            =/  new-advert
-              :*  hash=hash
-                  vendor=(sign:signatures our.bowl now.bowl hash)
-                  advert-body
-              ==
-            [~ this(adverts (snap adverts (need index) new-advert))]
+        =/  index  (find ~[advert.act] (turn adverts |=(ad=advert:advert hash.ad)))
+        ?~  index
+          ~|((weld "No advert with hash " (scow %uv advert.act)) !!)
+        =/  advert-body
+          :*  title=title.body.act
+              cover=cover.body.act
+              tags=`(list @tas)`tags.body.act
+              description=description.body.act
+              when=now.bowl
+          ==
+        =/  hash  (sham advert-body)
+        =/  new-advert
+          :*  hash=hash
+              vendor=(sign:signatures our.bowl now.bowl hash)
+              advert-body
+          ==
+        ?>  (validate:advert-lib new-advert)
+        :_  this(adverts (snap adverts (need index) new-advert))
+        :~  [%give %fact ~[/json/adverts] %advert-update !>(`update:advert`[%update advert.act new-advert])]
+            [%give %fact ~[/noun/adverts] %advert-update !>(`update:advert`[%update advert.act new-advert])]
+        ==
+          ::
+          %delete
+        =/  index  (find ~[advert.act] (turn adverts |=(ad=advert:advert hash.ad)))
+        ?~  index
+          ~|((weld "No advert with hash " (scow %uv advert.act)) !!)
+        :_  this(adverts (oust [(need index) 1] adverts))
+        :~  [%give %fact ~[/json/adverts] %advert-update !>(`update:advert`[%delete advert.act])]
+            [%give %fact ~[/noun/adverts] %advert-update !>(`update:advert`[%delete advert.act])]
+        ==
       == 
     %vote-action
       =/  act  !<(action:vote vase)
@@ -255,14 +267,26 @@
           ~&  upd
           ?+  -.upd  !!
               %gather
-            ~&  "%gather: new adverts received"
+            ~&  "%gather: all adverts shared"
             [~ this(adverts +.upd)]  :: todo: don't do this
               %create
-            ~&  "%create: new advert received"
-            :: validate that this advert is valid, if not drop it
-            :: if (came from a pal) broadcast to all other pals
-            :: else don't
-            [~ this(adverts [+.upd adverts])]
+            =/  new-advert  advert.upd
+            ?.  (validate:advert-lib new-advert)
+              ~&  (weld "%create: invalid advert received from " (scow %p src.bowl))
+              !!
+            ~&  "%create: new advert received & validated"
+            =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
+            =/  is-pal  ?~((find ~[src.bowl] ~(tap in pals)) %.n %.y)
+            ?.  is-pal
+              ~&  "new advert came from our pal, re-broadcasting to our pals"
+              :_  this(adverts [new-advert adverts])
+              :~  [%give %fact ~[/json/adverts] %advert-update !>(`update:advert`[%create new-advert])]
+                  [%give %fact ~[/noun/adverts] %advert-update !>(`update:advert`[%create new-advert])]
+              ==
+            ~&  "new advert did NOT come from our pal, not re-broadcasting"
+            :_  this(adverts [new-advert adverts])
+            :~  [%give %fact ~[/json/adverts] %advert-update !>(`update:advert`[%create new-advert])]
+            ==
             ::   %update
             :: ~&  "%update: replacemet advert received"
             :: !!

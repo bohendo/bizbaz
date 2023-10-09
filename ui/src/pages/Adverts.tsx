@@ -28,10 +28,17 @@ export const Adverts = ({
   const theme = useTheme();
   const [adverts, setAdverts] = useState([]);
 
+  console.log(`Rendering ${adverts.length} adverts`)
 
   const handleUpdate = ( upd: any) => {
-    console.log(`Got new adverts:`, upd.adverts)
-    setAdverts(upd.adverts || [])      
+    console.log(`Got advert update:`, upd)
+    if (upd.gather) {
+      setAdverts(upd.gather.adverts || [])
+    } else if (upd.create) {
+      setAdverts((oldAdverts) => [upd.create.advert, ...oldAdverts])
+    } else {
+      console.log(`Got unknown advert update:`, upd)
+    }
   }
 
   useEffect(() => {
