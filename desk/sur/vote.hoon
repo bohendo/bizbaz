@@ -26,7 +26,7 @@
   ==
 +$  update
   $%  [%gather votes=(list vote)]
-      action
+      [%vote vote=vote]
   ==
 --
 

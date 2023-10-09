@@ -31,8 +31,8 @@
   ~&  >  "%bizbaz initialized successfully."
   =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
   ~&  (weld "mutual pals: " (spud (turn ~(tap in pals) |=(pal=ship (scot %p pal)))))
-  =/  advert-subs  (turn ~(tap in pals) |=(pal=ship (get-sub-card:advert-lib pal)))
-  =/  vote-subs  (turn ~(tap in pals) |=(pal=ship (get-sub-card:vote-lib pal)))
+  =/  advert-subs  (turn ~(tap in pals) |=(pal=ship (sub-card:advert-lib pal)))
+  =/  vote-subs  (turn ~(tap in pals) |=(pal=ship (sub-card:vote-lib pal)))
   :_  this
   %+  weld  advert-subs
   %+  weld  vote-subs
@@ -50,8 +50,8 @@
   ?:  ?=(%sub-to-pals mark)
     =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
     ~&  (weld "Subscribing to mutual pals: " (spud (turn ~(tap in pals) |=(pal=ship (scot %p pal)))))
-    =/  advert-subs  (turn ~(tap in pals) |=(pal=ship (get-sub-card:advert-lib pal)))
-    =/  vote-subs  (turn ~(tap in pals) |=(pal=ship (get-sub-card:vote-lib pal)))
+    =/  advert-subs  (turn ~(tap in pals) |=(pal=ship (sub-card:advert-lib pal)))
+    =/  vote-subs  (turn ~(tap in pals) |=(pal=ship (sub-card:vote-lib pal)))
     :_  this
     %+  weld
         advert-subs
@@ -73,9 +73,7 @@
         =/  new-advert  ((build-advert:advert-lib bowl) req.act)
         ::  ~&  "Created new advert, broadcasting to ui + pals"
         :_  this(adverts [new-advert adverts])
-        :~  [%give %fact ~[/json/adverts] %advert-update !>(`update:advert`[%create new-advert])]
-            [%give %fact ~[/noun/adverts] %advert-update !>(`update:advert`[%create new-advert])]
-        ==
+        (pub-card:advert-lib `update:advert`[%create new-advert])
           ::
       %update
         =/  index  ((get-advert-index:advert-lib adverts) advert.act)
@@ -83,41 +81,27 @@
           ~|((weld "No advert with hash " (scow %uv advert.act)) !!)
         =/  new-advert  ((build-advert:advert-lib bowl) req.act)
         :_  this(adverts (snap adverts (need index) new-advert))
-        :~  [%give %fact ~[/json/adverts] %advert-update !>(`update:advert`[%update advert.act new-advert])]
-            [%give %fact ~[/noun/adverts] %advert-update !>(`update:advert`[%update advert.act new-advert])]
-        ==
+        (pub-card:advert-lib `update:advert`[%update advert.act new-advert])
           ::
       %delete
         =/  index  ((get-advert-index:advert-lib adverts) advert.act)
         ?~  index
           ~|((weld "No advert with hash " (scow %uv advert.act)) !!)
         :_  this(adverts (oust [(need index) 1] adverts))
-        :~  [%give %fact ~[/json/adverts] %advert-update !>(`update:advert`[%delete advert.act])]
-            [%give %fact ~[/noun/adverts] %advert-update !>(`update:advert`[%delete advert.act])]
-        ==
+        (pub-card:advert-lib `update:advert`[%delete advert.act])
       == 
     %vote-action
       =/  act  !<(action:vote vase)
       ~&  act
       ?-  -.act
           %vote
-            =/  index  ((get-advert-index:advert-lib adverts) advert.req.act)
-            ?~  index
+            =/  adv-index  ((get-advert-index:advert-lib adverts) advert.req.act)
+            ?~  adv-index
               ~|((weld "No advert with hash " (scow %uv advert.req.act)) !!)
             =/  new-vote  ((build-vote:vote-lib bowl) req.act)
-            :: ~&  new-vote
-            =/  existing-vote  (((get-vote-index-by-advert:vote-lib bowl) votes) advert.req.act)
-            ?~  existing-vote
-              ~&  "did not find existing vote, adding a new one"
-              ?:  ?=(%un choice.body.new-vote)
-                ~&  "wait this is a new unvote, that doesn't make sense"
-                !!
-              [~ this(votes [new-vote votes])]
-            ~&  "found an existing vote, updating it"
-            ?:  ?=(%un choice.body.new-vote)
-              ~&  "removing unvote"
-              [~ this(votes (oust [(need existing-vote) 1] votes))]
-            [~ this(votes (snap votes (need existing-vote) new-vote))]
+            =/  new-votes  ((upsert-vote:vote-lib votes) new-vote)
+            :_  this(votes new-votes)
+            (pub-card:vote-lib `update:vote`[%vote new-vote])
       == 
     %review-action
       =/  act  !<(action:review vase)
@@ -333,13 +317,40 @@
         ?+  p.cage.sign  (on-agent:default wire sign)
             %vote-update
           =/  upd  !<(update:vote q.cage.sign)
-          ?+  -.upd  !!
+          ?-  -.upd
               ::
               %gather
             =/  new-votes  (skip votes.upd (vote-exists:vote-lib votes))
             ~&  (log-gather:utils [got=(lent votes.upd) new=(lent new-votes) from=src.bowl type="vote"])
             [~ this(votes (weld new-votes votes))]
               ::
+              %vote
+            ~&  "Got a %create %vote-update from our subscription"
+            =/  new-vote  vote.upd
+            ~&  "validating newly received vote:"
+            =/  adv-index  ((get-advert-index:advert-lib adverts) advert.body.new-vote)
+            ?~  adv-index
+              ~|((weld "No advert with hash " (scow %uv advert.body.new-vote)) !!)
+            ~&  new-vote
+            :: TODO: jael-scry is broken on fake ships, uncomment before live deployment
+            :: ?.  (validate:vote-lib new-vote)
+            ::   ~&  "Crashing, received vote is invalid"
+            ::   !!
+            ~&  (weld "%vote: valid vote received from " (scow %p src.bowl))
+            =/  new-votes  ((upsert-vote:vote-lib votes) new-vote)
+            =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
+            =/  is-pal  ?~((find ~[ship.voter.new-vote] ~(tap in pals)) %.n %.y)
+            :: TODO: upsert
+            ?:  is-pal
+              ~&  "new vote was created by our pal, re-broadcasting to our pals"
+              :_  this(votes new-votes)
+              :~  [%give %fact ~[/json/votes] %vote-update !>(`update:vote`[%vote new-vote])]
+                  [%give %fact ~[/noun/votes] %vote-update !>(`update:vote`[%vote new-vote])]
+              ==
+            ~&  "new vote was NOT created by our pal, not re-broadcasting"
+            :_  this(votes new-votes)
+            :~  [%give %fact ~[/json/votes] %vote-update !>(`update:vote`[%vote new-vote])]
+            ==
           ==
         ==
       ==
