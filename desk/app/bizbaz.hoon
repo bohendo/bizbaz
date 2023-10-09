@@ -97,11 +97,9 @@
             =/  index  ((get-advert-index:advert-lib adverts) advert.req.act)
             ?~  index
               ~|((weld "No advert with hash " (scow %uv advert.req.act)) !!)
-            =/  ad  (snag (need index) adverts)
             =/  new-vote  ((build-vote:vote-lib bowl) req.act)
-            ~&  new-vote
-            =/  haystack  (reel votes |:([cur=new-vote cum=`(list @)`~] [`@`advert.body.cur `@`ship.voter.cur cum]))
-            =/  existing-vote  (find ~[advert.req.act ship.voter.new-vote] haystack)
+            :: ~&  new-vote
+            =/  existing-vote  (((get-vote-index-by-advert:vote-lib bowl) votes) advert.req.act)
             ?~  existing-vote
               ~&  "did not find existing vote, adding a new one"
               ?:  ?=(%un choice.body.new-vote)

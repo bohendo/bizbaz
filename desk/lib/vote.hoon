@@ -2,15 +2,26 @@
 /+  signatures
 |% 
 ::
+++  get-vote-index-by-advert
+    |=  =bowl:gall
+    |=  votes=votes:vote
+    |=  advert=hash:signatures
+    ^-  (unit @ud)
+    :: get a flat list of pairs of [advert voter]
+    =/  haystack  (reel votes |:([cur=*vote:vote cum=`(list @)`~] [`@`advert.body.cur `@`ship.voter.cur cum]))
+    %+  find
+      ~[advert our.bowl]
+      haystack
+::
 ++  vote-exists
     |=  votes=votes:vote
     |=  vote=vote:vote
     ^-  ?
-    ?~  ((get-vote-index votes) hash.vote)
+    ?~  ((get-vote-index-by-hash votes) hash.vote)
       %.n
     %.y
 ::
-++  get-vote-index
+++  get-vote-index-by-hash
     |=  votes=votes:vote
     |=  hash=hash:signatures
     ^-  (unit @ud)
