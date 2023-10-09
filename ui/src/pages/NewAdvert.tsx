@@ -73,7 +73,6 @@ export const NewAdvert = ({
         if (validation.hasError) return;
         const body = {
           ...newAdvert.body,
-          when: Date.now(),
         };
 
         if (edit) {
