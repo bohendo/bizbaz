@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 // Pages
 import { NewAdvert } from "../pages/NewAdvert";
@@ -22,6 +22,7 @@ import EditIcon from '@mui/icons-material/Edit';
 export const Advert = ({ api }: { api: any }) => {
   const theme = useTheme();
   const { hash } = useParams();
+  const navigate = useNavigate();
   const [advert, setAdvert] = useState({} as TAdvert);
   const [votes, setVotes] = useState([] as any[]);
   const [intents, setIntents] = useState([] as any[]);
@@ -32,7 +33,14 @@ export const Advert = ({ api }: { api: any }) => {
 
   const updateAdvert = ( upd: any) => {
     console.log(`Got advert update:`, upd)
-    setAdvert(upd.gather.adverts.find(u => u.hash === hash))      
+
+    if (upd.gather) {
+      setAdvert(upd.gather.adverts.find(u => u.hash === hash))      
+    } else if (upd.update) {
+      navigate(`advert/${upd.update.update.new.hash}`)
+    } else {
+      console.log(`Got unknown advert update:`, upd)
+    }
   }
 
   const updateVotes = (upd: any) => {
@@ -184,7 +192,6 @@ export const Advert = ({ api }: { api: any }) => {
         <EditIcon />
       </Fab>
 
-      {console.log(advert.hash)}
       <NewAdvert
         editAdvert={{
           hash: advert.hash,
