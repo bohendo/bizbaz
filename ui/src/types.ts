@@ -8,20 +8,25 @@ export type TAdvertValidation = {
     }
 }
 
-export type TNewAdvert = {
-    hash?: string;
-    cover: string;
-    description: string;
-    tags: Array<string>;
-    title: string;
-}
-
-export type TAdvert = {
-    hash: string;
+export type TAdvertBody = {
     cover: string;
     description: string;
     tags: Array<string>;
     title: string;
     when: number;
-    who: string;
+}
+
+export type TNewAdvert = {
+    hash?: string;
+    body: TAdvertBody;
+}
+
+export type TAdvert = {
+    hash: string;
+    body: TAdvertBody;
+    vendor: {
+        life: string;
+        ship: string;
+        sig: string;
+    }
 }

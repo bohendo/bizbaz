@@ -35,10 +35,13 @@ export const NewAdvert = ({
         }
     } as TAdvertValidation)
     const [newAdvert, setNewAdvert] = useState(editAdvert || {
-        title: "Advert Title",
-        cover: "link to cover image",
-        description: "Description of the stuff I'm selling",
-        tags: ["example"]
+        body: {
+            title: "Advert Title",
+            cover: "link to cover image",
+            description: "Description of the stuff I'm selling",
+            tags: ["example"],
+            when: Date.now(),
+        }
     } as TNewAdvert);
 
     useEffect(() => {
@@ -47,10 +50,10 @@ export const NewAdvert = ({
     }, [editAdvert]);
 
     const validate = (advert: TNewAdvert) => {
-       const titleError = !advert.title ? "Advert must have a title" : "";
-       const coverError = !advert.cover ? "Advert cover must be a url" : "";
-       const descriptionError = !advert.description ? "Advert description is required" : "";
-       let tagsError = advert.tags.reduce((tagError, tag) =>
+       const titleError = !advert.body.title ? "Advert must have a title" : "";
+       const coverError = !advert.body.cover ? "Advert cover must be a url" : "";
+       const descriptionError = !advert.body.description ? "Advert description is required" : "";
+       let tagsError = advert.body.tags.reduce((tagError, tag) =>
             /^[a-z][a-z0-9-]*$/.test(tag) ? tagError : tagError + ` '${tag}'`,
             "");
     
@@ -62,18 +65,16 @@ export const NewAdvert = ({
        setValidation({ hasError, errorMsgs: {coverError, titleError, descriptionError, tagsError}});
     }
     const syncNewAdvert = (advert: TNewAdvert) => {
-       validate(advert);
-       setNewAdvert(advert);
+        console.log(advert);
+        validate(advert);
+        setNewAdvert(advert);
     }
 
     const postAdvert = () => {
         validate(newAdvert);
         if (validation.hasError) return;
         const body = {
-          title: newAdvert.title,
-          cover: newAdvert.cover,
-          tags: newAdvert.tags,
-          description: newAdvert.description,
+          ...newAdvert.body,
           when: Date.now(),
         };
 
@@ -115,7 +116,7 @@ export const NewAdvert = ({
                </DialogContentText>
                <TextField
                  autoFocus
-                 defaultValue={newAdvert.title}
+                 defaultValue={newAdvert.body.title}
                  error={!!validation.errorMsgs.titleError}
                  margin="dense"
                  id="title"
@@ -125,12 +126,12 @@ export const NewAdvert = ({
                  helperText={validation.errorMsgs.titleError}
                  variant="standard"
                  onChange={(event) => {
-                     syncNewAdvert({...newAdvert, [event.target.id]: event.target.value})}
+                     syncNewAdvert({ body: {...newAdvert.body, [event.target.id]: event.target.value} })}
                  }
                />
                <TextField
                  error={!!validation.errorMsgs.coverError}
-                 defaultValue={newAdvert.cover}
+                 defaultValue={newAdvert.body.cover}
                  margin="dense"
                  id="cover"
                  label="Cover"
@@ -139,12 +140,12 @@ export const NewAdvert = ({
                  helperText={validation.errorMsgs.coverError}
                  variant="standard"
                  onChange={(event) => {
-                     syncNewAdvert({...newAdvert, [event.target.id]: event.target.value})}
+                     syncNewAdvert({ body: {...newAdvert.body, [event.target.id]: event.target.value} })}
                  }
                />
                 <TextField
                  error={!!validation.errorMsgs.tagsError}
-                 defaultValue={newAdvert.tags}
+                 defaultValue={newAdvert.body.tags}
                  margin="dense"
                  id="tags"
                  label="Tags"
@@ -153,12 +154,12 @@ export const NewAdvert = ({
                  helperText={validation.errorMsgs.tagsError}
                  variant="standard"
                  onChange={(event) => {
-                     syncNewAdvert({...newAdvert, [event.target.id]: event.target.value.toLowerCase().trim().split(" ")})}
+                     syncNewAdvert({ body: { ...newAdvert.body, [event.target.id]: event.target.value.toLowerCase().trim().split(" ") }})}
                  }
                 />
                <TextField
                  error={!!validation.errorMsgs.descriptionError}
-                 defaultValue={newAdvert.description}
+                 defaultValue={newAdvert.body.description}
                  margin="dense"
                  id="description"
                  label="Description"
@@ -167,7 +168,7 @@ export const NewAdvert = ({
                  helperText={validation.errorMsgs.descriptionError}
                  variant="standard"
                  onChange={(event) => {
-                     syncNewAdvert({...newAdvert, [event.target.id]: event.target.value})}
+                     syncNewAdvert({ body: {...newAdvert.body, [event.target.id]: event.target.value} })}
                  }
                 />
 
