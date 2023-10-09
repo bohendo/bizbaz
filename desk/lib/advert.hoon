@@ -2,6 +2,14 @@
 /+  signatures
 |% 
 ::
+++  get-sub-card
+    |=  pal=ship
+    ^-  card:agent:gall
+    [%pass get-wire %agent [pal %bizbaz] %watch get-wire]
+::
+++  get-wire
+    /noun/adverts
+::
 ++  advert-exists
     |=  adverts=adverts:advert
     |=  advert=advert:advert

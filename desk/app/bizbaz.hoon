@@ -1,11 +1,10 @@
 /-  advert
-/-  vote
-/-  review
 /-  pals
-/+  vote-lib=vote
+/-  review
+/-  vote
 /+  advert-lib=advert
-/+  signatures
-/+  default-agent, dbug
+/+  vote-lib=vote
+/+  default-agent, dbug, signatures, utils
 |%
 +$  versioned-state
   $%  state-0
@@ -32,9 +31,12 @@
   ~&  >  "%bizbaz initialized successfully."
   =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
   ~&  (weld "mutual pals: " (spud (turn ~(tap in pals) |=(pal=ship (scot %p pal)))))
-  =/  pal-cards  (turn ~(tap in pals) |=(pal=ship [%pass /noun/adverts %agent [pal %bizbaz] %watch /noun/adverts]))
+  =/  advert-subs  (turn ~(tap in pals) |=(pal=ship (get-sub-card:advert-lib pal)))
+  =/  vote-subs  (turn ~(tap in pals) |=(pal=ship (get-sub-card:vote-lib pal)))
   :_  this
-  (into `(list card)`pal-cards 0 `card`[%pass /eyre %arvo %e %connect [~ /apps/bizbaz] %bizbaz])
+  %+  weld  advert-subs
+  %+  weld  vote-subs
+      `(list card)`~[[%pass /eyre %arvo %e %connect [~ /apps/bizbaz] %bizbaz]]
 ::
 ++  on-save  :: exports the state before suspending or uninstalling
   !>(state)  
@@ -47,14 +49,19 @@
   ^-  (quip card _this)
   ?:  ?=(%sub-to-pals mark)
     =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
-    ~&  (weld "mutual pals: " (spud (turn ~(tap in pals) |=(pal=ship (scot %p pal)))))
+    ~&  (weld "Subscribing to mutual pals: " (spud (turn ~(tap in pals) |=(pal=ship (scot %p pal)))))
+    =/  advert-subs  (turn ~(tap in pals) |=(pal=ship (get-sub-card:advert-lib pal)))
+    =/  vote-subs  (turn ~(tap in pals) |=(pal=ship (get-sub-card:vote-lib pal)))
     :_  this
-    (turn ~(tap in pals) |=(pal=ship [%pass /noun/adverts %agent [pal %bizbaz] %watch /noun/adverts]))
+    %+  weld
+        advert-subs
+        vote-subs
   ?:  ?=(%syncsubs mark)
     =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
-    ~&  (weld "mutual pals: " (spud (turn ~(tap in pals) |=(pal=ship (scot %p pal)))))
+    ~&  (weld "Syncing data w mutual pals: " (spud (turn ~(tap in pals) |=(pal=ship (scot %p pal)))))
     :_  this
     :~  [%give %fact ~[/noun/adverts] %advert-update !>(`update:advert`[%gather adverts])]
+        [%give %fact ~[/noun/votes] %vote-update !>(`update:vote`[%gather votes])]
     ==
   ?>  |(?=(%advert-action mark) ?=(%vote-action mark) ?=(%review-action mark))
   ?+  mark  !!
@@ -197,6 +204,13 @@
       ::  only share adverts created by our pals, filter out those from pals-of-pals
       =/  pal-adverts  (skim adverts |=(ad=advert:advert (~(has in pals) ship.vendor.ad)))
       [%give %fact ~ %advert-update !>(`update:advert`[%gather pal-adverts])]~
+    [%noun %votes ~]
+      =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
+      ::  only allow subscriptions by our pals
+      ?>  (~(has in pals) src.bowl)
+      ::  only share votes created by our pals, filter out those from pals-of-pals
+      =/  pal-votes  (skim votes |=(vote=vote:vote (~(has in pals) ship.voter.vote)))
+      [%give %fact ~ %vote-update !>(`update:vote`[%gather pal-votes])]~
     :: paths for serving json data to the UI
     [%json %adverts ~]
       =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
@@ -226,9 +240,12 @@
     |=  [=wire =sign:agent:gall]
     ^-  (quip card _this)
     ?+  wire  (on-agent:default wire sign)
+      ::
+      :: advert subscription updates
+      ::
         [%noun %adverts ~]
       ?+  -.sign  (on-agent:default wire sign)
-        %fact
+          %fact
         ?+  p.cage.sign  (on-agent:default wire sign)
         %advert-update
           =/  upd  !<(update:advert q.cage.sign)
@@ -236,7 +253,7 @@
               ::
           %gather
             =/  new-adverts  (skip adverts.upd (advert-exists:advert-lib adverts))
-            ~&  (weld (weld (weld "%gather: received " (scow %ud (lent new-adverts))) " new adverts from ") (scow %p src.bowl))
+            ~&  (log-gather:utils [got=(lent adverts.upd) new=(lent new-adverts) from=src.bowl type="advert"])
             [~ this(adverts (weld new-adverts adverts))]
               ::
           %create
@@ -301,6 +318,25 @@
             ::   %delete
             :: ~&  "%delete: removing old advert"
             :: !!
+          ==
+        ==
+      ==
+      ::
+      :: vote subscription updates
+      ::
+        [%noun %votes ~]
+      ?+  -.sign  (on-agent:default wire sign)
+        %fact
+        ?+  p.cage.sign  (on-agent:default wire sign)
+            %vote-update
+          =/  upd  !<(update:vote q.cage.sign)
+          ?+  -.upd  !!
+              ::
+              %gather
+            =/  new-votes  (skip votes.upd (vote-exists:vote-lib votes))
+            ~&  (log-gather:utils [got=(lent votes.upd) new=(lent new-votes) from=src.bowl type="vote"])
+            [~ this(votes (weld new-votes votes))]
+              ::
           ==
         ==
       ==
