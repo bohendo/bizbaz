@@ -65,7 +65,6 @@ export const NewAdvert = ({
        setValidation({ hasError, errorMsgs: {coverError, titleError, descriptionError, tagsError}});
     }
     const syncNewAdvert = (advert: TNewAdvert) => {
-        console.log(advert);
         validate(advert);
         setNewAdvert(advert);
     }
@@ -126,7 +125,7 @@ export const NewAdvert = ({
                  helperText={validation.errorMsgs.titleError}
                  variant="standard"
                  onChange={(event) => {
-                     syncNewAdvert({ body: {...newAdvert.body, [event.target.id]: event.target.value} })}
+                     syncNewAdvert({ hash: newAdvert.hash, body: {...newAdvert.body, [event.target.id]: event.target.value} })}
                  }
                />
                <TextField
@@ -140,7 +139,7 @@ export const NewAdvert = ({
                  helperText={validation.errorMsgs.coverError}
                  variant="standard"
                  onChange={(event) => {
-                     syncNewAdvert({ body: {...newAdvert.body, [event.target.id]: event.target.value} })}
+                     syncNewAdvert({ hash: newAdvert.hash, body: {...newAdvert.body, [event.target.id]: event.target.value} })}
                  }
                />
                 <TextField
@@ -154,7 +153,7 @@ export const NewAdvert = ({
                  helperText={validation.errorMsgs.tagsError}
                  variant="standard"
                  onChange={(event) => {
-                     syncNewAdvert({ body: { ...newAdvert.body, [event.target.id]: event.target.value.toLowerCase().trim().split(" ") }})}
+                     syncNewAdvert({ hash: newAdvert.hash, body: { ...newAdvert.body, [event.target.id]: event.target.value.toLowerCase().trim().split(" ") }})}
                  }
                 />
                <TextField
@@ -168,7 +167,7 @@ export const NewAdvert = ({
                  helperText={validation.errorMsgs.descriptionError}
                  variant="standard"
                  onChange={(event) => {
-                     syncNewAdvert({ body: {...newAdvert.body, [event.target.id]: event.target.value} })}
+                     syncNewAdvert({ hash: newAdvert.hash, body: {...newAdvert.body, [event.target.id]: event.target.value} })}
                  }
                 />
 

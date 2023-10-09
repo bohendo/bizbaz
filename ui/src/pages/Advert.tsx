@@ -184,6 +184,7 @@ export const Advert = ({ api }: { api: any }) => {
         <EditIcon />
       </Fab>
 
+      {console.log(advert.hash)}
       <NewAdvert
         editAdvert={{
           hash: advert.hash,
