@@ -2,16 +2,25 @@
 /+  signatures
 |% 
 ::
+++  get-advert-index
+    |=  adverts=adverts:advert
+    |=  hash=hash:signatures
+    ^-  (unit @ud)
+    %+  find
+      ~[hash]
+      (turn adverts get-hash)
+::
 ++  build-advert
     |=  =bowl:gall
-    |=  body=advert-body:advert
+    |=  req=advert-req:advert
     ^-  advert:advert
     :: update when in the body
     =/  advert-body
-      :*  title=title.body
-          cover=cover.body
-          tags=`(list @tas)`tags.body
-          description=description.body
+      :*  title=title.req
+          cover=cover.req
+          tags=`(list @tas)`tags.req
+          description=description.req
+          vendor=our.bowl
           when=now.bowl
       ==
     :: set advert hash and sign it
@@ -19,7 +28,7 @@
     =/  new-advert
       :*  hash=hash
           vendor=(sign:signatures our.bowl now.bowl hash)
-          advert-body
+          body=advert-body
       ==
     :: crash if our new advert is invalid
     ?>  (validate new-advert)
@@ -95,6 +104,7 @@
             ['cover' s+cover.body]
             ['tags' a+(turn (turn tags.body trip) tape)]
             ['description' s+description.body] :: TODO: change to wall?
+            ['vendor' s+(scot %p vendor.body)]
             ['when' (sect when.body)]
         ==
     ::
@@ -124,7 +134,6 @@
             cover+so
             tags+(ar (se %tas))
             description+so
-            when+du
         ==
     ::
     ++  parse-update
@@ -134,7 +143,6 @@
             cover+so
             tags+(ar (se %tas))
             description+so
-            when+du
         ==
     ::
     ++  parse-delete

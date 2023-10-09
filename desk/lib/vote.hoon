@@ -1,6 +1,29 @@
 /-  vote 
+/-  advert
 /+  signatures
 |% 
+::
+++  build-vote
+    |=  =bowl:gall
+    |=  [advert=hash:signatures choice=@tas voter=ship]
+    ^-  vote:vote
+    :: update when in the body
+    =/  vote-body
+      :*  advert=advert
+          choice=choice
+          voter=voter
+          when=now.bowl
+      ==
+    :: set vote hash and sign it
+    =/  hash  (sham vote-body)
+    =/  new-vote
+      :*  hash=hash
+          voter=(sign:signatures our.bowl now.bowl hash)
+          vote-body
+      ==
+    :: crash if our new vote is invalid
+    ?>  (validate new-vote)
+    new-vote
 ::
 ++  validate
     |=  vote=vote:vote
@@ -45,7 +68,7 @@
         ^-  json
         %-  pairs
         :~  ['advert' s+(scot %uv advert.body)]
-            ['vendor' s+(scot %p vendor.body)]
+            ['voter' s+(scot %p voter.body)]
             ['choice' s+choice.body]
             ['when' (sect when.body)]
         ==

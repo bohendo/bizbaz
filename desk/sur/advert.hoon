@@ -1,12 +1,33 @@
 /-  *signature
 |%
-:: TODO add vendor ship to body to guarantee unique hash per advert
-+$  advert-body  [title=@t cover=@t tags=(list @tas) description=@t when=@da]
-+$  advert       [hash=hash vendor=signature body=advert-body]
-+$  adverts      (list advert)
+::
++$  advert-req
+  $:  title=@t
+      cover=@t
+      tags=(list @tas)
+      description=@t
+  ==
+::
++$  advert-body
+  $:  title=@t
+      cover=@t
+      tags=(list @tas)
+      description=@t
+      vendor=ship
+      when=@da
+  ==
+::
++$  advert
+  $:  hash=hash
+      vendor=signature
+      body=advert-body
+  ==
+::
++$  adverts  (list advert)
+::
 +$  action
-  $%  [%create body=advert-body]
-      [%update advert=hash body=advert-body]
+  $%  [%create req=advert-req]
+      [%update advert=hash req=advert-req]
       [%delete advert=hash]
   ==
 +$  update

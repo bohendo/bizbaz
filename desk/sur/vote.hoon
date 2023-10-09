@@ -1,7 +1,19 @@
 /-  *signature
 |%
-+$  vote-body  [advert=hash vendor=@p when=@da choice=@tas]
-+$  vote  [hash=hash voter=signature body=vote-body]
+::
++$  vote-body
+  $:  advert=hash
+      choice=@tas
+      voter=ship
+      when=@da
+  ==
+::
++$  vote
+  $:  hash=hash
+      voter=signature
+      body=vote-body
+  ==
+::
 +$  votes  (list vote)
 ::
 +$  action

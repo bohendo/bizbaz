@@ -40,7 +40,6 @@ export const NewAdvert = ({
             cover: "link to cover image",
             description: "Description of the stuff I'm selling",
             tags: ["example"],
-            when: Date.now(),
         }
     } as TNewAdvert);
 

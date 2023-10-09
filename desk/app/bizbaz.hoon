@@ -63,25 +63,25 @@
       ?-  -.act
           ::
           %create 
-        =/  new-advert  ((build-advert:advert-lib bowl) body.act)
-        ~&  "Created new advert, broadcasting to ui + pals"
+        =/  new-advert  ((build-advert:advert-lib bowl) req.act)
+        ::  ~&  "Created new advert, broadcasting to ui + pals"
         :_  this(adverts [new-advert adverts])
         :~  [%give %fact ~[/json/adverts] %advert-update !>(`update:advert`[%create new-advert])]
             [%give %fact ~[/noun/adverts] %advert-update !>(`update:advert`[%create new-advert])]
         ==
           ::
           %update
-        =/  index  (find ~[advert.act] (turn adverts get-hash:advert-lib))
+        =/  index  ((get-advert-index:advert-lib adverts) advert.act)
         ?~  index
           ~|((weld "No advert with hash " (scow %uv advert.act)) !!)
-        =/  new-advert  ((build-advert:advert-lib bowl) body.act)
+        =/  new-advert  ((build-advert:advert-lib bowl) req.act)
         :_  this(adverts (snap adverts (need index) new-advert))
         :~  [%give %fact ~[/json/adverts] %advert-update !>(`update:advert`[%update advert.act new-advert])]
             [%give %fact ~[/noun/adverts] %advert-update !>(`update:advert`[%update advert.act new-advert])]
         ==
           ::
           %delete
-        =/  index  (find ~[advert.act] (turn adverts get-hash:advert-lib))
+        =/  index  ((get-advert-index:advert-lib adverts) advert.act)
         ?~  index
           ~|((weld "No advert with hash " (scow %uv advert.act)) !!)
         :_  this(adverts (oust [(need index) 1] adverts))
@@ -94,20 +94,11 @@
       ~&  act
       ?-  -.act
           %vote
-            =/  index  (find ~[advert.act] (turn adverts |=(ad=advert:advert hash.ad)))
+            =/  index  ((get-advert-index:advert-lib adverts) advert.act)
             ?~  index
               ~|((weld "No advert with hash " (scow %uv advert.act)) !!)
             =/  ad  (snag (need index) adverts)
-            =/  target  ship.vendor.ad
-            =/  vote-body  [advert=advert.act vendor=target when=now.bowl choice=choice.act]
-            :: check if user has already voted on the advert and update if so else add new vote
-            =/  hash  (sham vote-body)
-            =/  new-vote
-              :*  hash
-                  voter=(sign:signatures our.bowl now.bowl hash)
-                  body=vote-body
-              ==
-            ?>  (validate:vote-lib new-vote)
+            =/  new-vote  ((build-vote:vote-lib bowl) [advert=advert.act choice=choice.act vendor=ship.vendor.ad])
             ~&  new-vote
             =/  haystack  (reel votes |:([cur=new-vote cum=`(list @)`~] [`@`advert.body.cur `@`ship.voter.cur cum]))
             =/  existing-vote  (find ~[advert.act ship.voter.new-vote] haystack)
