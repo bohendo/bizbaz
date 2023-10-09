@@ -266,24 +266,28 @@
           =/  upd  !<(update:advert q.cage.sign)
           ~&  upd
           ?+  -.upd  !!
+              ::
               %gather
             ~&  "%gather: all adverts shared"
-            [~ this(adverts +.upd)]  :: todo: don't do this
+            [~ this(adverts +.upd)]  :: todo: merge new unique adverts instead of replacing existing ones
+              ::
               %create
+            ~&  "Got a %create %advert-update from our subscription"
             =/  new-advert  advert.upd
+            ~&  "validating newly created update.."
             ?.  (validate:advert-lib new-advert)
               ~&  (weld "%create: invalid advert received from " (scow %p src.bowl))
               !!
             ~&  "%create: new advert received & validated"
             =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
-            =/  is-pal  ?~((find ~[src.bowl] ~(tap in pals)) %.n %.y)
+            =/  is-pal  ?~((find ~[ship.vendor.new-advert] ~(tap in pals)) %.n %.y)
             ?.  is-pal
-              ~&  "new advert came from our pal, re-broadcasting to our pals"
+              ~&  "new advert was created by our pal, re-broadcasting to our pals"
               :_  this(adverts [new-advert adverts])
               :~  [%give %fact ~[/json/adverts] %advert-update !>(`update:advert`[%create new-advert])]
                   [%give %fact ~[/noun/adverts] %advert-update !>(`update:advert`[%create new-advert])]
               ==
-            ~&  "new advert did NOT come from our pal, not re-broadcasting"
+            ~&  "new advert was NOT created by our pal, not re-broadcasting"
             :_  this(adverts [new-advert adverts])
             :~  [%give %fact ~[/json/adverts] %advert-update !>(`update:advert`[%create new-advert])]
             ==
