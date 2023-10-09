@@ -303,18 +303,21 @@
             =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
             =/  is-pal  ?~((find ~[ship.vendor.new-advert] ~(tap in pals)) %.n %.y)
             ?:  is-pal
-              ~&  "old-hash: {<`@`old-hash>}"
               ~&  "new advert was updated by our pal, re-broadcasting to our pals"
-              :_  this(adverts (snap adverts (need old-ad-index) new-advert))
+              ?:  old-ad-index
+                :_  this(adverts (snap adverts (need old-ad-index) new-advert))
+                :~  [%give %fact ~[/json/adverts] %advert-update !>(`update:advert`[%update old-hash new-advert])]
+                    [%give %fact ~[/noun/adverts] %advert-update !>(`update:advert`[%update old-hash new-advert])]
+                ==
+              :_  this(adverts [new-advert adverts])
               :~  [%give %fact ~[/json/adverts] %advert-update !>(`update:advert`[%update old-hash new-advert])]
                   [%give %fact ~[/noun/adverts] %advert-update !>(`update:advert`[%update old-hash new-advert])]
               ==
+
             ~&  "new advert was NOT updated by our pal, not re-broadcasting"
             :_  this(adverts (snap adverts (need old-ad-index) new-advert))
             :~  [%give %fact ~[/json/adverts] %advert-update !>(`update:advert`[%update old-hash new-advert])]
             ==
-            :: ~&  "%update: replacemet advert received"
-            :: !!
             ::   %delete
             :: ~&  "%delete: removing old advert"
             :: !!
