@@ -11,7 +11,7 @@
   $%  state-0
   ==
 +$  state-0
-  $:  %0 :: todo: split adverts into myAdverts w sigs & palAdverts where the sigs are validated and then dropped
+  $:  %0 :: TODO: split adverts into myAdverts w sigs & palAdverts where the sigs are validated and then dropped
       adverts=(list advert:advert)
       votes=(list vote:vote)
       intents=(list intent:review)
@@ -186,7 +186,7 @@
                   body=commit-body
                   intent=body.intent
               ==
-            [~ this(commits [new-commit commits])] :: todo: remove relevant intent from state
+            [~ this(commits [new-commit commits])] :: TODO: remove relevant intent from state
           %review
             =/  index  (find ~[commit.body.act] (turn commits |=(cmt=commit:review hash.cmt)))
             ?~  index
@@ -228,8 +228,11 @@
     :: paths for serving noun data to other ships
     [%noun %adverts ~]
       =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
+      ::  only allow subscriptions by our pals
       ?>  (~(has in pals) src.bowl)
-      [%give %fact ~ %advert-update !>(`update:advert`[%gather adverts])]~
+      ::  only share adverts created by our pals, filter out those from pals-of-pals
+      =/  pal-adverts  (skim adverts |=(ad=advert:advert (~(has in pals) ship.vendor.ad)))
+      [%give %fact ~ %advert-update !>(`update:advert`[%gather pal-adverts])]~
     :: paths for serving json data to the UI
     [%json %adverts ~]
       =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
@@ -269,7 +272,8 @@
               ::
               %gather
             ~&  "%gather: all adverts shared"
-            [~ this(adverts +.upd)]  :: todo: merge new unique adverts instead of replacing existing ones
+            :: TODO: merge new, unique adverts instead of replacing existing ones
+            [~ this(adverts +.upd)]
               ::
               %create
             ~&  "Got a %create %advert-update from our subscription"
