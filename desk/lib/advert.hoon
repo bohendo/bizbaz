@@ -2,6 +2,29 @@
 /+  signatures
 |% 
 ::
+++  build-advert
+    |=  =bowl:gall
+    |=  body=advert-body:advert
+    ^-  advert:advert
+    :: update when in the body
+    =/  advert-body
+      :*  title=title.body
+          cover=cover.body
+          tags=`(list @tas)`tags.body
+          description=description.body
+          when=now.bowl
+      ==
+    :: set advert hash and sign it
+    =/  hash  (sham advert-body)
+    =/  new-advert
+      :*  hash=hash
+          vendor=(sign:signatures our.bowl now.bowl hash)
+          advert-body
+      ==
+    :: crash if our new advert is invalid
+    ?>  (validate new-advert)
+    new-advert
+::
 ++  get-hash
     |=  ad=advert:advert
     ^-  hash:signatures

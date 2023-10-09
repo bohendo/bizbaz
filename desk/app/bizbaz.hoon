@@ -63,51 +63,25 @@
       ?-  -.act
           ::
           %create 
-        =/  advert-body
-          :*  title=title.body.act
-              cover=cover.body.act
-              tags=`(list @tas)`tags.body.act
-              description=description.body.act
-              when=now.bowl
-          ==
-        =/  hash  (sham advert-body)
-        =/  new-advert
-          :*  hash=hash
-              vendor=(sign:signatures our.bowl now.bowl hash)
-              advert-body
-          ==
-        ?>  (validate:advert-lib new-advert)
-        ~&  "Newly created advert is valid, broadcasting to ui + pals"
+        =/  new-advert  ((build-advert:advert-lib bowl) body.act)
+        ~&  "Created new advert, broadcasting to ui + pals"
         :_  this(adverts [new-advert adverts])
         :~  [%give %fact ~[/json/adverts] %advert-update !>(`update:advert`[%create new-advert])]
             [%give %fact ~[/noun/adverts] %advert-update !>(`update:advert`[%create new-advert])]
         ==
           ::
           %update
-        =/  index  (find ~[advert.act] (turn adverts |=(ad=advert:advert hash.ad)))
+        =/  index  (find ~[advert.act] (turn adverts get-hash:advert-lib))
         ?~  index
           ~|((weld "No advert with hash " (scow %uv advert.act)) !!)
-        =/  advert-body
-          :*  title=title.body.act
-              cover=cover.body.act
-              tags=`(list @tas)`tags.body.act
-              description=description.body.act
-              when=now.bowl
-          ==
-        =/  hash  (sham advert-body)
-        =/  new-advert
-          :*  hash=hash
-              vendor=(sign:signatures our.bowl now.bowl hash)
-              advert-body
-          ==
-        ?>  (validate:advert-lib new-advert)
+        =/  new-advert  ((build-advert:advert-lib bowl) body.act)
         :_  this(adverts (snap adverts (need index) new-advert))
         :~  [%give %fact ~[/json/adverts] %advert-update !>(`update:advert`[%update advert.act new-advert])]
             [%give %fact ~[/noun/adverts] %advert-update !>(`update:advert`[%update advert.act new-advert])]
         ==
           ::
           %delete
-        =/  index  (find ~[advert.act] (turn adverts |=(ad=advert:advert hash.ad)))
+        =/  index  (find ~[advert.act] (turn adverts get-hash:advert-lib))
         ?~  index
           ~|((weld "No advert with hash " (scow %uv advert.act)) !!)
         :_  this(adverts (oust [(need index) 1] adverts))
@@ -272,7 +246,6 @@
           ?+  -.upd  !!
               ::
               %gather
-            ~&  (weld (weld (weld "%gather: received " (scow %ud (lent adverts.upd))) " adverts from ") (scow %p src.bowl))
             =/  new-adverts  (skip adverts.upd (advert-exists:advert-lib adverts))
             ~&  (weld (weld (weld "%gather: received " (scow %ud (lent new-adverts))) " new adverts from ") (scow %p src.bowl))
             [~ this(adverts (weld new-adverts adverts))]
