@@ -1,6 +1,11 @@
 /-  *signature
 |%
 ::
++$  vote-req
+  $:  advert=hash
+      choice=@tas
+  ==
+::
 +$  vote-body
   $:  advert=hash
       choice=@tas
@@ -17,7 +22,7 @@
 +$  votes  (list vote)
 ::
 +$  action
-  $%  [%vote advert=hash choice=@tas]
+  $%  [%vote req=vote-req]
   ==
 +$  update
   $%  [%gather votes=(list vote)]

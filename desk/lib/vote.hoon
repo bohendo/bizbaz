@@ -1,17 +1,37 @@
 /-  vote 
-/-  advert
 /+  signatures
 |% 
 ::
+++  vote-exists
+    |=  votes=votes:vote
+    |=  vote=vote:vote
+    ^-  ?
+    ?~  ((get-vote-index votes) hash.vote)
+      %.n
+    %.y
+::
+++  get-vote-index
+    |=  votes=votes:vote
+    |=  hash=hash:signatures
+    ^-  (unit @ud)
+    %+  find
+      ~[hash]
+      (turn votes get-hash)
+::
+++  get-hash
+    |=  =vote:vote
+    ^-  hash:signatures
+    hash.vote
+::
 ++  build-vote
     |=  =bowl:gall
-    |=  [advert=hash:signatures choice=@tas voter=ship]
+    |=  req=vote-req:vote
     ^-  vote:vote
     :: update when in the body
     =/  vote-body
-      :*  advert=advert
-          choice=choice
-          voter=voter
+      :*  advert=advert.req
+          choice=choice.req
+          voter=our.bowl
           when=now.bowl
       ==
     :: set vote hash and sign it
@@ -27,7 +47,7 @@
 ::
 ++  validate
     |=  vote=vote:vote
-    ^-  @f
+    ^-  ?
     =/  true-hash  (sham body.vote)
     ?.  =(hash.vote true-hash)
       %.n

@@ -2,6 +2,14 @@
 /+  signatures
 |% 
 ::
+++  advert-exists
+    |=  adverts=adverts:advert
+    |=  advert=advert:advert
+    ^-  ?
+    ?~  ((get-advert-index adverts) hash.advert)
+      %.n
+    %.y
+::
 ++  get-advert-index
     |=  adverts=adverts:advert
     |=  hash=hash:signatures
@@ -9,6 +17,11 @@
     %+  find
       ~[hash]
       (turn adverts get-hash)
+::
+++  get-hash
+    |=  ad=advert:advert
+    ^-  hash:signatures
+    hash.ad
 ::
 ++  build-advert
     |=  =bowl:gall
@@ -34,22 +47,9 @@
     ?>  (validate new-advert)
     new-advert
 ::
-++  get-hash
-    |=  ad=advert:advert
-    ^-  hash:signatures
-    hash.ad
-::
-++  advert-exists
-    |=  adverts=adverts:advert
-    |=  advert=advert:advert
-    ^-  ?
-    ?~  (find ~[hash.advert] (turn adverts get-hash))
-      %.n
-    %.y
-::
 ++  validate
     |=  advert=advert:advert
-    ^-  @f
+    ^-  ?
     =/  true-hash  (sham body.advert)
     ?.  =(hash.advert true-hash)
       %.n
