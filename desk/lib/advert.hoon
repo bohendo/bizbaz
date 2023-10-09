@@ -2,6 +2,19 @@
 /+  signatures
 |% 
 ::
+++  get-hash
+    |=  ad=advert:advert
+    ^-  hash:signatures
+    hash.ad
+::
+++  advert-exists
+    |=  adverts=adverts:advert
+    |=  advert=advert:advert
+    ^-  ?
+    ?~  (find ~[hash.advert] (turn adverts get-hash))
+      %.n
+    %.y
+::
 ++  validate
     |=  advert=advert:advert
     ^-  @f

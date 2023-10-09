@@ -54,7 +54,8 @@
     =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
     ~&  (weld "mutual pals: " (spud (turn ~(tap in pals) |=(pal=ship (scot %p pal)))))
     :_  this
-    (turn ~(tap in pals) |=(pal=ship [%give %fact ~[/noun/adverts] %advert-update !>(`update:advert`[%gather adverts])]))
+    :~  [%give %fact ~[/noun/adverts] %advert-update !>(`update:advert`[%gather adverts])]
+    ==
   ?>  |(?=(%advert-action mark) ?=(%vote-action mark) ?=(%review-action mark))
   ?+  mark  !!
     %advert-action
@@ -271,9 +272,10 @@
           ?+  -.upd  !!
               ::
               %gather
-            ~&  "%gather: all adverts shared"
-            :: TODO: merge new, unique adverts instead of replacing existing ones
-            [~ this(adverts +.upd)]
+            ~&  (weld (weld (weld "%gather: received " (scow %ud (lent adverts.upd))) " adverts from ") (scow %p src.bowl))
+            =/  new-adverts  (skip adverts.upd (advert-exists:advert-lib adverts))
+            ~&  (weld (weld (weld "%gather: received " (scow %ud (lent new-adverts))) " new adverts from ") (scow %p src.bowl))
+            [~ this(adverts (weld new-adverts adverts))]
               ::
               %create
             ~&  "Got a %create %advert-update from our subscription"
