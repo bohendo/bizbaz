@@ -33,7 +33,6 @@ export const Advert = ({ api }: { api: any }) => {
 
   const updateAdvert = ( upd: any) => {
     console.log(`Got advert update:`, upd)
-
     if (upd.gather) {
       setAdvert(upd.gather.adverts.find(u => u.hash === hash))      
     } else if (upd.update) {
@@ -44,11 +43,35 @@ export const Advert = ({ api }: { api: any }) => {
   }
 
   const updateVotes = (upd: any) => {
-    const filteredVotes = upd.votes.filter(vote =>
-      vote.body.advert === hash
-    )
-    console.log(`Relevant votes:`, filteredVotes)
-    setVotes(filteredVotes)
+    if (upd.gather) {
+      const filteredVotes = upd.gather.votes.filter(vote =>
+        vote.body.advert === hash
+      )
+      console.log(`Relevant votes:`, filteredVotes)
+      setVotes(filteredVotes)
+    } else if (upd.vote) {
+      const newVote = upd.vote
+      console.log(`New vote:`, newVote)
+      setVotes((oldVotes) => {
+        const recast = oldVotes.findIndex(v =>
+          v.body.advert === newVote.body.advert && v.body.voter === newVote.body.voter
+        )
+        console.log(`recast index:`, recast)
+        if (recast === -1) {
+          console.log(`This is a new vote, adding it to the array`)
+          return [...oldVotes, newVote]
+        } else {
+          console.log(`This is a recast vote, updating the previous vote to ${newVote.choice}`)
+          if (newVote.body.choice === "un") {
+            return [...oldVotes.slice(0, recast), ...oldVotes.slice(recast + 1)]
+          } else {
+            return [...oldVotes.slice(0, recast), newVote, ...oldVotes.slice(recast + 1)]
+          }
+        }
+      })
+    } else {
+      console.log(`Got unknown vote update:`, upd)
+    }
   }
 
   const updateReviews = (upd: any) => {

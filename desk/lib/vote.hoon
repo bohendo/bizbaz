@@ -2,23 +2,55 @@
 /+  signatures
 |% 
 ::
-++  get-sub-card
+++  upsert-vote
+    |=  votes=votes:vote
+    |=  new-vote=vote:vote
+    ^-  (list vote:vote)
+    =/  vote-is-duplicate  ((vote-exists votes) new-vote)
+    ?:  vote-is-duplicate
+      ~&  "Ignoring duplicate vote"
+      votes
+    =/  recase-vote  ((get-recast-vote votes) new-vote)
+    ?~  recase-vote
+      ~&  "did not find existing vote, adding a new one"
+      ?:  ?=(%un choice.body.new-vote)
+        ~&  "wait this is a new unvote, that doesn't make sense"
+        !!
+      [new-vote votes]
+    ~&  "found an existing vote, updating it"
+    ?:  ?=(%un choice.body.new-vote)
+      ~&  "removing unvote"
+      (oust [(need recase-vote) 1] votes)
+    (snap votes (need recase-vote) new-vote)
+::
+:: card that publishes info to all subscribers
+++  pub-card
+    |=  upd=update:vote
+    ^-  (list card:agent:gall)
+    :~  [%give %fact ~[noun-wire] %vote-update !>(upd)]
+        [%give %fact ~[json-wire] %vote-update !>(upd)]
+    ==
+::
+:: card that asks to subscribe to some pal
+++  sub-card
     |=  pal=ship
     ^-  card:agent:gall
-    [%pass get-wire %agent [pal %bizbaz] %watch get-wire]
+    [%pass noun-wire %agent [pal %bizbaz] %watch noun-wire]
 ::
-++  get-wire
+++  noun-wire
     /noun/votes
 ::
-++  get-vote-index-by-advert
-    |=  =bowl:gall
+++  json-wire
+    /json/votes
+::
+++  get-recast-vote
     |=  votes=votes:vote
-    |=  advert=hash:signatures
+    |=  new-vote=vote:vote
     ^-  (unit @ud)
     :: get a flat list of pairs of [advert voter]
     =/  haystack  (reel votes |:([cur=*vote:vote cum=`(list @)`~] [`@`advert.body.cur `@`ship.voter.cur cum]))
     %+  find
-      ~[advert our.bowl]
+      ~[advert.body.new-vote ship.voter.new-vote]
       haystack
 ::
 ++  vote-exists
@@ -82,8 +114,8 @@
         |=  upd=update:vote
         ^-  json
         ?-    -.upd
-            %vote  !!
-            %gather  (parse-votes votes.upd)
+            %vote  (frond 'vote' (parse-vote vote.upd))
+            %gather  (frond 'gather' (parse-votes votes.upd))
         ==
     ::
     ++  parse-votes

@@ -2,13 +2,25 @@
 /+  signatures
 |% 
 ::
-++  get-sub-card
+:: card that publishes info to all subscribers
+++  pub-card
+    |=  upd=update:advert
+    ^-  (list card:agent:gall)
+    :~  [%give %fact ~[noun-wire] %advert-update !>(upd)]
+        [%give %fact ~[json-wire] %advert-update !>(upd)]
+    ==
+::
+:: card that asks to subscribe to some pal
+++  sub-card
     |=  pal=ship
     ^-  card:agent:gall
-    [%pass get-wire %agent [pal %bizbaz] %watch get-wire]
+    [%pass noun-wire %agent [pal %bizbaz] %watch noun-wire]
 ::
-++  get-wire
+++  noun-wire
     /noun/adverts
+::
+++  json-wire
+    /json/adverts
 ::
 ++  advert-exists
     |=  adverts=adverts:advert
