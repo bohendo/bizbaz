@@ -5,19 +5,6 @@
 +$  intent-body  [advert=hash vendor=signature client=ship when=@da]
 +$  intent  [=hash client=signature body=intent-body]
 +$  intents  (list intent)
-::  an intent is valid if:
-::  - the advert hash matches a known, valid advert
-::  - hash.intent matches sham(intent-body)
-::  - the vendor's signature of the advert hash is valid
-::  - the client's signature of the intent hash is valid
-::  the client:
-::  - receives an intent request from the UI via http
-::  - builds & validates it (crash if invalid)
-::  - forwards it to the vendor via ames
-::  the vendor:
-::  - receives an intent from the client via ames
-::  - validates it (drops it if invalid)
-::  - forwards it to the UI for the user's decision
 ::
 ::  a vendor commits to to producing goods/services for the client
 +$  commit-body  [intent=hash client=signature vendor=ship when=@da]

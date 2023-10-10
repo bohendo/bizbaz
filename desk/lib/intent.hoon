@@ -47,10 +47,20 @@
 ++  validate
     |=  intent=intent:revsur
     ^-  ?
-    =/  true-hash  (sham body.intent)
-    ?.  =(hash.intent true-hash)
+    ?:  =(ship.vendor.body.intent ship.client.intent)
+      ~&  "vendor and client are the same ship"
+      %.n
+    ?.  =(client.body.intent ship.client.intent)
+      ~&  "client specified in the body did not sign this commit"
+      %.n
+    ?.  (is-signature-valid:signatures [advert.body.intent ship.vendor.body.intent vendor.body.intent when.body.intent])
+      ~&  "vendor sig on the advert hash is invalid"
+      %.n
+    ?.  =(hash.intent (sham body.intent))
+      ~&  "intent hash does not match digest of the body"
       %.n
     ?.  (is-signature-valid:signatures [hash.intent ship.client.intent client.intent when.body.intent])
+      ~&  "client sig on the intent hash is invalid"
       %.n
     %.y
 ::

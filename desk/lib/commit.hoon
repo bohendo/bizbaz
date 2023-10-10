@@ -49,10 +49,20 @@
 ++  validate
     |=  commit=commit:revsur
     ^-  ?
-    =/  true-hash  (sham body.commit)
-    ?.  =(hash.commit true-hash)
+    ?.  (validate:intlib [hash=intent.body.commit client=client.body.commit body=intent.commit])
+      ~&  "intent included in this commit is invalid"
+      %.n
+    ?.  =(ship.vendor.commit ship.vendor.intent.commit)
+      ~&  "vendor specified in intent body did not sign this commit"
+      %.n
+    ?.  =(ship.vendor.commit vendor.body.commit)
+      ~&  "vendor specified in commit body did not sign this commit"
+      %.n
+    ?.  =(hash.commit (sham body.commit))
+      ~&  "commit hash does not match digest of the body"
       %.n
     ?.  (is-signature-valid:signatures [hash.commit ship.vendor.commit vendor.commit when.body.commit])
+      ~&  "vendor sig on the commit hash is invalid"
       %.n
     %.y
 ::

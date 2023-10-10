@@ -78,17 +78,30 @@
           body=review-body
           commit=cmt
       ==
-    :: crash if our new review is invalid
     ?>  (validate new-review)
     new-review
 ::
 ++  validate
     |=  review=review:revsur
     ^-  ?
-    =/  true-hash  (sham body.review)
-    ?.  =(hash.review true-hash)
+    ?.  (validate:cmtlib commit.review)
+      ~&  "commit included in this review is invalid"
+      %.n
+    ?.  =(hash.review (sham body.review))
+      ~&  "review hash does not match digest of the body"
       %.n
     ?.  (is-signature-valid:signatures [hash.review ship.reviewer.review reviewer.review when.body.review])
+      ~&  "reviewer sig on the review hash is invalid"
+      %.n
+    =/  reviewee  reviewee.body.review
+    =/  reviewer  ship.reviewer.review
+    =/  client    ship.client.body.commit.review
+    =/  vendor    vendor.body.commit.review
+    ?.  |(&(=(reviewee client) =(reviewer vendor)) &(=(reviewee vendor) =(reviewer client)))
+      ~&  "reviewer & reviewee are not the client & vendor"
+      %.n
+    ?.  |((lte score.body.review 5) (gte score.body.review 1))
+      ~&  "score is not 1 to 5"
       %.n
     %.y
 ::
