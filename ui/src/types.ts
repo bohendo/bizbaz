@@ -24,9 +24,64 @@ export type TNewAdvert = {
 export type TAdvert = {
     hash: string;
     body: TAdvertBody;
-    vendor: {
-        life: string;
-        ship: string;
-        sig: string;
-    }
+    vendor: TSignature;
 }
+
+export type TSignature = {
+    life: string;
+    ship: string;
+    sig: string;
+};
+
+export type TVote = {
+    hash: string;
+    body: {
+        advert: string;
+        choice: string;
+        voter: string;
+        when: number;
+    };
+    voter: TSignature;
+}
+
+export type TIntentBody = {
+    advert: string;
+    vendor: TSignature;
+    client: string;
+    when: number;
+}
+
+export type TCommitBody = {
+    intent: string;
+    client: TSignature;
+    vendor: string;
+    when: number;
+}
+
+export type TReviewBody = {
+    commit: string;
+    reviewee: string;
+    score: number;
+    why: string;
+    when: number;
+}
+
+export type TIntent = {
+    hash: string;
+    client: TSignature;
+    body: TIntentBody;
+};
+
+export type TCommit = {
+    hash: string;
+    vendor: TSignature;
+    intent: TIntentBody;
+    body: TCommitBody;
+};
+
+export type TReview = {
+    hash: string;
+    reviewer: TSignature;
+    body: TReviewBody;
+    commit: TCommit;
+};

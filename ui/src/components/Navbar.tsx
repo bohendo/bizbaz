@@ -17,7 +17,7 @@ import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
 import ExploreOutlined from "@mui/icons-material/ExploreOutlined";
 
-import '@urbit/sigil-js'
+import * as Sigil from '@urbit/sigil-js'
 
 const config = {
  point: '~talsyx-talsud', // or 'zod'
@@ -39,6 +39,8 @@ export const NavBar = ({api, tabPage}:{api: any, tabPage: ReactComponentElement<
     const location = useLocation();
     
     const theme = useTheme();
+
+    console.log(Sigil)
 
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);

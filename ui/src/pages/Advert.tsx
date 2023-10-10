@@ -12,7 +12,7 @@ import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import Fab from '@mui/material/Fab'
 
-import { TAdvert } from "../types";
+import { TAdvert, TCommit, TIntent, TReview, TVote } from "../types";
 
 import { NewReview } from "./NewReview";
 
@@ -34,7 +34,7 @@ export const Advert = ({ api }: { api: any }) => {
   const updateAdvert = ( upd: any) => {
     console.log(`Got advert update:`, upd)
     if (upd.gather) {
-      setAdvert(upd.gather.adverts.find(u => u.hash === hash))      
+      setAdvert(upd.gather.adverts.find((u: TAdvert) => u.hash === hash))      
     } else if (upd.update) {
       navigate(`advert/${upd.update.update.new.hash}`)
     } else {
@@ -44,7 +44,7 @@ export const Advert = ({ api }: { api: any }) => {
 
   const updateVotes = (upd: any) => {
     if (upd.gather) {
-      const filteredVotes = upd.gather.votes.filter(vote =>
+      const filteredVotes = upd.gather.votes.filter((vote: TVote) =>
         vote.body.advert === hash
       )
       console.log(`Relevant votes:`, filteredVotes)
@@ -76,19 +76,19 @@ export const Advert = ({ api }: { api: any }) => {
 
   const updateReviews = (upd: any) => {
     console.log(`Got reviews update:`, upd)
-    const filteredIntents = upd.intents.filter(intent =>
+    const filteredIntents = upd.intents.filter((intent: TIntent) =>
       intent.body.advert === hash
     )
     console.log(`Relevant intents:`, filteredIntents)
     setIntents(filteredIntents)
 
-    const filteredCommits = upd.commits.filter(commit =>
+    const filteredCommits = upd.commits.filter((commit: TCommit) =>
         commit.intent.advert === hash
     )
     console.log(`Relevant commits:`, filteredCommits)
     setCommits(filteredCommits)
 
-    const filteredReviews = upd.reviews.filter(review =>
+    const filteredReviews = upd.reviews.filter((review: TReview) =>
       review.commit.intent.advert === hash
     )
     console.log(`Relevant reviews:`, filteredReviews)
@@ -233,7 +233,7 @@ export const Advert = ({ api }: { api: any }) => {
 
       <NewReview
         commit={commits[0]}
-        reviewee={advert?.vendor?.ship || null}
+        reviewee={advert?.vendor?.ship || ""}
         open={openNewReviewDialog}
         handleCloseDialog={() => setOpenNewReviewDialog(false)}
         api={api}

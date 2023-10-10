@@ -26,16 +26,16 @@ export const Adverts = ({
   api
 }: { api: any }) => {
   const theme = useTheme();
-  const [adverts, setAdverts] = useState([]);
+  const [adverts, setAdverts] = useState([] as Array<TAdvert>);
 
   console.log(`Rendering ${adverts.length} adverts`)
 
   const handleUpdate = ( upd: any) => {
     console.log(`Got advert update:`, upd)
     if (upd.gather) {
-      setAdverts(upd.gather.adverts || [])
+      setAdverts(upd.gather.adverts || [] as Array<TAdvert>)
     } else if (upd.create) {
-      setAdverts((oldAdverts) => [upd.create.advert, ...oldAdverts])
+      setAdverts((oldAdverts: Array<TAdvert>) => [upd.create.advert, ...oldAdverts])
     } else {
       console.log(`Got unknown advert update:`, upd)
     }
