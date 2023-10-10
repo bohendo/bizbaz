@@ -171,6 +171,7 @@
 ++  on-watch  :: handles subscription requests
   |=  =path
   ^-  (quip card _this)
+  :: TODO: fix path validation
   :: ?>  |(?=(%reviews path) ?=(%adverts path))
   :: ~&  path
   :_  this
@@ -252,7 +253,6 @@
             ?.  ?~(existing-index %.y %.n)
               ~&  "we already have this advert, doing nothing"
               [~ this]
-            :: check if this advert is a duplicate
             ~&  "validating newly created advert"
             ?.  ((validate:advlib bowl) new-advert)
               ~&  "Crashing, received advert is invalid"
@@ -279,13 +279,11 @@
             ?.  ?~(existing-index %.y %.n)
               ~&  "we already have this advert, doing nothing"
               [~ this]
-            :: check if this advert is a duplicate
             ~&  "validating updated advert:"
             ~&  new-advert
-            :: TODO: jael-scry is broken on fake ships, uncomment before live deployment
-            :: ?.  (validate:advert-lib new-advert)
-            ::   ~&  "Crashing, received advert is invalid"
-            ::   !!
+            ?.  (validate:advlib new-advert)
+              ~&  "Crashing, received advert is invalid"
+              !!
             ~&  (weld "%update: valid advert received from " (scow %p src.bowl))
             =/  old-ad-index  ((get-advert-index:advert-lib adverts) old-hash)
             =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
@@ -317,12 +315,12 @@
             ?:  ?~(index %.y %.n)
               ~&  "we do not have this advert, doing nothing"
               [~ this]
-            :: TODO: think of validate logic for delete request so that malicious ship cannot 
-            :: shadow ban some by sending delete update on network
-            :: TODO: jael-scry is broken on fake ships, uncomment before live deployment
-            :: ?.  (validate:advert-lib new-advert)
-            ::   ~&  "Crashing, received advert is invalid"
-            ::   !!
+            :: TODO: think of validation logic for delete request so
+            :: that a malicious ship cannor shadow ban ad advert by
+            :: sending a delete update to network
+            ?.  (validate:advert-lib new-advert)
+              ~&  "Crashing, received advert is invalid"
+              !!
             =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
             =/  is-pal  ?~((find ~[ship.vendor.ad] ~(tap in pals)) %.n %.y)
             ?:  is-pal
@@ -356,6 +354,8 @@
             ~&  (log-gather:utils [got=(lent votes.upd) new=(lent new-votes) from=src.bowl type="vote"])
             [~ this(votes (weld new-votes votes))]
               ::
+              :: TODO: drop adverts that we downvote
+              ::       therefore, only allow unvotes on upvotes
               %vote
             ~&  "Got a %create %vote-update from our subscription"
             =/  new-vote  vote.upd
@@ -365,6 +365,7 @@
             ?.  ((validate:votlib bowl) new-vote)
               ~&  "Crashing, received vote is invalid"
               !!
+            :: TODO: ensure the new when.body is newer than the existing one
             ~&  (weld "%vote: valid vote received from " (scow %p src.bowl))
             =/  new-votes  ((upsert-vote:votlib votes) new-vote)
             =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
@@ -496,6 +497,7 @@
             ?.  ((validate:revlib bowl) new-review)
               ~&  "Crashing, received review is invalid"
               !!
+            :: TODO: ensure the new when.body is newer than the existing one
             ~&  (weld "%review: valid review update received from " (scow %p src.bowl))
             =/  new-reviews  ((upsert:revlib reviews) new-review)
             =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
@@ -511,6 +513,7 @@
           ==
         ==
       ==
+      :: TODO: send all 3 gather updates to new pals
       :: [%newpals ~]
       :: ?+  -.sign  `this
       ::   %fact
