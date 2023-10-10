@@ -54,13 +54,13 @@
     ?.  =(client.body.intent ship.client.intent)
       ~&  "client specified in the body did not sign this commit"
       %.n
-    ?.  (is-signature-valid:signatures [advert.body.intent our.bowl vendor.body.intent when.body.intent])
+    ?.  (is-signature-valid:signatures [our.bowl vendor.body.intent advert.body.intent now.bowl])
       ~&  "vendor sig on the advert hash is invalid"
       %.n
     ?.  =(hash.intent (sham body.intent))
       ~&  "intent hash does not match digest of the body"
       %.n
-    ?.  (is-signature-valid:signatures [hash.intent our.bowl client.intent when.body.intent])
+    ?.  (is-signature-valid:signatures [our.bowl client.intent hash.intent now.bowl])
       ~&  "client sig on the intent hash is invalid"
       %.n
     %.y

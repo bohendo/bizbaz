@@ -19,12 +19,11 @@
   life
 ::
 ++  is-signature-valid
-  |=  [=hash our=ship =signature now=time]
+  |=  [our=ship =signature =hash now=time]
   ^-  ?
-  ::  ~&  (weld (weld (weld "validating signature by " (scow %p ship)) " on ") (scow %da now))
   =+  (jael-scry ,lyf=(unit @) our %lyfe now /(scot %p ship.signature))
-  ::
   ::  we do not have a public key from ship at this life
+  ::
   ?~  lyf  %.y
   ?.  =(u.lyf life.signature)  %.y
   =+  %:  jael-scry
@@ -41,13 +40,13 @@
   =(`hash (sure:as.them sig.signature))
 ::
 ++  are-signatures-valid
-  |=  [=ship =signatures =hash now=time]
+  |=  [our=ship =signatures =hash now=time]
   ^-  ?
   =/  signature-list  ~(tap in signatures)
   |-
   ?~  signature-list
     %.y
-  ?:  (is-signature-valid hash ship i.signature-list now)
+  ?:  (is-signature-valid our i.signature-list hash now)
     $(signature-list t.signature-list)
   %.n
 ::

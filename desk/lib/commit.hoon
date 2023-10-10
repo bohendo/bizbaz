@@ -62,7 +62,7 @@
     ?.  =(hash.commit (sham body.commit))
       ~&  "commit hash does not match digest of the body"
       %.n
-    ?.  (is-signature-valid:signatures [hash.commit our.bowl vendor.commit when.body.commit])
+    ?.  (is-signature-valid:signatures [our.bowl vendor.commit hash.commit now.bowl])
       ~&  "vendor sig on the commit hash is invalid"
       %.n
     %.y

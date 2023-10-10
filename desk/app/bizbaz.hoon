@@ -10,7 +10,7 @@
   $%  state-0
   ==
 +$  state-0
-  $:  %0 :: TODO: split adverts into myAdverts w sigs & palAdverts where the sigs are validated and then dropped
+  $:  %0
       adverts=(list advert:advert)
       votes=(list vote:vote)
       intents=(list intent:review)
@@ -62,6 +62,7 @@
   ?:  ?=(%syncsubs mark)
     =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
     ~&  (weld "Syncing data w mutual pals: " (spud (turn ~(tap in pals) |=(pal=ship (scot %p pal)))))
+    ::  TODO: only share stuff from direct pals
     :_  this
     :~  [%give %fact ~[/noun/adverts] %advert-update !>(`update:advert`[%gather adverts])]
         [%give %fact ~[/noun/votes] %vote-update !>(`update:vote`[%gather votes])]
@@ -239,6 +240,7 @@
           ?+  -.upd  !!
               ::
               %gather
+            :: TODO: drop invalid items
             =/  new-adverts  (skip adverts.upd (exists:advlib adverts))
             ~&  (log-gather:utils [got=(lent adverts.upd) new=(lent new-adverts) from=src.bowl type="advert"])
             [~ this(adverts (weld new-adverts adverts))]
@@ -252,10 +254,9 @@
               [~ this]
             :: check if this advert is a duplicate
             ~&  "validating newly created advert"
-            :: TODO: jael-scry is broken on fake ships, uncomment before live deployment
-            :: ?.  ((validate:advlib bowl) new-advert)
-            ::   ~&  "Crashing, received advert is invalid"
-            ::   !!
+            ?.  ((validate:advlib bowl) new-advert)
+              ~&  "Crashing, received advert is invalid"
+              !!
             :: TODO: ensure the new when.body is newer than the existing one
             ~&  (weld "%create: valid advert received from " (scow %p src.bowl))
             =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
@@ -291,6 +292,7 @@
           ?-  -.upd
               ::
               %gather
+            :: TODO: drop invalid items
             =/  new-votes  (skip votes.upd (vote-exists:votlib votes))
             ~&  (log-gather:utils [got=(lent votes.upd) new=(lent new-votes) from=src.bowl type="vote"])
             [~ this(votes (weld new-votes votes))]
@@ -301,10 +303,9 @@
             =/  adv-index  ((get-by-hash:advlib adverts) advert.body.new-vote)
             ?~  adv-index
               ~|((weld "No advert with hash " (scow %uv advert.body.new-vote)) !!)
-            :: TODO: jael-scry is broken on fake ships, uncomment before live deployment
-            :: ?.  ((validate:votlib bowl) new-vote)
-            ::   ~&  "Crashing, received vote is invalid"
-            ::   !!
+            ?.  ((validate:votlib bowl) new-vote)
+              ~&  "Crashing, received vote is invalid"
+              !!
             ~&  (weld "%vote: valid vote received from " (scow %p src.bowl))
             =/  new-votes  ((upsert-vote:votlib votes) new-vote)
             =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
@@ -334,6 +335,7 @@
           ?-  -.upd
               ::
               %gather
+            :: TODO: drop invalid items
             :: handle new intents
             =/  new-intents  (skip intents.upd (exists:intlib intents))
             ~&  (log-gather:utils [got=(lent intents.upd) new=(lent new-intents) from=src.bowl type="intent"])
@@ -360,10 +362,9 @@
             ?~  int-index
               ~&  "Ignoring duplicate intent"
               [~ this]
-            :: TODO: jael-scry is broken on fake ships, uncomment before live deployment
-            :: ?.  ((validate:intent-lib bowl) new-intent)
-            ::   ~&  "Crashing, received intent is invalid"
-            ::   !!
+            ?.  ((validate:intlib bowl) new-intent)
+              ~&  "Crashing, received intent is invalid"
+              !!
             ?.  =(ship.vendor.body.new-intent our.bowl)
               =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
               =/  is-pal  ?~((find ~[ship.client.new-intent] ~(tap in pals)) %.n %.y)
@@ -385,10 +386,9 @@
             ?~  cmt-index
               ~&  "Ignoring duplicate commit"
               [~ this]
-            :: TODO: jael-scry is broken on fake ships, uncomment before live deployment
-            :: ?.  ((validate:commit-lib bowl) new-commit)
-            ::   ~&  "Crashing, received commit is invalid"
-            ::   !!
+            ?.  ((validate:cmtlib bowl) new-commit)
+              ~&  "Crashing, received commit is invalid"
+              !!
             ?.  =(ship.client.body.new-commit our.bowl)
               =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
               =/  is-pal  ?~((find ~[ship.vendor.new-commit] ~(tap in pals)) %.n %.y)
@@ -410,10 +410,9 @@
             ?~  rev-index
               ~&  "Ignoring duplicate review"
               [~ this]
-            :: TODO: jael-scry is broken on fake ships, uncomment before live deployment
-            :: ?.  ((validate:revlib bowl) new-review)
-            ::   ~&  "Crashing, received review is invalid"
-            ::   !!
+            ?.  ((validate:revlib bowl) new-review)
+              ~&  "Crashing, received review is invalid"
+              !!
             ~&  (weld "valid review received from " (scow %p src.bowl))
             =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
             =/  is-pal  ?~((find ~[ship.reviewer.new-review] ~(tap in pals)) %.n %.y)
@@ -435,10 +434,9 @@
             ?~  rev-index
               ~&  "Ignoring duplicate review"
               [~ this]
-            :: TODO: jael-scry is broken on fake ships, uncomment before live deployment
-            :: ?.  ((validate:revlib bowl) new-review)
-            ::   ~&  "Crashing, received review is invalid"
-            ::   !!
+            ?.  ((validate:revlib bowl) new-review)
+              ~&  "Crashing, received review is invalid"
+              !!
             ~&  (weld "%review: valid review update received from " (scow %p src.bowl))
             =/  new-reviews  ((upsert:revlib reviews) new-review)
             =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)

@@ -103,7 +103,7 @@
     =/  true-hash  (sham body.vote)
     ?.  =(hash.vote true-hash)
       %.n
-    ?.  (is-signature-valid:signatures [hash.vote our.bowl voter.vote when.body.vote])
+    ?.  (is-signature-valid:signatures [our.bowl voter.vote hash.vote now.bowl])
       %.n
     %.y
 ::

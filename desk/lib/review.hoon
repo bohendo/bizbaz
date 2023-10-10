@@ -91,7 +91,7 @@
     ?.  =(hash.review (sham body.review))
       ~&  "review hash does not match digest of the body"
       %.n
-    ?.  (is-signature-valid:signatures [hash.review our.bowl reviewer.review when.body.review])
+    ?.  (is-signature-valid:signatures [our.bowl reviewer.review hash.review now.bowl])
       ~&  "reviewer sig on the review hash is invalid"
       %.n
     =/  reviewee  reviewee.body.review

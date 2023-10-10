@@ -74,7 +74,7 @@
     =/  true-hash  (sham body.advert)
     ?.  =(hash.advert true-hash)
       %.n
-    ?.  (is-signature-valid:signatures [hash.advert our.bowl vendor.advert when.body.advert])
+    ?.  (is-signature-valid:signatures [our.bowl vendor.advert hash.advert now.bowl])
       %.n
     %.y
 ::
