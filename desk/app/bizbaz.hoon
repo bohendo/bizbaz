@@ -1,9 +1,7 @@
-/-  advert
-/-  pals
-/-  review
-/-  vote
+/-  pals, advert, review, vote
 /+  advert-lib=advert
 /+  vote-lib=vote
+/+  review-lib=review
 /+  default-agent, dbug, signatures, utils
 |%
 +$  versioned-state
@@ -70,21 +68,20 @@
       ?-  -.act
           ::
           %create 
-        =/  new-advert  ((build-advert:advert-lib bowl) req.act)
-        ::  ~&  "Created new advert, broadcasting to ui + pals"
+        =/  new-advert  ((build:advert-lib bowl) req.act)
         :_  this(adverts [new-advert adverts])
         (pub-card:advert-lib `update:advert`[%create new-advert])
           ::
           %update
-        =/  index  ((get-advert-index:advert-lib adverts) advert.act)
+        =/  index  ((get-by-hash:advert-lib adverts) advert.act)
         ?~  index
           ~|((weld "No advert with hash " (scow %uv advert.act)) !!)
-        =/  new-advert  ((build-advert:advert-lib bowl) req.act)
+        =/  new-advert  ((build:advert-lib bowl) req.act)
         :_  this(adverts (snap adverts (need index) new-advert))
         (pub-card:advert-lib `update:advert`[%update advert.act new-advert])
           ::
           %delete
-        =/  index  ((get-advert-index:advert-lib adverts) advert.act)
+        =/  index  ((get-by-hash:advert-lib adverts) advert.act)
         ?~  index
           ~|((weld "No advert with hash " (scow %uv advert.act)) !!)
         :_  this(adverts (oust [(need index) 1] adverts))
@@ -95,7 +92,7 @@
       ~&  act
       ?-  -.act
           %vote
-            =/  adv-index  ((get-advert-index:advert-lib adverts) advert.req.act)
+            =/  adv-index  ((get-by-hash:advert-lib adverts) advert.req.act)
             ?~  adv-index
               ~|((weld "No advert with hash " (scow %uv advert.req.act)) !!)
             =/  new-vote  ((build-vote:vote-lib bowl) req.act)
@@ -108,22 +105,16 @@
       ~&  act
       ?-  -.act
           %intent
-            =/  index  (find ~[advert.act] (turn adverts |=(ad=advert:advert hash.ad)))
-            ?~  index
+            =/  ad-index  (find ~[advert.act] (turn adverts |=(ad=advert:advert hash.ad)))
+            ?~  ad-index
               ~|((weld "No advert with hash " (scow %uv advert.act)) !!)
-            =/  ad  (snag (need index) adverts)
-            =/  intent-body 
-              :*  advert=advert.act
-                  vendor=vendor.ad
-                  when=now.bowl
-              ==
-            =/  hash  (sham intent-body)
-            =/  new-intent
-              :*  hash=hash
-                  client=(sign:signatures our.bowl now.bowl advert.act)
-                  body=intent-body
-              ==
-            [~ this(intents [new-intent intents])]
+            =/  ad  (snag (need ad-index) adverts)
+            =/  new-intent  ((build:intent:review-lib bowl) ad)
+            ?:  ((exists:intent:review-lib intents) new-intent)
+              ~&  "Ignoring duplicate intent"  
+              [~ this]
+            :_  this(intents [new-intent intents])
+            (pub-card:intent:review-lib `update:review`[%intent new-intent])
           %commit
             =/  index  (find ~[intent.act] (turn intents |=(ad=intent:review hash.ad)))
             ?~  index
@@ -132,6 +123,7 @@
             =/  commit-body
               :*  intent=intent.act
                   client=client.intent
+                  vendor=our.bowl
                   when=now.bowl
               ==
             =/  hash  (sham commit-body)
@@ -236,7 +228,7 @@
           ?+  -.upd  !!
               ::
               %gather
-            =/  new-adverts  (skip adverts.upd (advert-exists:advert-lib adverts))
+            =/  new-adverts  (skip adverts.upd (exists:advert-lib adverts))
             ~&  (log-gather:utils [got=(lent adverts.upd) new=(lent new-adverts) from=src.bowl type="advert"])
             [~ this(adverts (weld new-adverts adverts))]
               ::
@@ -254,6 +246,7 @@
             :: ?.  (validate:advert-lib new-advert)
             ::   ~&  "Crashing, received advert is invalid"
             ::   !!
+            :: TODO: ensure the new when.body is newer than the existing one
             ~&  (weld "%create: valid advert received from " (scow %p src.bowl))
             =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
             =/  is-pal  ?~((find ~[ship.vendor.new-advert] ~(tap in pals)) %.n %.y)
@@ -295,7 +288,7 @@
               %vote
             ~&  "Got a %create %vote-update from our subscription"
             =/  new-vote  vote.upd
-            =/  adv-index  ((get-advert-index:advert-lib adverts) advert.body.new-vote)
+            =/  adv-index  ((get-by-hash:advert-lib adverts) advert.body.new-vote)
             ?~  adv-index
               ~|((weld "No advert with hash " (scow %uv advert.body.new-vote)) !!)
             :: TODO: jael-scry is broken on fake ships, uncomment before live deployment

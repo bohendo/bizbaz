@@ -2,7 +2,7 @@
 |%
 ::
 ::  a client expresses intent to consume the vendor's goods/services
-+$  intent-body  [advert=hash vendor=signature when=@da]
++$  intent-body  [advert=hash vendor=signature client=ship when=@da]
 +$  intent  [=hash client=signature body=intent-body]
 +$  intents  (list intent)
 ::  an intent is valid if:
@@ -20,7 +20,7 @@
 ::  - forwards it to the UI for the user's decision
 ::
 ::  a vendor commits to to producing goods/services for the client
-+$  commit-body  [intent=hash client=signature when=@da]
++$  commit-body  [intent=hash client=signature vendor=ship when=@da]
 +$  commit  [=hash vendor=signature body=commit-body intent=intent-body]
 +$  commits  (list commit)
 ::  a commit is valid if:
@@ -64,6 +64,9 @@
   ==
 +$  update
   $%  [%gather intents=intents commits=commits reviews=reviews]
-      action
+      [%intent intent=intent]
+      [%commit commit=commit]
+      [%review review=review]
+      [%update old=hash new=review]
   ==
 --

@@ -1,9 +1,83 @@
 /-  review 
+/-  advert
 /+  signatures
 |% 
 ::
-++  validate  !!
+:: card that publishes info to all subscribers
+++  pub-card
+    |=  upd=update:review
+    ^-  (list card:agent:gall)
+    :~  [%give %fact ~[noun-wire] %review-update !>(upd)]
+        [%give %fact ~[json-wire] %review-update !>(upd)]
+    ==
 ::
+:: card that asks to subscribe to some pal
+++  sub-card
+    |=  pal=ship
+    ^-  card:agent:gall
+    [%pass noun-wire %agent [pal %bizbaz] %watch noun-wire]
+::
+++  noun-wire
+    /noun/reviews
+::
+++  json-wire
+    /json/reviews
+::
+++  intent
+  |% 
+  ::
+  ++  exists
+      |=  intents=intents:review
+      |=  intent=intent:review
+      ^-  ?
+      ?~  ((get-index intents) hash.intent)
+        %.n
+      %.y
+  ++  get-index
+      |=  intents=intents:review
+      |=  hash=hash:signatures
+      ^-  (unit @ud)
+      %+  find
+        ~[hash]
+        (turn intents get-hash)
+  ::
+  ++  get-hash
+      |=  intent=intent:review
+      ^-  hash:signatures
+      hash.intent
+  ::
+  ++  build
+      |=  =bowl:gall
+      |=  ad=advert:advert
+      ^-  intent:review
+      =/  intent-body
+        :*  advert=hash.ad
+            vendor=vendor.ad
+            client=our.bowl
+            when=now.bowl
+        ==
+      :: set intent hash and sign it
+      =/  hash  (sham intent-body)
+      =/  new-intent
+        :*  hash=hash
+            client=(sign:signatures our.bowl now.bowl hash)
+            body=intent-body
+        ==
+      :: crash if our new intent is invalid
+      ?>  (validate new-intent)
+      new-intent
+  ::
+  ++  validate
+      |=  intent=intent:review
+      ^-  ?
+      =/  true-hash  (sham body.intent)
+      ?.  =(hash.intent true-hash)
+        %.n
+      ?.  (is-signature-valid:signatures [hash.intent ship.client.intent client.intent when.body.intent])
+        %.n
+      %.y
+  ::
+  --
 ++  to-json
     =,  enjs:format
     |%
@@ -43,6 +117,7 @@
         %-  pairs
         :~  ['advert' s+(scot %uv advert.body)]
             ['vendor' (to-json:signatures vendor.body)]
+            ['client' s+(scot %p client.body)]
             ['when' (sect when.body)]
         ==
     ::

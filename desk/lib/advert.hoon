@@ -22,15 +22,15 @@
 ++  json-wire
     /json/adverts
 ::
-++  advert-exists
+++  exists
     |=  adverts=adverts:advert
     |=  advert=advert:advert
     ^-  ?
-    ?~  ((get-advert-index adverts) hash.advert)
+    ?~  ((get-by-hash adverts) hash.advert)
       %.n
     %.y
 ::
-++  get-advert-index
+++  get-by-hash
     |=  adverts=adverts:advert
     |=  hash=hash:signatures
     ^-  (unit @ud)
@@ -43,7 +43,7 @@
     ^-  hash:signatures
     hash.ad
 ::
-++  build-advert
+++  build
     |=  =bowl:gall
     |=  req=advert-req:advert
     ^-  advert:advert
