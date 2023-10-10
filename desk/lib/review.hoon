@@ -78,19 +78,20 @@
           body=review-body
           commit=cmt
       ==
-    ?>  (validate new-review)
+    ?>  ((validate bowl) new-review)
     new-review
 ::
 ++  validate
+    |=  =bowl:gall
     |=  review=review:revsur
     ^-  ?
-    ?.  (validate:cmtlib commit.review)
+    ?.  ((validate:cmtlib bowl) commit.review)
       ~&  "commit included in this review is invalid"
       %.n
     ?.  =(hash.review (sham body.review))
       ~&  "review hash does not match digest of the body"
       %.n
-    ?.  (is-signature-valid:signatures [hash.review ship.reviewer.review reviewer.review when.body.review])
+    ?.  (is-signature-valid:signatures [hash.review our.bowl reviewer.review when.body.review])
       ~&  "reviewer sig on the review hash is invalid"
       %.n
     =/  reviewee  reviewee.body.review

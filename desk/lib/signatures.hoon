@@ -19,17 +19,17 @@
   life
 ::
 ++  is-signature-valid
-  |=  [=hash =ship =signature now=time]
+  |=  [=hash our=ship =signature now=time]
   ^-  ?
   ::  ~&  (weld (weld (weld "validating signature by " (scow %p ship)) " on ") (scow %da now))
-  =+  (jael-scry ,lyf=(unit @) ship %lyfe now /(scot %p ship.signature))
+  =+  (jael-scry ,lyf=(unit @) our %lyfe now /(scot %p ship.signature))
   ::
   ::  we do not have a public key from ship at this life
   ?~  lyf  %.y
   ?.  =(u.lyf life.signature)  %.y
   =+  %:  jael-scry
         ,deed=[a=life b=pass c=(unit @uvH)]
-        ship  %deed  now  /(scot %p ship.signature)/(scot %ud life.signature)
+        our  %deed  now  /(scot %p ship.signature)/(scot %ud life.signature)
       ==
   ::  if signature is from a past life, skip validation
   ::  XX: should be visualised on frontend, not great.

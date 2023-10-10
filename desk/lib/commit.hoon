@@ -43,13 +43,14 @@
           intent=body.int
       ==
     :: crash if our new commit is invalid
-    ?>  (validate new-commit)
+    ?>  ((validate bowl) new-commit)
     new-commit
 ::
 ++  validate
+    |=  =bowl:gall
     |=  commit=commit:revsur
     ^-  ?
-    ?.  (validate:intlib [hash=intent.body.commit client=client.body.commit body=intent.commit])
+    ?.  ((validate:intlib bowl) [hash=intent.body.commit client=client.body.commit body=intent.commit])
       ~&  "intent included in this commit is invalid"
       %.n
     ?.  =(ship.vendor.commit ship.vendor.intent.commit)
@@ -61,7 +62,7 @@
     ?.  =(hash.commit (sham body.commit))
       ~&  "commit hash does not match digest of the body"
       %.n
-    ?.  (is-signature-valid:signatures [hash.commit ship.vendor.commit vendor.commit when.body.commit])
+    ?.  (is-signature-valid:signatures [hash.commit our.bowl vendor.commit when.body.commit])
       ~&  "vendor sig on the commit hash is invalid"
       %.n
     %.y

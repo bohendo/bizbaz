@@ -251,10 +251,9 @@
               ~&  "we already have this advert, doing nothing"
               [~ this]
             :: check if this advert is a duplicate
-            ~&  "validating newly created advert:"
-            ~&  new-advert
+            ~&  "validating newly created advert"
             :: TODO: jael-scry is broken on fake ships, uncomment before live deployment
-            :: ?.  (validate:advlib new-advert)
+            :: ?.  ((validate:advlib bowl) new-advert)
             ::   ~&  "Crashing, received advert is invalid"
             ::   !!
             :: TODO: ensure the new when.body is newer than the existing one
@@ -303,7 +302,7 @@
             ?~  adv-index
               ~|((weld "No advert with hash " (scow %uv advert.body.new-vote)) !!)
             :: TODO: jael-scry is broken on fake ships, uncomment before live deployment
-            :: ?.  (validate:votlib new-vote)
+            :: ?.  ((validate:votlib bowl) new-vote)
             ::   ~&  "Crashing, received vote is invalid"
             ::   !!
             ~&  (weld "%vote: valid vote received from " (scow %p src.bowl))
@@ -362,7 +361,7 @@
               ~&  "Ignoring duplicate intent"
               [~ this]
             :: TODO: jael-scry is broken on fake ships, uncomment before live deployment
-            :: ?.  (validate:intent-lib new-intent)
+            :: ?.  ((validate:intent-lib bowl) new-intent)
             ::   ~&  "Crashing, received intent is invalid"
             ::   !!
             ?.  =(ship.vendor.body.new-intent our.bowl)
@@ -387,7 +386,7 @@
               ~&  "Ignoring duplicate commit"
               [~ this]
             :: TODO: jael-scry is broken on fake ships, uncomment before live deployment
-            :: ?.  (validate:commit-lib new-commit)
+            :: ?.  ((validate:commit-lib bowl) new-commit)
             ::   ~&  "Crashing, received commit is invalid"
             ::   !!
             ?.  =(ship.client.body.new-commit our.bowl)
@@ -412,7 +411,7 @@
               ~&  "Ignoring duplicate review"
               [~ this]
             :: TODO: jael-scry is broken on fake ships, uncomment before live deployment
-            :: ?.  (validate:revlib new-review)
+            :: ?.  ((validate:revlib bowl) new-review)
             ::   ~&  "Crashing, received review is invalid"
             ::   !!
             ~&  (weld "valid review received from " (scow %p src.bowl))
@@ -437,7 +436,7 @@
               ~&  "Ignoring duplicate review"
               [~ this]
             :: TODO: jael-scry is broken on fake ships, uncomment before live deployment
-            :: ?.  (validate:revlib new-review)
+            :: ?.  ((validate:revlib bowl) new-review)
             ::   ~&  "Crashing, received review is invalid"
             ::   !!
             ~&  (weld "%review: valid review update received from " (scow %p src.bowl))

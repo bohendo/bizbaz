@@ -64,16 +64,17 @@
           body=advert-body
       ==
     :: crash if our new advert is invalid
-    ?>  (validate new-advert)
+    ?>  ((validate bowl) new-advert)
     new-advert
 ::
 ++  validate
+    |=  =bowl:gall
     |=  advert=advert:advert
     ^-  ?
     =/  true-hash  (sham body.advert)
     ?.  =(hash.advert true-hash)
       %.n
-    ?.  (is-signature-valid:signatures [hash.advert ship.vendor.advert vendor.advert when.body.advert])
+    ?.  (is-signature-valid:signatures [hash.advert our.bowl vendor.advert when.body.advert])
       %.n
     %.y
 ::

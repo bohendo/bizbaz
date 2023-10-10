@@ -93,16 +93,17 @@
           vote-body
       ==
     :: crash if our new vote is invalid
-    ?>  (validate new-vote)
+    ?>  ((validate bowl) new-vote)
     new-vote
 ::
 ++  validate
+    |=  =bowl:gall
     |=  vote=vote:vote
     ^-  ?
     =/  true-hash  (sham body.vote)
     ?.  =(hash.vote true-hash)
       %.n
-    ?.  (is-signature-valid:signatures [hash.vote ship.voter.vote voter.vote when.body.vote])
+    ?.  (is-signature-valid:signatures [hash.vote our.bowl voter.vote when.body.vote])
       %.n
     %.y
 ::

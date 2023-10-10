@@ -41,10 +41,11 @@
           body=intent-body
       ==
     :: crash if our new intent is invalid
-    ?>  (validate new-intent)
+    ?>  ((validate bowl) new-intent)
     new-intent
 ::
 ++  validate
+    |=  =bowl:gall
     |=  intent=intent:revsur
     ^-  ?
     ?:  =(ship.vendor.body.intent ship.client.intent)
@@ -53,13 +54,13 @@
     ?.  =(client.body.intent ship.client.intent)
       ~&  "client specified in the body did not sign this commit"
       %.n
-    ?.  (is-signature-valid:signatures [advert.body.intent ship.vendor.body.intent vendor.body.intent when.body.intent])
+    ?.  (is-signature-valid:signatures [advert.body.intent our.bowl vendor.body.intent when.body.intent])
       ~&  "vendor sig on the advert hash is invalid"
       %.n
     ?.  =(hash.intent (sham body.intent))
       ~&  "intent hash does not match digest of the body"
       %.n
-    ?.  (is-signature-valid:signatures [hash.intent ship.client.intent client.intent when.body.intent])
+    ?.  (is-signature-valid:signatures [hash.intent our.bowl client.intent when.body.intent])
       ~&  "client sig on the intent hash is invalid"
       %.n
     %.y
