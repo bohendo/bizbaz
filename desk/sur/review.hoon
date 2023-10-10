@@ -40,6 +40,7 @@
 ::  - at this point the vendor can proceed to provide the good/service to move the transaction forward
 ::
 ::  either the vendor or the client submits a review of the other party
++$  review-req  [commit=hash score=@ud why=@t]
 +$  review-body  [commit=hash reviewee=ship score=@ud why=@t when=@da]
 +$  review  [=hash reviewer=signature body=review-body commit=commit]
 +$  reviews  (list review)
@@ -59,8 +60,8 @@
 +$  action
   $%  [%intent advert=hash]
       [%commit intent=hash]
-      [%review body=review-body]
-      [%update review=hash body=review-body]
+      [%review req=review-req]
+      [%update old=hash new=review-req]
   ==
 +$  update
   $%  [%gather intents=intents commits=commits reviews=reviews]

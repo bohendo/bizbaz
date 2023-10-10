@@ -105,58 +105,54 @@
       ~&  act
       ?-  -.act
           %intent
-            =/  ad-index  (find ~[advert.act] (turn adverts |=(ad=advert:advert hash.ad)))
-            ?~  ad-index
+            =/  adv-index  ((get-by-hash:advert-lib adverts) advert.act)
+            ?~  adv-index
               ~|((weld "No advert with hash " (scow %uv advert.act)) !!)
-            =/  ad  (snag (need ad-index) adverts)
+            =/  ad  (snag (need adv-index) adverts)
             =/  new-intent  ((build:intent:review-lib bowl) ad)
             ?:  ((exists:intent:review-lib intents) new-intent)
               ~&  "Ignoring duplicate intent"  
               [~ this]
             :_  this(intents [new-intent intents])
-            (pub-card:intent:review-lib `update:review`[%intent new-intent])
+            (pub-card:review-lib `update:review`[%intent new-intent])
           %commit
-            =/  index  (find ~[intent.act] (turn intents |=(ad=intent:review hash.ad)))
-            ?~  index
+            =/  int-index  ((get-by-hash:intent:review-lib intents) intent.act)
+            ?~  int-index
               ~|((weld "No intent with hash " (scow %uv intent.act)) !!)
-            =/  intent  (snag (need index) intents)
-            =/  commit-body
-              :*  intent=intent.act
-                  client=client.intent
-                  vendor=our.bowl
-                  when=now.bowl
-              ==
-            =/  hash  (sham commit-body)
-            =/  new-commit
-              :*  hash=hash
-                  vendor=(sign:signatures our.bowl now.bowl intent.act)
-                  body=commit-body
-                  intent=body.intent
-              ==
-            [~ this(commits [new-commit commits])] :: TODO: remove relevant intent from state
+            =/  int  (snag (need int-index) intents)
+            =/  new-commit  ((build:commit:review-lib bowl) int)
+            ?:  ((exists:commit:review-lib commits) new-commit)
+              ~&  "Ignoring duplicate commit"  
+              [~ this]
+            =/  new-intents  (oust [(need int-index) 1] intents)  :: remove old intent
+            =/  new-commits  [new-commit commits]  :: add new commit
+            :_  this(intents new-intents, commits new-commits)
+            (pub-card:review-lib `update:review`[%commit new-commit])
           %review
-            =/  index  (find ~[commit.body.act] (turn commits |=(cmt=commit:review hash.cmt)))
-            ?~  index
-              ~|((weld "No commit with hash " (scow %uv commit.body.act)) !!)
-            =/  commit  (snag (need index) commits)
-            =/  review-body
-              :*  commit=hash.commit
-                  reviewee=reviewee.body.act
-                  score=score.body.act
-                  why=why.body.act
-                  when=now.bowl
-              ==
-            =/  hash  (sham review-body)
-            =/  new-review
-              :*  hash=hash
-                  reviewer=(sign:signatures our.bowl now.bowl hash)
-                  body=review-body
-                  commit=commit
-              ==
-            [~ this(reviews [new-review reviews])]
+            =/  cmt-index  (find ~[commit.req.act] (turn commits |=(cmt=commit:review hash.cmt)))
+            ?~  cmt-index
+              ~|((weld "No commit with hash " (scow %uv commit.req.act)) !!)
+            =/  cmt  (snag (need cmt-index) commits)
+            =/  new-review  (((build:review:review-lib bowl) cmt) req.act)
+            ?:  ((exists:review:review-lib reviews) new-review)
+              ~&  "Ignoring duplicate review"  
+              [~ this]
+            =/  new-commits  (oust [(need cmt-index) 1] commits)  :: remove old commit
+            =/  new-reviews  [new-review reviews]  :: add new review
+            :_  this(commits new-commits, reviews new-reviews)
+            (pub-card:review-lib `update:review`[%review new-review])
           %update
-            :: TODO: find & replace the one w matching hash
-            !! :: [~ this(reviews [review.act reviews])]
+            =/  old-index  (find ~[old.act] (turn reviews |=(rev=review:review hash.rev)))
+            ?~  old-index
+              ~|((weld "No review with hash " (scow %uv old.act)) !!)
+            =/  rev  (snag (need old-index) reviews)
+            =/  new-review  (((build:review:review-lib bowl) commit.rev) new.act)
+            ?:  ((exists:review:review-lib reviews) new-review)
+              ~&  "Ignoring no-op review update"  
+              [~ this]
+            =/  new-reviews  [new-review reviews]  :: add new review
+            :_  this(reviews (snap reviews (need old-index) new-review))
+            (pub-card:review-lib `update:review`[%update old=old.act new=new-review])
       == 
   ==
 ++  on-peek  :: handles one-off read-only requests

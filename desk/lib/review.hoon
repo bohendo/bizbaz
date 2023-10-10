@@ -1,11 +1,11 @@
-/-  review 
+/-  revsur=review 
 /-  advert
 /+  signatures
 |% 
 ::
 :: card that publishes info to all subscribers
 ++  pub-card
-    |=  upd=update:review
+    |=  upd=update:revsur
     ^-  (list card:agent:gall)
     :~  [%give %fact ~[noun-wire] %review-update !>(upd)]
         [%give %fact ~[json-wire] %review-update !>(upd)]
@@ -27,14 +27,14 @@
   |% 
   ::
   ++  exists
-      |=  intents=intents:review
-      |=  intent=intent:review
+      |=  intents=intents:revsur
+      |=  intent=intent:revsur
       ^-  ?
-      ?~  ((get-index intents) hash.intent)
+      ?~  ((get-by-hash intents) hash.intent)
         %.n
       %.y
-  ++  get-index
-      |=  intents=intents:review
+  ++  get-by-hash
+      |=  intents=intents:revsur
       |=  hash=hash:signatures
       ^-  (unit @ud)
       %+  find
@@ -42,14 +42,14 @@
         (turn intents get-hash)
   ::
   ++  get-hash
-      |=  intent=intent:review
+      |=  intent=intent:revsur
       ^-  hash:signatures
       hash.intent
   ::
   ++  build
       |=  =bowl:gall
       |=  ad=advert:advert
-      ^-  intent:review
+      ^-  intent:revsur
       =/  intent-body
         :*  advert=hash.ad
             vendor=vendor.ad
@@ -68,7 +68,7 @@
       new-intent
   ::
   ++  validate
-      |=  intent=intent:review
+      |=  intent=intent:revsur
       ^-  ?
       =/  true-hash  (sham body.intent)
       ?.  =(hash.intent true-hash)
@@ -78,12 +78,128 @@
       %.y
   ::
   --
+++  commit
+  |% 
+  ::
+  ++  exists
+      |=  commits=commits:revsur
+      |=  commit=commit:revsur
+      ^-  ?
+      ?~  ((get-by-hash commits) hash.commit)
+        %.n
+      %.y
+  ++  get-by-hash
+      |=  commits=commits:revsur
+      |=  hash=hash:signatures
+      ^-  (unit @ud)
+      %+  find
+        ~[hash]
+        (turn commits get-hash)
+  ::
+  ++  get-hash
+      |=  commit=commit:revsur
+      ^-  hash:signatures
+      hash.commit
+  ::
+  ++  build
+      |=  =bowl:gall
+      |=  int=intent:revsur
+      ^-  commit:revsur
+      =/  commit-body
+        :*  intent=hash.int
+            client=client.int
+            vendor=our.bowl
+            when=now.bowl
+        ==
+      :: set commit hash and sign it
+      =/  hash  (sham commit-body)
+      =/  new-commit
+        :*  hash=hash
+            vendor=(sign:signatures our.bowl now.bowl hash)
+            body=commit-body
+            intent=body.int
+        ==
+      :: crash if our new commit is invalid
+      ?>  (validate new-commit)
+      new-commit
+  ::
+  ++  validate
+      |=  commit=commit:revsur
+      ^-  ?
+      =/  true-hash  (sham body.commit)
+      ?.  =(hash.commit true-hash)
+        %.n
+      ?.  (is-signature-valid:signatures [hash.commit ship.vendor.commit vendor.commit when.body.commit])
+        %.n
+      %.y
+  ::
+  --
+++  review
+  |% 
+  ::
+  ++  exists
+      |=  reviews=reviews:revsur
+      |=  review=review:revsur
+      ^-  ?
+      ?~  ((get-by-hash reviews) hash.review)
+        %.n
+      %.y
+  ++  get-by-hash
+      |=  reviews=reviews:revsur
+      |=  hash=hash:signatures
+      ^-  (unit @ud)
+      %+  find
+        ~[hash]
+        (turn reviews get-hash)
+  ::
+  ++  get-hash
+      |=  rev=review:revsur
+      ^-  hash:signatures
+      hash.rev
+  ::
+  ++  build
+      |=  =bowl:gall
+      |=  cmt=commit:revsur
+      |=  req=review-req:revsur
+      ^-  review:revsur
+      =/  client  ship.client.body.cmt
+      =/  vendor  vendor.body.cmt
+      =/  reviewee  ?:(=(our.bowl vendor) client vendor)
+      =/  review-body
+        :*  commit=hash.cmt
+            reviewee=reviewee
+            score=score.req
+            why=why.req
+            when=now.bowl
+        ==
+      =/  hash  (sham review-body)
+      =/  new-review
+        :*  hash=hash
+            reviewer=(sign:signatures our.bowl now.bowl hash)
+            body=review-body
+            commit=cmt
+        ==
+      :: crash if our new review is invalid
+      ?>  (validate new-review)
+      new-review
+  ::
+  ++  validate
+      |=  review=review:revsur
+      ^-  ?
+      =/  true-hash  (sham body.review)
+      ?.  =(hash.review true-hash)
+        %.n
+      ?.  (is-signature-valid:signatures [hash.review ship.reviewer.review reviewer.review when.body.review])
+        %.n
+      %.y
+  ::
+  --
 ++  to-json
     =,  enjs:format
     |%
     ::
     ++  parse-update
-        |=  upd=update:review
+        |=  upd=update:revsur
         ^-  json
         ?-    -.upd
             %intent  !!
@@ -99,11 +215,11 @@
         ==
     ::
     ++  parse-intents
-        |=  ints=intents:review
+        |=  ints=intents:revsur
         a+(turn ints parse-intent)
     ::
     ++  parse-intent
-        |=  intent=intent:review
+        |=  intent=intent:revsur
         ^-  json
         %-  pairs
         :~  ['hash' s+(scot %uv hash.intent)]
@@ -112,7 +228,7 @@
         ==
     ::
     ++  parse-intent-body
-        |=  body=intent-body:review
+        |=  body=intent-body:revsur
         ^-  json
         %-  pairs
         :~  ['advert' s+(scot %uv advert.body)]
@@ -122,11 +238,11 @@
         ==
     ::
     ++  parse-commits
-        |=  coms=commits:review
+        |=  coms=commits:revsur
         a+(turn coms parse-commit)
     ::
     ++  parse-commit
-        |=  commit=commit:review
+        |=  commit=commit:revsur
         ^-  json
         %-  pairs
         :~  ['hash' s+(scot %uv hash.commit)]
@@ -136,7 +252,7 @@
         ==
     ::
     ++  parse-commit-body
-        |=  body=commit-body:review
+        |=  body=commit-body:revsur
         ^-  json
         %-  pairs
         :~  ['intent' s+(scot %uv intent.body)]
@@ -145,11 +261,11 @@
         ==
     ::
     ++  parse-reviews
-        |=  revs=reviews:review
+        |=  revs=reviews:revsur
         a+(turn revs parse-review)
     ::
     ++  parse-review
-        |=  review=review:review
+        |=  review=review:revsur
         ^-  json
         %-  pairs
         :~  ['hash' s+(scot %uv hash.review)]
@@ -159,7 +275,7 @@
         ==
     ::
     ++  parse-review-body
-        |=  body=review-body:review
+        |=  body=review-body:revsur
         ^-  json
         %-  pairs
         :~  ['commit' s+(scot %uv commit.body)]
@@ -177,12 +293,12 @@
     ::
     ++  parse-action
         |=  jon=json
-        ^-  action:review
+        ^-  action:revsur
         %.  jon
         %-  of
         :~  [%intent parse-advert]
             [%commit parse-intent]
-            [%review parse-review]
+            [%review parse-revreq]
             [%update parse-update]
         ==
     ::
@@ -196,9 +312,11 @@
         :~  intent+(se %uv)
         ==
     ::
-    ++  parse-review
+    ++  parse-revreq
         %-  ot
-        :~  [%body parse-review-body]
+        :~  commit+(se %uv)
+            score+ni
+            why+so
         ==
     ::
     ++  parse-review-body
@@ -214,10 +332,8 @@
         %-  ot
         :~  hash+(se %uv)
             commit+(se %uv)
-            reviewee+(se %p)
             score+ni
             why+so
-            when+du
         ==
     ::
     --
