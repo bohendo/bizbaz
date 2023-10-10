@@ -137,6 +137,17 @@
 ++  review
   |% 
   ::
+  ++  upsert
+      |=  reviews=reviews:revsur
+      |=  new-review=review:revsur
+      ^-  (list review:revsur)
+      =/  existing-review  ((get-by-hash reviews) hash.new-review)
+      ?~  existing-review
+        ~&  "did not find existing review, adding a new one"
+        [new-review reviews]
+      ~&  "found an existing review, updating it"
+      (snap reviews (need existing-review) new-review)
+  ::
   ++  exists
       |=  reviews=reviews:revsur
       |=  review=review:revsur

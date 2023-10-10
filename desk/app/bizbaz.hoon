@@ -54,9 +54,9 @@
     =/  vote-subs  (turn ~(tap in pals) |=(pal=ship (sub-card:vote-lib pal)))
     =/  review-subs  (turn ~(tap in pals) |=(pal=ship (sub-card:review-lib pal)))
     :_  this
-    %+  weld
-        advert-subs
-        vote-subs
+    %+  weld  advert-subs
+    %+  weld  vote-subs
+              review-subs
   ?:  ?=(%syncsubs mark)
     =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
     ~&  (weld "Syncing data w mutual pals: " (spud (turn ~(tap in pals) |=(pal=ship (scot %p pal)))))
@@ -308,7 +308,6 @@
             =/  new-votes  ((upsert-vote:vote-lib votes) new-vote)
             =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
             =/  is-pal  ?~((find ~[ship.voter.new-vote] ~(tap in pals)) %.n %.y)
-            :: TODO: upsert
             ?:  is-pal
               ~&  "new vote was created by our pal, re-broadcasting to our pals"
               :_  this(votes new-votes)
@@ -318,6 +317,138 @@
             ~&  "new vote was NOT created by our pal, not re-broadcasting"
             :_  this(votes new-votes)
             :~  [%give %fact ~[/json/votes] %vote-update !>(`update:vote`[%vote new-vote])]
+            ==
+          ==
+        ==
+      ==
+      ::
+      :: review subscription updates
+      ::
+        [%noun %reviews ~]
+      ?+  -.sign  (on-agent:default wire sign)
+        %fact
+        ?+  p.cage.sign  (on-agent:default wire sign)
+            %review-update
+          =/  upd  !<(update:review q.cage.sign)
+          ?-  -.upd
+              ::
+              %gather
+            :: handle new intents
+            =/  new-intents  (skip intents.upd (exists:intent:review-lib intents))
+            ~&  (log-gather:utils [got=(lent intents.upd) new=(lent new-intents) from=src.bowl type="intent"])
+            =/  set-intents  (weld new-intents intents)
+            :: handle new commits
+            =/  new-commits  (skip commits.upd (exists:commit:review-lib commits))
+            ~&  (log-gather:utils [got=(lent commits.upd) new=(lent new-commits) from=src.bowl type="commit"])
+            =/  set-commits  (weld new-commits commits)
+            :: handle new reviews
+            =/  new-reviews  (skip reviews.upd (exists:review:review-lib reviews))
+            ~&  (log-gather:utils [got=(lent reviews.upd) new=(lent new-reviews) from=src.bowl type="review"])
+            =/  set-reviews  (weld new-reviews reviews)
+            :: add new data to state
+            [~ this(intents set-intents, commits set-commits, reviews set-reviews)]
+              ::
+              %intent
+            ~&  "Got a new intent from our subscription"
+            =/  new-intent  intent.upd
+            =/  adv-index  ((get-by-hash:advert-lib adverts) advert.body.new-intent)
+            ?~  adv-index
+              ~&  "Ignoring intent without an associated advert"
+              [~ this]
+            =/  int-index  ((get-by-hash:intent:review-lib intents) hash.new-intent)
+            ?~  int-index
+              ~&  "Ignoring duplicate intent"
+              [~ this]
+            :: TODO: jael-scry is broken on fake ships, uncomment before live deployment
+            :: ?.  (validate:intent-lib new-intent)
+            ::   ~&  "Crashing, received intent is invalid"
+            ::   !!
+            ?.  =(ship.vendor.body.new-intent our.bowl)
+              =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
+              =/  is-pal  ?~((find ~[ship.client.new-intent] ~(tap in pals)) %.n %.y)
+              ?:  is-pal
+                ~&  "new intent by pal doesn't concern us, re-broadcasting to our pals"
+                :_  this
+                :~  [%give %fact ~[/noun/intents] %review-update !>(`update:review`[%intent new-intent])]
+                ==
+              ~&  "new intent by non-pal doesn't concern us, ignoring it"
+              [~ this]
+            ~&  (weld "%intent received from " (scow %p src.bowl))
+            =/  new-intents  [new-intent intents]
+            [~ this(intents new-intents)]
+              ::
+              %commit
+            ~&  "Got a new commit from our subscription"
+            =/  new-commit  commit.upd
+            =/  cmt-index  ((get-by-hash:commit:review-lib commits) hash.new-commit)
+            ?~  cmt-index
+              ~&  "Ignoring duplicate commit"
+              [~ this]
+            :: TODO: jael-scry is broken on fake ships, uncomment before live deployment
+            :: ?.  (validate:commit-lib new-commit)
+            ::   ~&  "Crashing, received commit is invalid"
+            ::   !!
+            ?.  =(ship.client.body.new-commit our.bowl)
+              =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
+              =/  is-pal  ?~((find ~[ship.vendor.new-commit] ~(tap in pals)) %.n %.y)
+              ?:  is-pal
+                ~&  "new commit by pal doesn't concern us, re-broadcasting to our pals"
+                :_  this
+                :~  [%give %fact ~[/noun/commits] %review-update !>(`update:review`[%commit new-commit])]
+                ==
+              ~&  "new commit by non-pal doesn't concern us, ignoring it"
+              [~ this]
+            ~&  (weld "%commit received from " (scow %p src.bowl))
+            =/  new-commits  [new-commit commits]
+            [~ this(commits new-commits)]
+              ::
+              %review
+            ~&  "Got a new review from our subscription"
+            =/  new-review  review.upd
+            =/  rev-index  ((get-by-hash:review:review-lib reviews) hash.new-review)
+            ?~  rev-index
+              ~&  "Ignoring duplicate review"
+              [~ this]
+            :: TODO: jael-scry is broken on fake ships, uncomment before live deployment
+            :: ?.  (validate:review-lib new-review)
+            ::   ~&  "Crashing, received review is invalid"
+            ::   !!
+            ~&  (weld "valid review received from " (scow %p src.bowl))
+            =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
+            =/  is-pal  ?~((find ~[ship.reviewer.new-review] ~(tap in pals)) %.n %.y)
+            ?:  is-pal
+              ~&  "new review was created by our pal, re-broadcasting to our pals"
+              :_  this(reviews [new-review reviews])
+              :~  [%give %fact ~[/json/reviews] %review-update !>(`update:review`[%review new-review])]
+                  [%give %fact ~[/noun/reviews] %review-update !>(`update:review`[%review new-review])]
+              ==
+            ~&  "new review was NOT created by our pal, not re-broadcasting"
+            :_  this(reviews [new-review reviews])
+            :~  [%give %fact ~[/json/reviews] %review-update !>(`update:review`[%review new-review])]
+            ==
+              ::
+              %update
+            ~&  "Got a review update from our subscription"
+            =/  new-review  new.upd
+            =/  rev-index  ((get-by-hash:review:review-lib reviews) hash.new-review)
+            ?~  rev-index
+              ~&  "Ignoring duplicate review"
+              [~ this]
+            :: TODO: jael-scry is broken on fake ships, uncomment before live deployment
+            :: ?.  (validate:review-lib new-review)
+            ::   ~&  "Crashing, received review is invalid"
+            ::   !!
+            ~&  (weld "%review: valid review update received from " (scow %p src.bowl))
+            =/  new-reviews  ((upsert:review:review-lib reviews) new-review)
+            =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
+            =/  is-pal  ?~((find ~[ship.reviewer.new-review] ~(tap in pals)) %.n %.y)
+            ?:  is-pal
+              ~&  "new review was updated by our pal, re-broadcasting to our pals"
+              :_  this(reviews new-reviews)
+              (pub-card:review-lib `update:review`[%update old=old.upd new=new-review])
+            ~&  "new review was NOT updated by our pal, not re-broadcasting"
+            :_  this(reviews new-reviews)
+            :~  [%give %fact ~[/json/reviews] %review-update !>(upd)]
             ==
           ==
         ==
