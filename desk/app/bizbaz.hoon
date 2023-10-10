@@ -31,9 +31,11 @@
   ~&  (weld "mutual pals: " (spud (turn ~(tap in pals) |=(pal=ship (scot %p pal)))))
   =/  advert-subs  (turn ~(tap in pals) |=(pal=ship (sub-card:advert-lib pal)))
   =/  vote-subs  (turn ~(tap in pals) |=(pal=ship (sub-card:vote-lib pal)))
+  =/  review-subs  (turn ~(tap in pals) |=(pal=ship (sub-card:review-lib pal)))
   :_  this
   %+  weld  advert-subs
   %+  weld  vote-subs
+  %+  weld  review-subs
       `(list card)`~[[%pass /eyre %arvo %e %connect [~ /apps/bizbaz] %bizbaz]]
 ::
 ++  on-save  :: exports the state before suspending or uninstalling
@@ -50,6 +52,7 @@
     ~&  (weld "Subscribing to mutual pals: " (spud (turn ~(tap in pals) |=(pal=ship (scot %p pal)))))
     =/  advert-subs  (turn ~(tap in pals) |=(pal=ship (sub-card:advert-lib pal)))
     =/  vote-subs  (turn ~(tap in pals) |=(pal=ship (sub-card:vote-lib pal)))
+    =/  review-subs  (turn ~(tap in pals) |=(pal=ship (sub-card:review-lib pal)))
     :_  this
     %+  weld
         advert-subs
@@ -60,6 +63,7 @@
     :_  this
     :~  [%give %fact ~[/noun/adverts] %advert-update !>(`update:advert`[%gather adverts])]
         [%give %fact ~[/noun/votes] %vote-update !>(`update:vote`[%gather votes])]
+        [%give %fact ~[/noun/reviews] %review-update !>(`update:review`[%gather intents commits reviews])]
     ==
   ?>  |(?=(%advert-action mark) ?=(%vote-action mark) ?=(%review-action mark))
   ?+  mark  !!
@@ -183,6 +187,15 @@
       ::  only share votes created by our pals, filter out those from pals-of-pals
       =/  pal-votes  (skim votes |=(vote=vote:vote (~(has in pals) ship.voter.vote)))
       [%give %fact ~ %vote-update !>(`update:vote`[%gather pal-votes])]~
+    [%noun %reviews ~]
+      =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
+      ::  only allow subscriptions by our pals
+      ?>  (~(has in pals) src.bowl)
+      ::  only share reviews created by our pals, filter out those from pals-of-pals
+      =/  pal-intents  (skim intents |=(intent=intent:review (~(has in pals) ship.client.intent)))
+      =/  pal-commits  (skim commits |=(commit=commit:review (~(has in pals) ship.vendor.commit)))
+      =/  pal-reviews  (skim reviews |=(review=review:review (~(has in pals) ship.reviewer.review)))
+      [%give %fact ~ %review-update !>(`update:review`[%gather pal-intents pal-commits pal-reviews])]~
     :: paths for serving json data to the UI
     [%json %adverts ~]
       =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
