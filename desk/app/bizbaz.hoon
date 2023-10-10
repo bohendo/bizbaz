@@ -74,12 +74,12 @@
       =/  act  !<(action:advert vase)
       ?-  -.act
           ::
-          %create 
+      %create 
         =/  new-advert  ((build:advlib bowl) req.act)
         :_  this(adverts [new-advert adverts])
         (pub-card:advlib `update:advert`[%create new-advert])
           ::
-          %update
+      %update
         =/  index  ((get-by-hash:advlib adverts) advert.act)
         ?~  index
           ~|((weld "No advert with hash " (scow %uv advert.act)) !!)
@@ -87,7 +87,7 @@
         :_  this(adverts (snap adverts (need index) new-advert))
         (pub-card:advlib `update:advert`[%update advert.act new-advert])
           ::
-          %delete
+      %delete
         =/  index  ((get-by-hash:advlib adverts) advert.act)
         ?~  index
           ~|((weld "No advert with hash " (scow %uv advert.act)) !!)
@@ -235,17 +235,17 @@
       ?+  -.sign  (on-agent:default wire sign)
           %fact
         ?+  p.cage.sign  (on-agent:default wire sign)
-            %advert-update
+        %advert-update
           =/  upd  !<(update:advert q.cage.sign)
-          ?+  -.upd  !!
+          ?-  -.upd
               ::
-              %gather
+          %gather
             :: TODO: drop invalid items
             =/  new-adverts  (skip adverts.upd (exists:advlib adverts))
             ~&  (log-gather:utils [got=(lent adverts.upd) new=(lent new-adverts) from=src.bowl type="advert"])
             [~ this(adverts (weld new-adverts adverts))]
               ::
-              %create
+          %create
             ~&  "Got a %create %advert-update from our subscription"
             =/  new-advert  advert.upd
             =/  existing-index  (find ~[hash.new-advert] (turn adverts |=(ad=advert:advert hash.ad)))
@@ -271,12 +271,71 @@
             :_  this(adverts [new-advert adverts])
             :~  [%give %fact ~[/json/adverts] %advert-update !>(`update:advert`[%create new-advert])]
             ==
-            ::   %update
-            :: ~&  "%update: replacemet advert received"
-            :: !!
-            ::   %delete
-            :: ~&  "%delete: removing old advert"
-            :: !!
+          %update
+            ~&  "Got a %update %advert-update from our subscription"
+            =/  old-hash  old.upd
+            =/  new-advert  new.upd
+            =/  existing-index  ((get-advert-index:advert-lib adverts) hash.new-advert)
+            ?.  ?~(existing-index %.y %.n)
+              ~&  "we already have this advert, doing nothing"
+              [~ this]
+            :: check if this advert is a duplicate
+            ~&  "validating updated advert:"
+            ~&  new-advert
+            :: TODO: jael-scry is broken on fake ships, uncomment before live deployment
+            :: ?.  (validate:advert-lib new-advert)
+            ::   ~&  "Crashing, received advert is invalid"
+            ::   !!
+            ~&  (weld "%update: valid advert received from " (scow %p src.bowl))
+            =/  old-ad-index  ((get-advert-index:advert-lib adverts) old-hash)
+            =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
+            =/  is-pal  ?~((find ~[ship.vendor.new-advert] ~(tap in pals)) %.n %.y)
+            ?:  is-pal
+              ~&  "new advert was updated by our pal, re-broadcasting to our pals"
+              ?.  ?~(old-ad-index %.y %.n)
+                :_  this(adverts (snap adverts (need old-ad-index) new-advert))
+                :~  [%give %fact ~[/json/adverts] %advert-update !>(`update:advert`[%update old-hash new-advert])]
+                    [%give %fact ~[/noun/adverts] %advert-update !>(`update:advert`[%update old-hash new-advert])]
+                ==
+              :_  this(adverts [new-advert adverts])
+              :~  [%give %fact ~[/json/adverts] %advert-update !>(`update:advert`[%update old-hash new-advert])]
+                  [%give %fact ~[/noun/adverts] %advert-update !>(`update:advert`[%update old-hash new-advert])]
+              ==
+            ~&  "new advert was NOT updated by our pal, not re-broadcasting"
+            ?.  ?~(old-ad-index %.y %.n)
+              :_  this(adverts (snap adverts (need old-ad-index) new-advert))
+              :~  [%give %fact ~[/json/adverts] %advert-update !>(`update:advert`[%update old-hash new-advert])]
+              ==
+            :_  this(adverts [new-advert adverts])
+            :~  [%give %fact ~[/json/adverts] %advert-update !>(`update:advert`[%update old-hash new-advert])]
+            ==
+          %delete
+            ~&  "Got a %delete %advert-update from our subscription"
+            =/  hash  advert.upd
+            =/  index  ((get-advert-index:advert-lib adverts) hash)
+            =/  ad  (snag (need index) adverts)
+            ?:  ?~(index %.y %.n)
+              ~&  "we do not have this advert, doing nothing"
+              [~ this]
+            :: TODO: think of validate logic for delete request so that malicious ship cannot 
+            :: shadow ban some by sending delete update on network
+            :: TODO: jael-scry is broken on fake ships, uncomment before live deployment
+            :: ?.  (validate:advert-lib new-advert)
+            ::   ~&  "Crashing, received advert is invalid"
+            ::   !!
+            =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
+            =/  is-pal  ?~((find ~[ship.vendor.ad] ~(tap in pals)) %.n %.y)
+            ?:  is-pal
+              ~&  "advert was deleted by our pal, re-broadcasting to our pals"
+              :_  this(adverts (oust [(need index) 1] adverts))
+              :~  [%give %fact ~[/json/adverts] %advert-update !>(`update:advert`[%delete hash])]
+                  [%give %fact ~[/noun/adverts] %advert-update !>(`update:advert`[%delete hash])]
+              ==
+
+            ~&  "advert was NOT deleted by our pal, not re-broadcasting"
+            :_  this(adverts (oust [(need index) 1] adverts))
+            :~  [%give %fact ~[/json/adverts] %advert-update !>(`update:advert`[%delete hash])]
+            ==
           ==
         ==
       ==
