@@ -10,18 +10,18 @@
     ?:  vote-is-duplicate
       ~&  "Ignoring duplicate vote"
       votes
-    =/  recase-vote  ((get-recast-vote votes) new-vote)
-    ?~  recase-vote
+    =/  recast-vote  ((get-recast-vote votes) new-vote)
+    ?~  recast-vote
       ~&  "did not find existing vote, adding a new one"
       ?:  ?=(%un choice.body.new-vote)
-        ~&  "wait this is a new unvote, that doesn't make sense"
-        !!
+        ~&  "Ignoring new unvote"
+        votes
       [new-vote votes]
     ~&  "found an existing vote, updating it"
     ?:  ?=(%un choice.body.new-vote)
       ~&  "removing unvote"
-      (oust [(need recase-vote) 1] votes)
-    (snap votes (need recase-vote) new-vote)
+      (oust [(need recast-vote) 1] votes)
+    (snap votes (need recast-vote) new-vote)
 ::
 :: card that publishes info to all subscribers
 ++  pub-card

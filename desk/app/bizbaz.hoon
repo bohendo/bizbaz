@@ -295,11 +295,9 @@
               %vote
             ~&  "Got a %create %vote-update from our subscription"
             =/  new-vote  vote.upd
-            ~&  "validating newly received vote:"
             =/  adv-index  ((get-advert-index:advert-lib adverts) advert.body.new-vote)
             ?~  adv-index
               ~|((weld "No advert with hash " (scow %uv advert.body.new-vote)) !!)
-            ~&  new-vote
             :: TODO: jael-scry is broken on fake ships, uncomment before live deployment
             :: ?.  (validate:vote-lib new-vote)
             ::   ~&  "Crashing, received vote is invalid"
