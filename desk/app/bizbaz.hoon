@@ -1,7 +1,9 @@
 /-  pals, advert, review, vote
-/+  advert-lib=advert
-/+  vote-lib=vote
-/+  review-lib=review
+/+  advlib=advert
+/+  votlib=vote
+/+  intlib=intent
+/+  cmtlib=commit
+/+  revlib=review
 /+  default-agent, dbug, signatures, utils
 |%
 +$  versioned-state
@@ -29,9 +31,9 @@
   ~&  >  "%bizbaz initialized successfully."
   =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
   ~&  (weld "mutual pals: " (spud (turn ~(tap in pals) |=(pal=ship (scot %p pal)))))
-  =/  advert-subs  (turn ~(tap in pals) |=(pal=ship (sub-card:advert-lib pal)))
-  =/  vote-subs  (turn ~(tap in pals) |=(pal=ship (sub-card:vote-lib pal)))
-  =/  review-subs  (turn ~(tap in pals) |=(pal=ship (sub-card:review-lib pal)))
+  =/  advert-subs  (turn ~(tap in pals) |=(pal=ship (sub-card:advlib pal)))
+  =/  vote-subs  (turn ~(tap in pals) |=(pal=ship (sub-card:votlib pal)))
+  =/  review-subs  (turn ~(tap in pals) |=(pal=ship (sub-card:revlib pal)))
   :_  this
   %+  weld  advert-subs
   %+  weld  vote-subs
@@ -50,9 +52,9 @@
   ?:  ?=(%sub-to-pals mark)
     =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
     ~&  (weld "Subscribing to mutual pals: " (spud (turn ~(tap in pals) |=(pal=ship (scot %p pal)))))
-    =/  advert-subs  (turn ~(tap in pals) |=(pal=ship (sub-card:advert-lib pal)))
-    =/  vote-subs  (turn ~(tap in pals) |=(pal=ship (sub-card:vote-lib pal)))
-    =/  review-subs  (turn ~(tap in pals) |=(pal=ship (sub-card:review-lib pal)))
+    =/  advert-subs  (turn ~(tap in pals) |=(pal=ship (sub-card:advlib pal)))
+    =/  vote-subs  (turn ~(tap in pals) |=(pal=ship (sub-card:votlib pal)))
+    =/  review-subs  (turn ~(tap in pals) |=(pal=ship (sub-card:revlib pal)))
     :_  this
     %+  weld  advert-subs
     %+  weld  vote-subs
@@ -72,91 +74,91 @@
       ?-  -.act
           ::
           %create 
-        =/  new-advert  ((build:advert-lib bowl) req.act)
+        =/  new-advert  ((build:advlib bowl) req.act)
         :_  this(adverts [new-advert adverts])
-        (pub-card:advert-lib `update:advert`[%create new-advert])
+        (pub-card:advlib `update:advert`[%create new-advert])
           ::
           %update
-        =/  index  ((get-by-hash:advert-lib adverts) advert.act)
+        =/  index  ((get-by-hash:advlib adverts) advert.act)
         ?~  index
           ~|((weld "No advert with hash " (scow %uv advert.act)) !!)
-        =/  new-advert  ((build:advert-lib bowl) req.act)
+        =/  new-advert  ((build:advlib bowl) req.act)
         :_  this(adverts (snap adverts (need index) new-advert))
-        (pub-card:advert-lib `update:advert`[%update advert.act new-advert])
+        (pub-card:advlib `update:advert`[%update advert.act new-advert])
           ::
           %delete
-        =/  index  ((get-by-hash:advert-lib adverts) advert.act)
+        =/  index  ((get-by-hash:advlib adverts) advert.act)
         ?~  index
           ~|((weld "No advert with hash " (scow %uv advert.act)) !!)
         :_  this(adverts (oust [(need index) 1] adverts))
-        (pub-card:advert-lib `update:advert`[%delete advert.act])
+        (pub-card:advlib `update:advert`[%delete advert.act])
       == 
     %vote-action
       =/  act  !<(action:vote vase)
       ~&  act
       ?-  -.act
           %vote
-            =/  adv-index  ((get-by-hash:advert-lib adverts) advert.req.act)
+            =/  adv-index  ((get-by-hash:advlib adverts) advert.req.act)
             ?~  adv-index
               ~|((weld "No advert with hash " (scow %uv advert.req.act)) !!)
-            =/  new-vote  ((build-vote:vote-lib bowl) req.act)
-            =/  new-votes  ((upsert-vote:vote-lib votes) new-vote)
+            =/  new-vote  ((build-vote:votlib bowl) req.act)
+            =/  new-votes  ((upsert-vote:votlib votes) new-vote)
             :_  this(votes new-votes)
-            (pub-card:vote-lib `update:vote`[%vote new-vote])
+            (pub-card:votlib `update:vote`[%vote new-vote])
       == 
     %review-action
       =/  act  !<(action:review vase)
       ~&  act
       ?-  -.act
           %intent
-            =/  adv-index  ((get-by-hash:advert-lib adverts) advert.act)
+            =/  adv-index  ((get-by-hash:advlib adverts) advert.act)
             ?~  adv-index
               ~|((weld "No advert with hash " (scow %uv advert.act)) !!)
             =/  ad  (snag (need adv-index) adverts)
-            =/  new-intent  ((build:intent:review-lib bowl) ad)
-            ?:  ((exists:intent:review-lib intents) new-intent)
+            =/  new-intent  ((build:intlib bowl) ad)
+            ?:  ((exists:intlib intents) new-intent)
               ~&  "Ignoring duplicate intent"  
               [~ this]
             :_  this(intents [new-intent intents])
-            (pub-card:review-lib `update:review`[%intent new-intent])
+            (pub-card:revlib `update:review`[%intent new-intent])
           %commit
-            =/  int-index  ((get-by-hash:intent:review-lib intents) intent.act)
+            =/  int-index  ((get-by-hash:intlib intents) intent.act)
             ?~  int-index
               ~|((weld "No intent with hash " (scow %uv intent.act)) !!)
             =/  int  (snag (need int-index) intents)
-            =/  new-commit  ((build:commit:review-lib bowl) int)
-            ?:  ((exists:commit:review-lib commits) new-commit)
+            =/  new-commit  ((build:cmtlib bowl) int)
+            ?:  ((exists:cmtlib commits) new-commit)
               ~&  "Ignoring duplicate commit"  
               [~ this]
             =/  new-intents  (oust [(need int-index) 1] intents)  :: remove old intent
             =/  new-commits  [new-commit commits]  :: add new commit
             :_  this(intents new-intents, commits new-commits)
-            (pub-card:review-lib `update:review`[%commit new-commit])
+            (pub-card:revlib `update:review`[%commit new-commit])
           %review
             =/  cmt-index  (find ~[commit.req.act] (turn commits |=(cmt=commit:review hash.cmt)))
             ?~  cmt-index
               ~|((weld "No commit with hash " (scow %uv commit.req.act)) !!)
             =/  cmt  (snag (need cmt-index) commits)
-            =/  new-review  (((build:review:review-lib bowl) cmt) req.act)
-            ?:  ((exists:review:review-lib reviews) new-review)
+            =/  new-review  (((build:revlib bowl) cmt) req.act)
+            ?:  ((exists:revlib reviews) new-review)
               ~&  "Ignoring duplicate review"  
               [~ this]
             =/  new-commits  (oust [(need cmt-index) 1] commits)  :: remove old commit
             =/  new-reviews  [new-review reviews]  :: add new review
             :_  this(commits new-commits, reviews new-reviews)
-            (pub-card:review-lib `update:review`[%review new-review])
+            (pub-card:revlib `update:review`[%review new-review])
           %update
             =/  old-index  (find ~[old.act] (turn reviews |=(rev=review:review hash.rev)))
             ?~  old-index
               ~|((weld "No review with hash " (scow %uv old.act)) !!)
             =/  rev  (snag (need old-index) reviews)
-            =/  new-review  (((build:review:review-lib bowl) commit.rev) new.act)
-            ?:  ((exists:review:review-lib reviews) new-review)
+            =/  new-review  (((build:revlib bowl) commit.rev) new.act)
+            ?:  ((exists:revlib reviews) new-review)
               ~&  "Ignoring no-op review update"  
               [~ this]
             =/  new-reviews  [new-review reviews]  :: add new review
             :_  this(reviews (snap reviews (need old-index) new-review))
-            (pub-card:review-lib `update:review`[%update old=old.act new=new-review])
+            (pub-card:revlib `update:review`[%update old=old.act new=new-review])
       == 
   ==
 ++  on-peek  :: handles one-off read-only requests
@@ -237,7 +239,7 @@
           ?+  -.upd  !!
               ::
               %gather
-            =/  new-adverts  (skip adverts.upd (exists:advert-lib adverts))
+            =/  new-adverts  (skip adverts.upd (exists:advlib adverts))
             ~&  (log-gather:utils [got=(lent adverts.upd) new=(lent new-adverts) from=src.bowl type="advert"])
             [~ this(adverts (weld new-adverts adverts))]
               ::
@@ -252,7 +254,7 @@
             ~&  "validating newly created advert:"
             ~&  new-advert
             :: TODO: jael-scry is broken on fake ships, uncomment before live deployment
-            :: ?.  (validate:advert-lib new-advert)
+            :: ?.  (validate:advlib new-advert)
             ::   ~&  "Crashing, received advert is invalid"
             ::   !!
             :: TODO: ensure the new when.body is newer than the existing one
@@ -290,22 +292,22 @@
           ?-  -.upd
               ::
               %gather
-            =/  new-votes  (skip votes.upd (vote-exists:vote-lib votes))
+            =/  new-votes  (skip votes.upd (vote-exists:votlib votes))
             ~&  (log-gather:utils [got=(lent votes.upd) new=(lent new-votes) from=src.bowl type="vote"])
             [~ this(votes (weld new-votes votes))]
               ::
               %vote
             ~&  "Got a %create %vote-update from our subscription"
             =/  new-vote  vote.upd
-            =/  adv-index  ((get-by-hash:advert-lib adverts) advert.body.new-vote)
+            =/  adv-index  ((get-by-hash:advlib adverts) advert.body.new-vote)
             ?~  adv-index
               ~|((weld "No advert with hash " (scow %uv advert.body.new-vote)) !!)
             :: TODO: jael-scry is broken on fake ships, uncomment before live deployment
-            :: ?.  (validate:vote-lib new-vote)
+            :: ?.  (validate:votlib new-vote)
             ::   ~&  "Crashing, received vote is invalid"
             ::   !!
             ~&  (weld "%vote: valid vote received from " (scow %p src.bowl))
-            =/  new-votes  ((upsert-vote:vote-lib votes) new-vote)
+            =/  new-votes  ((upsert-vote:votlib votes) new-vote)
             =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
             =/  is-pal  ?~((find ~[ship.voter.new-vote] ~(tap in pals)) %.n %.y)
             ?:  is-pal
@@ -334,15 +336,15 @@
               ::
               %gather
             :: handle new intents
-            =/  new-intents  (skip intents.upd (exists:intent:review-lib intents))
+            =/  new-intents  (skip intents.upd (exists:intlib intents))
             ~&  (log-gather:utils [got=(lent intents.upd) new=(lent new-intents) from=src.bowl type="intent"])
             =/  set-intents  (weld new-intents intents)
             :: handle new commits
-            =/  new-commits  (skip commits.upd (exists:commit:review-lib commits))
+            =/  new-commits  (skip commits.upd (exists:cmtlib commits))
             ~&  (log-gather:utils [got=(lent commits.upd) new=(lent new-commits) from=src.bowl type="commit"])
             =/  set-commits  (weld new-commits commits)
             :: handle new reviews
-            =/  new-reviews  (skip reviews.upd (exists:review:review-lib reviews))
+            =/  new-reviews  (skip reviews.upd (exists:revlib reviews))
             ~&  (log-gather:utils [got=(lent reviews.upd) new=(lent new-reviews) from=src.bowl type="review"])
             =/  set-reviews  (weld new-reviews reviews)
             :: add new data to state
@@ -351,11 +353,11 @@
               %intent
             ~&  "Got a new intent from our subscription"
             =/  new-intent  intent.upd
-            =/  adv-index  ((get-by-hash:advert-lib adverts) advert.body.new-intent)
+            =/  adv-index  ((get-by-hash:advlib adverts) advert.body.new-intent)
             ?~  adv-index
               ~&  "Ignoring intent without an associated advert"
               [~ this]
-            =/  int-index  ((get-by-hash:intent:review-lib intents) hash.new-intent)
+            =/  int-index  ((get-by-hash:intlib intents) hash.new-intent)
             ?~  int-index
               ~&  "Ignoring duplicate intent"
               [~ this]
@@ -380,7 +382,7 @@
               %commit
             ~&  "Got a new commit from our subscription"
             =/  new-commit  commit.upd
-            =/  cmt-index  ((get-by-hash:commit:review-lib commits) hash.new-commit)
+            =/  cmt-index  ((get-by-hash:cmtlib commits) hash.new-commit)
             ?~  cmt-index
               ~&  "Ignoring duplicate commit"
               [~ this]
@@ -405,12 +407,12 @@
               %review
             ~&  "Got a new review from our subscription"
             =/  new-review  review.upd
-            =/  rev-index  ((get-by-hash:review:review-lib reviews) hash.new-review)
+            =/  rev-index  ((get-by-hash:revlib reviews) hash.new-review)
             ?~  rev-index
               ~&  "Ignoring duplicate review"
               [~ this]
             :: TODO: jael-scry is broken on fake ships, uncomment before live deployment
-            :: ?.  (validate:review-lib new-review)
+            :: ?.  (validate:revlib new-review)
             ::   ~&  "Crashing, received review is invalid"
             ::   !!
             ~&  (weld "valid review received from " (scow %p src.bowl))
@@ -430,22 +432,22 @@
               %update
             ~&  "Got a review update from our subscription"
             =/  new-review  new.upd
-            =/  rev-index  ((get-by-hash:review:review-lib reviews) hash.new-review)
+            =/  rev-index  ((get-by-hash:revlib reviews) hash.new-review)
             ?~  rev-index
               ~&  "Ignoring duplicate review"
               [~ this]
             :: TODO: jael-scry is broken on fake ships, uncomment before live deployment
-            :: ?.  (validate:review-lib new-review)
+            :: ?.  (validate:revlib new-review)
             ::   ~&  "Crashing, received review is invalid"
             ::   !!
             ~&  (weld "%review: valid review update received from " (scow %p src.bowl))
-            =/  new-reviews  ((upsert:review:review-lib reviews) new-review)
+            =/  new-reviews  ((upsert:revlib reviews) new-review)
             =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
             =/  is-pal  ?~((find ~[ship.reviewer.new-review] ~(tap in pals)) %.n %.y)
             ?:  is-pal
               ~&  "new review was updated by our pal, re-broadcasting to our pals"
               :_  this(reviews new-reviews)
-              (pub-card:review-lib `update:review`[%update old=old.upd new=new-review])
+              (pub-card:revlib `update:review`[%update old=old.upd new=new-review])
             ~&  "new review was NOT updated by our pal, not re-broadcasting"
             :_  this(reviews new-reviews)
             :~  [%give %fact ~[/json/reviews] %review-update !>(upd)]
