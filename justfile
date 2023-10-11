@@ -5,6 +5,15 @@ start:
 start-ui:
   cd ui && npm run dev
 
+install:
+  cd ui && npm install
+
+build-ui:
+  cd ui && npm run build
+  cp ui/dist/index.html ui/dist/index.html.backup
+  sed 's/<script src=/<script type="module" src=/' ui/dist/index.html.backup > ui/dist/index.html
+  rm ui/dist/index.html.backup
+
 sync-app ship: 
   rm -rf {{ship}}/bizbaz
   cp -rf desk {{ship}}/bizbaz
