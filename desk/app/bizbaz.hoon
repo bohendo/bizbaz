@@ -173,7 +173,7 @@
   ^-  (quip card _this)
   :: TODO: fix path validation
   :: ?>  |(?=(%reviews path) ?=(%adverts path))
-  :: ~&  path
+  ~&  path
   :_  this
   ?+  path  (on-watch:default path)
     :: paths for serving noun data to other ships
