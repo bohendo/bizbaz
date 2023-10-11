@@ -1,5 +1,5 @@
 :~  title+'bizbaz'
-    info+'buy and sell anything and leave ratings or report naughty ships'
+    info+'buy and sell stuff with pals of pals'
     color+0xde.4347
     glob-http+['https://bootstrap.urbit.org/glob-0v5.hurm4.ejod5.ngg9h.iub9i.n1j7o.glob' 0v5.hurm4.ejod5.ngg9h.iub9i.n1j7o]
     base+'bizbaz'

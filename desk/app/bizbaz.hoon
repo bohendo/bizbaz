@@ -275,17 +275,17 @@
             ~&  "Got a %update %advert-update from our subscription"
             =/  old-hash  old.upd
             =/  new-advert  new.upd
-            =/  existing-index  ((get-advert-index:advert-lib adverts) hash.new-advert)
+            =/  existing-index  ((get-by-hash:advlib adverts) hash.new-advert)
             ?.  ?~(existing-index %.y %.n)
               ~&  "we already have this advert, doing nothing"
               [~ this]
             ~&  "validating updated advert:"
             ~&  new-advert
-            ?.  (validate:advlib new-advert)
+            ?.  ((validate:advlib bowl) new-advert)
               ~&  "Crashing, received advert is invalid"
               !!
             ~&  (weld "%update: valid advert received from " (scow %p src.bowl))
-            =/  old-ad-index  ((get-advert-index:advert-lib adverts) old-hash)
+            =/  old-ad-index  ((get-by-hash:advlib adverts) old-hash)
             =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
             =/  is-pal  ?~((find ~[ship.vendor.new-advert] ~(tap in pals)) %.n %.y)
             ?:  is-pal
@@ -310,7 +310,7 @@
           %delete
             ~&  "Got a %delete %advert-update from our subscription"
             =/  hash  advert.upd
-            =/  index  ((get-advert-index:advert-lib adverts) hash)
+            =/  index  ((get-by-hash:advlib adverts) hash)
             =/  ad  (snag (need index) adverts)
             ?:  ?~(index %.y %.n)
               ~&  "we do not have this advert, doing nothing"
@@ -318,7 +318,7 @@
             :: TODO: think of validation logic for delete request so
             :: that a malicious ship cannor shadow ban ad advert by
             :: sending a delete update to network
-            ?.  (validate:advert-lib new-advert)
+            ?.  ((validate:advlib bowl) ad)
               ~&  "Crashing, received advert is invalid"
               !!
             =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
