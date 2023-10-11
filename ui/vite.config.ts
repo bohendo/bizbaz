@@ -9,6 +9,24 @@ export default ({ mode }) => {
   console.log(SHIP_URL);
 
   return defineConfig({
-    plugins: [urbitPlugin({ base: 'bizbaz', target: SHIP_URL, secure: false }), reactRefresh()]
+    plugins: [urbitPlugin({ base: 'bizbaz', target: SHIP_URL, secure: false }), reactRefresh()],
+    build: {
+      chunkSizeWarningLimit: 750,
+      rollupOptions: {
+        onwarn(warning, defaultHandler) {
+          if (
+            warning.code === "MODULE_LEVEL_DIRECTIVE" &&
+            warning.message.includes("use client")
+          ) {
+            return;
+          }
+          if (userConfig.build?.rollupOptions?.onwarn) {
+            userConfig.build.rollupOptions.onwarn(warning, defaultHandler);
+          } else {
+            defaultHandler(warning);
+          }
+        },
+      },
+    },
   });
 };
