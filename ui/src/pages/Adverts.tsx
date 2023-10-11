@@ -15,7 +15,7 @@ import Typography from '@mui/material/Typography';
 import Masonry from "@mui/lab/Masonry";
 import Paper from "@mui/material/Paper";
 
-import '@urbit/sigil-js'
+import { Sigil } from "../components/Sigil";
 
 const Item = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(3),
@@ -75,7 +75,7 @@ export const Adverts = ({
               <CardActionArea disableRipple
                 sx={{ width: "100%", alignItems: "center" }}
                 component={Link} to={`/advert/${advert.hash}`}>
-                <urbit-sigil point={advert.vendor.ship} size={60} detail='default' space='large'/>
+                <Sigil config={{ point: advert.vendor.ship, size: 60, detail: 'default', space: 'large' }}/>
 
                 <CardContent
                   sx={{

@@ -17,7 +17,7 @@ import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
 import ExploreOutlined from "@mui/icons-material/ExploreOutlined";
 
-import * as Sigil from '@urbit/sigil-js'
+import { Sigil } from './Sigil'
 
 const config = {
  point: '~talsyx-talsud', // or 'zod'
@@ -40,8 +40,6 @@ export const NavBar = ({api, tabPage}:{api: any, tabPage: ReactComponentElement<
     
     const theme = useTheme();
 
-    console.log(Sigil)
-
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
     };
@@ -59,7 +57,7 @@ export const NavBar = ({api, tabPage}:{api: any, tabPage: ReactComponentElement<
                   aria-label="full width tabs example"
               >
                   <Tab component={Link} to={'/adverts'} icon={<ExploreOutlined />} {...a11yProps(0)} />
-                  <Tab component={Link} to={'/profile'} icon={<urbit-sigil {...config} />} {...a11yProps(2)} />
+                  <Tab component={Link} to={'/profile'} icon={<Sigil config={{...config}}/>} {...a11yProps(2)} />
               </Tabs>
           </AppBar>
           <Box marginTop={theme.spacing(4)}>
