@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
+// Components
+import { Votes } from '../components/Votes';
+
 // Pages
 import { NewAdvert } from "../pages/NewAdvert";
 
 // MUI
-import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import Fab from '@mui/material/Fab'
-import IconButton from '@mui/material/IconButton';
 import Paper from "@mui/material/Paper";
 import Typography from '@mui/material/Typography';
 import { useTheme } from "@mui/material/styles"
@@ -20,16 +21,13 @@ import { NewReview } from "./NewReview";
 
 // Icons
 import EditIcon from '@mui/icons-material/Edit';
-import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import NotInterestedIcon from '@mui/icons-material/NotInterested';
 
 export const Advert = ({ api }: { api: any }) => {
   const theme = useTheme();
   const { hash } = useParams();
   const navigate = useNavigate();
   const [advert, setAdvert] = useState({} as TAdvert);
-  const [votes, setVotes] = useState([] as any[]);
+  const [votes, setVotes] = useState([] as Array<TVote>);
   const [ourVote, setOurVote] = useState({} as TVote);
   const [intents, setIntents] = useState([] as any[]);
   const [commits, setCommits] = useState([] as any[]);
@@ -37,14 +35,7 @@ export const Advert = ({ api }: { api: any }) => {
   const [openNewAdvertDialog, setOpenNewAdvertDialog] = useState(false);
   const [openNewReviewDialog, setOpenNewReviewDialog] = useState(false);
 
-  useEffect(() => {
-    if (votes.length > 0) {
-      setOurVote(votes.find((v: TVote) => v.voter.ship === `~${window.ship}`))
-    }
-  }, [votes])
-
   const updateAdvert = ( upd: any) => {
-    console.log(`Got advert update:`, upd)
     if (upd.gather) {
       setAdvert(upd.gather.adverts.find((u: TAdvert) => u.hash === hash))      
     } else if (upd.update) {
@@ -178,18 +169,7 @@ export const Advert = ({ api }: { api: any }) => {
       </Typography>
       <br/>
 
-      <Box display='flex' flexDirection='column' maxWidth={50}>
-        <IconButton color='primary' disabled={ourVote?.body?.choice === "up"}onClick={() => vote("up")}>
-          <ArrowDropUpIcon sx={{ fontSize: 60 }} />
-        </IconButton>
-        <IconButton color='primary' disabled={ourVote?.body?.choice === "down"}onClick={() =>vote("down")}>
-          <ArrowDropDownIcon sx={{ fontSize: 60 }} />
-        </IconButton>
-        <IconButton color='primary' disabled={!ourVote} onClick={() => vote("un")}>
-          <NotInterestedIcon sx={{ fontSize: 30 }} />
-        </IconButton>
-      </Box>
-
+      <Votes votes={votes} vote={vote} />
 
       <br/>
       <Button variant="contained" disabled={intents.length !== 0} onClick={intent} sx={{ m:2 }}>
