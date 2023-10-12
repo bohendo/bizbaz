@@ -20,7 +20,7 @@ import ExploreOutlined from "@mui/icons-material/ExploreOutlined";
 import { Sigil } from './Sigil'
 
 const config = {
- point: '~talsyx-talsud', // or 'zod'
+ point: window.ship,
  size: 24,
  detail:'default',
  space:'none',

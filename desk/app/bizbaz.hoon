@@ -41,7 +41,7 @@
       `(list card)`~[[%pass /eyre %arvo %e %connect [~ /apps/bizbaz] %bizbaz]]
 ::
 ++  on-save  :: exports the state before suspending or uninstalling
-  !>(state)  
+  !>(state)
 ++  on-load  :: imports the state after resuming or reinstalling
   |=  old=vase
   ^-  (quip card _this)

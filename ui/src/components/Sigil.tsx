@@ -20,7 +20,7 @@ declare global {
 }
 
 const defaultConfig: SigilConfig = {
-  point: '~talsyx-talsud',
+  point: '~zod',
   size: 24,
   foreground: "#eee",
   background: "#111",

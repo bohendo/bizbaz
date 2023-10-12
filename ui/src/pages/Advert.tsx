@@ -5,12 +5,14 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { NewAdvert } from "../pages/NewAdvert";
 
 // MUI
-import { useTheme } from "@mui/material/styles"
-import Paper from "@mui/material/Paper";
-import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import Fab from '@mui/material/Fab'
+import IconButton from '@mui/material/IconButton';
+import Paper from "@mui/material/Paper";
+import Typography from '@mui/material/Typography';
+import { useTheme } from "@mui/material/styles"
 
 import { TAdvert, TCommit, TIntent, TReview, TVote } from "../types";
 
@@ -18,6 +20,9 @@ import { NewReview } from "./NewReview";
 
 // Icons
 import EditIcon from '@mui/icons-material/Edit';
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import NotInterestedIcon from '@mui/icons-material/NotInterested';
 
 export const Advert = ({ api }: { api: any }) => {
   const theme = useTheme();
@@ -25,11 +30,18 @@ export const Advert = ({ api }: { api: any }) => {
   const navigate = useNavigate();
   const [advert, setAdvert] = useState({} as TAdvert);
   const [votes, setVotes] = useState([] as any[]);
+  const [ourVote, setOurVote] = useState({} as TVote);
   const [intents, setIntents] = useState([] as any[]);
   const [commits, setCommits] = useState([] as any[]);
   const [reviews, setReviews] = useState([] as any[]);
   const [openNewAdvertDialog, setOpenNewAdvertDialog] = useState(false);
   const [openNewReviewDialog, setOpenNewReviewDialog] = useState(false);
+
+  useEffect(() => {
+    if (votes.length > 0) {
+      setOurVote(votes.find((v: TVote) => v.voter.ship === `~${window.ship}`))
+    }
+  }, [votes])
 
   const updateAdvert = ( upd: any) => {
     console.log(`Got advert update:`, upd)
@@ -166,17 +178,18 @@ export const Advert = ({ api }: { api: any }) => {
       </Typography>
       <br/>
 
-      <Button variant="contained" disabled={votes.length === 1 && votes[0].body.choice === "up"}onClick={() => vote("up")} sx={{ m:2 }}>
-        Up Vote
-      </Button>
+      <Box display='flex' flexDirection='column' maxWidth={50}>
+        <IconButton color='primary' disabled={ourVote?.body?.choice === "up"}onClick={() => vote("up")}>
+          <ArrowDropUpIcon sx={{ fontSize: 60 }} />
+        </IconButton>
+        <IconButton color='primary' disabled={ourVote?.body?.choice === "down"}onClick={() =>vote("down")}>
+          <ArrowDropDownIcon sx={{ fontSize: 60 }} />
+        </IconButton>
+        <IconButton color='primary' disabled={!ourVote} onClick={() => vote("un")}>
+          <NotInterestedIcon sx={{ fontSize: 30 }} />
+        </IconButton>
+      </Box>
 
-      <Button variant="contained" disabled={votes.length === 1 && votes[0].body.choice === "down"}onClick={() => vote("down")} sx={{ m:2 }}>
-        Down Vote
-      </Button>
-
-      <Button variant="contained" disabled={votes.length === 0} onClick={() => vote("un")} sx={{ m:2 }}>
-        Un Vote
-      </Button>
 
       <br/>
       <Button variant="contained" disabled={intents.length !== 0} onClick={intent} sx={{ m:2 }}>
