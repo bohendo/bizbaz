@@ -114,10 +114,14 @@
         |=  upd=update:revsur
         ^-  json
         ?-    -.upd
-            %intent  !!
-            %commit  !!
-            %review  !!
-            %update  !!
+            %intent  (parse-intent:to-json:intlib intent.upd)
+            %commit  (parse-commit:to-json:cmtlib commit.upd)
+            %review  (parse-review review.upd)
+            %update
+          %-  pairs
+          :~  ['old' s+(scot %uv old.upd)]
+              ['new' (parse-review new.upd)]
+          ==
             %gather
           %-  pairs
           :~  ['intents' (parse-intents:to-json:intlib intents.upd)]
