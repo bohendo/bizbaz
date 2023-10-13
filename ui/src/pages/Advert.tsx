@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 
 // Components
 import { Votes } from '../components/Votes';
+import { Intents } from '../components/Intents';
 
 // Pages
 import { NewAdvert } from "../pages/NewAdvert";
@@ -29,12 +30,13 @@ export const Advert = ({ api }: { api: any }) => {
   const [advert, setAdvert] = useState({} as TAdvert);
   const [votes, setVotes] = useState([] as Array<TVote>);
   const [ourVote, setOurVote] = useState({} as TVote);
-  const [intents, setIntents] = useState([] as any[]);
-  const [commits, setCommits] = useState([] as any[]);
+  const [intents, setIntents] = useState([] as Array<TIntent>);
+  const [commits, setCommits] = useState([] as Array<TCommit>);
   const [reviews, setReviews] = useState([] as any[]);
   const [openNewAdvertDialog, setOpenNewAdvertDialog] = useState(false);
   const [openNewReviewDialog, setOpenNewReviewDialog] = useState(false);
 
+  console.log(advert)
   const updateAdvert = ( upd: any) => {
     if (upd.gather) {
       setAdvert(upd.gather.adverts.find((u: TAdvert) => u.hash === hash))      
@@ -167,17 +169,13 @@ export const Advert = ({ api }: { api: any }) => {
       <Typography variant="body1">
         Description: {advert.body.description}
       </Typography>
-      <br/>
 
       <Votes votes={votes} vote={vote} />
+      <Intents intents={intents} intent={intent}
+        vendor={advert.vendor.ship === `~${window.ship}`}
+        commits={commits} commit={commit}
+      />
 
-      <br/>
-      <Button variant="contained" disabled={intents.length !== 0} onClick={intent} sx={{ m:2 }}>
-        Express Intent to Buy
-      </Button>
-      <Button variant="contained" disabled={intents.length === 0 || commits.length !== 0} onClick={commit} sx={{ m:2 }}>
-        Commit to Sell
-      </Button>
       <br/>
       <Button variant="contained" disabled={commits.length === 0} onClick={()=>setOpenNewReviewDialog(true)} sx={{ m:2 }}>
         Review
