@@ -81,23 +81,28 @@ export const Advert = ({ api }: { api: any }) => {
 
   const updateReviews = (upd: any) => {
     console.log(`Got reviews update:`, upd)
-    const filteredIntents = upd.intents.filter((intent: TIntent) =>
-      intent.body.advert === hash
-    )
-    console.log(`Relevant intents:`, filteredIntents)
-    setIntents(filteredIntents)
+    if (!!upd.gather) {
+      const { intents, commits, reviews } = upd.gather
+      const filteredIntents = intents.filter((intent: TIntent) =>
+        intent.body.advert === hash
+      )
+      console.log(`Relevant intents:`, filteredIntents)
+      setIntents(filteredIntents)
 
-    const filteredCommits = upd.commits.filter((commit: TCommit) =>
-        commit.intent.advert === hash
-    )
-    console.log(`Relevant commits:`, filteredCommits)
-    setCommits(filteredCommits)
+      const filteredCommits = commits.filter((commit: TCommit) =>
+          commit.intent.advert === hash
+      )
+      console.log(`Relevant commits:`, filteredCommits)
+      setCommits(filteredCommits)
 
-    const filteredReviews = upd.reviews.filter((review: TReview) =>
-      review.commit.intent.advert === hash
-    )
-    console.log(`Relevant reviews:`, filteredReviews)
-    setReviews(filteredReviews)
+      const filteredReviews = reviews.filter((review: TReview) =>
+        review.commit.intent.advert === hash
+      )
+      console.log(`Relevant reviews:`, filteredReviews)
+      setReviews(filteredReviews)
+    } else {
+      console.log("TODO: handle other review updates. Got: ", upd)
+    }
 
   }
 
