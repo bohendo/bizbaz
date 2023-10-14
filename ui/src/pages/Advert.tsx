@@ -39,7 +39,6 @@ export const Advert = ({ api }: { api: any }) => {
   const [openNewAdvertDialog, setOpenNewAdvertDialog] = useState(false);
   const [openNewReviewDialog, setOpenNewReviewDialog] = useState(false);
 
-  console.log(advert)
   const updateAdvert = ( upd: any) => {
     if (upd.gather) {
       setAdvert(upd.gather.adverts.find((u: TAdvert) => u.hash === hash))      
@@ -83,28 +82,54 @@ export const Advert = ({ api }: { api: any }) => {
   }
 
   const updateReviews = (upd: any) => {
+    const filterIntents = (ints) => ints.filter(i => i.body.advert === hash)
+    const filterCommits = (cmts) => cmts.filter(c => c.intent.advert === hash)
+    const filterReviews = (revs) => revs.filter(r => r.commit.intent.advert === hash)
+
     console.log(`Got reviews update:`, upd)
     if (!!upd.gather) {
       const { intents, commits, reviews } = upd.gather
-      const filteredIntents = intents.filter((intent: TIntent) =>
-        intent.body.advert === hash
-      )
+      const filteredIntents = filterIntents(intents)
       console.log(`Relevant intents:`, filteredIntents)
       setIntents(filteredIntents)
-
-      const filteredCommits = commits.filter((commit: TCommit) =>
-          commit.intent.advert === hash
-      )
+      const filteredCommits = filterCommits(commits)
       console.log(`Relevant commits:`, filteredCommits)
       setCommits(filteredCommits)
-
-      const filteredReviews = reviews.filter((review: TReview) =>
-        review.commit.intent.advert === hash
-      )
+      const filteredReviews = filterReviews(reviews)
       console.log(`Relevant reviews:`, filteredReviews)
       setReviews(filteredReviews)
+
+    } else if (!!upd.intent) {
+      console.log("Got new intent:", upd)
+      setIntents((oldIntents) => filterIntents([upd.intent, ...oldIntents]))
+
+    } else if (!!upd.commit) {
+      console.log("Got new commit:", upd)
+      setCommits((oldCommits) => filterCommits([upd.commit, ...oldCommits]))
+
+    } else if (!!upd.review) {
+      console.log("Got new review:", upd)
+      setReviews((oldReviews) => filterReviews([upd.review, ...oldReviews]))
+
+    } else if (!!upd.update) {
+      console.log("Got updated review:", upd)
+      setReviews((oldReviews) => {
+        oldRev = upd.oldRev
+        newRev = upd.newRev
+        oldIdx = oldReviews.findIndex(r => r.hash == oldRev)
+        if (oldIdx === -1) {
+          console.log(`Uhh, no existing review matches this update.. Adding it as if it were a new review`)
+          return filterReviews([newRev, ...newReviews])
+        }
+        return filterReviews([
+          ...oldReviews.slice(0, oldIdx),
+          newRev,
+          ...oldReviews.slice(oldIdx + 1)
+        ])
+      })
+
     } else {
-      console.log("TODO: handle other review updates. Got: ", upd)
+      console.log("Unknown review updates. Got: ", upd)
     }
 
   }
