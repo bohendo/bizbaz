@@ -419,7 +419,7 @@
               ~&  "Ignoring intent without an associated advert"
               [~ this]
             =/  int-index  ((get-by-hash:intlib intents) hash.new-intent)
-            ?~  int-index
+            ?.  ?~(int-index %.y %.n)
               ~&  "Ignoring duplicate intent"
               [~ this]
             ?.  ((validate:intlib bowl) new-intent)
