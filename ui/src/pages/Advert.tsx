@@ -5,9 +5,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Votes } from '../components/Votes';
 import { Intents } from '../components/Intents';
 import { CommitCard } from "../components/CommitCard";
-
-// Pages
-import { NewAdvert } from "../pages/NewAdvert";
+import { NewAdvert } from "../components/NewAdvert";
+import { NewReview } from "../components/NewReview";
 
 // MUI
 import Button from '@mui/material/Button';
@@ -21,7 +20,6 @@ import { useTheme } from "@mui/material/styles"
 
 import { TAdvert, TCommit, TIntent, TReview, TVote } from "../types";
 
-import { NewReview } from "./NewReview";
 
 // Icons
 import EditIcon from '@mui/icons-material/Edit';

@@ -44,13 +44,9 @@ export const NewReview = ({
           mark: 'review-action',
           json: { 
             'review': { 
-              body: {
-                commit: commit.hash,
-                reviewee: reviewee,
-                score: newReview.score,
-                why: newReview.why,
-                when: Date.now(),
-              }
+              commit: commit.hash,
+              score: newReview.score,
+              why: newReview.why,
             }
           }
         })

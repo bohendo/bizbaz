@@ -2,7 +2,7 @@ import React, { ReactComponentElement, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 // Pages
-import { NewAdvert } from "../pages/NewAdvert";
+import { NewAdvert } from "../components/NewAdvert";
 
 // MUI 
 import AppBar from "@mui/material/AppBar";
@@ -56,7 +56,7 @@ export const NavBar = ({api, tabPage}:{api: any, tabPage: ReactComponentElement<
                   variant="fullWidth"
                   aria-label="full width tabs example"
               >
-                  <Tab component={Link} to={'/adverts'} icon={<ExploreOutlined />} {...a11yProps(0)} />
+                  <Tab component={Link} to={'/explore'} icon={<ExploreOutlined />} {...a11yProps(0)} />
                   <Tab component={Link} to={'/profile'} icon={<Sigil config={{...config}}/>} {...a11yProps(2)} />
               </Tabs>
           </AppBar>

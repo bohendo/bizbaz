@@ -22,7 +22,7 @@ const Item = styled(Paper)(({ theme }) => ({
   textAlign: 'center',
 }))
 
-export const Adverts = ({
+export const Explore = ({
   api
 }: { api: any }) => {
   const theme = useTheme();
@@ -113,4 +113,3 @@ export const Adverts = ({
     </Box>
   )
 }
-
