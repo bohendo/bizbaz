@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+
+import { BizbazContext } from "../BizbazContext"
 
 // Components
 import { Votes } from '../components/Votes';
@@ -26,119 +28,34 @@ import { TAdvert, TCommit, TIntent, TReview, TVote } from "../types";
 import EditIcon from '@mui/icons-material/Edit';
 
 export const Advert = ({ api }: { api: any }) => {
+  const bizbaz = useContext(BizbazContext);
   const theme = useTheme();
   const { hash } = useParams();
   const navigate = useNavigate();
   const [advert, setAdvert] = useState({} as TAdvert);
-  const [votes, setVotes] = useState([] as Array<TVote>);
-  const [ourVote, setOurVote] = useState({} as TVote);
-  const [intents, setIntents] = useState([] as Array<TIntent>);
-  const [commits, setCommits] = useState([] as Array<TCommit>);
-  const [reviews, setReviews] = useState([] as any[]);
+
   const [reviewCommit, setReviewCommit] = useState<TCommit | undefined>(undefined);
+  const [ourVote, setOurVote] = useState({} as TVote);
   const [openNewAdvertDialog, setOpenNewAdvertDialog] = useState(false);
   const [openNewReviewDialog, setOpenNewReviewDialog] = useState(false);
 
+  const { adverts, votes, intents, commits, reviews } = bizbaz;
+
+  console.log(`Got bizbaz context:`, bizbaz)
+
+  useEffect(() => {
+    setAdvert(adverts.find((a: TAdvert) => a.hash === hash))
+  }, [adverts]);
+
   const updateAdvert = ( upd: any) => {
-    if (upd.gather) {
-      setAdvert(upd.gather.adverts.find((u: TAdvert) => u.hash === hash))      
-    } else if (upd.update) {
+    if (upd.update) {
       navigate(`advert/${upd.update.update.new.hash}`)
-    } else {
-      console.log(`Got unknown advert update:`, upd)
     }
-  }
-
-  const updateVotes = (upd: any) => {
-    if (upd.gather) {
-      const filteredVotes = upd.gather.votes.filter((vote: TVote) =>
-        vote.body.advert === hash
-      )
-      console.log(`Relevant votes:`, filteredVotes)
-      setVotes(filteredVotes)
-    } else if (upd.vote) {
-      const newVote = upd.vote
-      console.log(`New vote:`, newVote)
-      setVotes((oldVotes) => {
-        const recast = oldVotes.findIndex(v =>
-          v.body.advert === newVote.body.advert && v.body.voter === newVote.body.voter
-        )
-        console.log(`recast index:`, recast)
-        if (recast === -1) {
-          console.log(`This is a new vote, adding it to the array`)
-          return [...oldVotes, newVote]
-        } else {
-          console.log(`This is a recast vote, updating the previous vote to ${newVote.choice}`)
-          if (newVote.body.choice === "un") {
-            return [...oldVotes.slice(0, recast), ...oldVotes.slice(recast + 1)]
-          } else {
-            return [...oldVotes.slice(0, recast), newVote, ...oldVotes.slice(recast + 1)]
-          }
-        }
-      })
-    } else {
-      console.log(`Got unknown vote update:`, upd)
-    }
-  }
-
-  const updateReviews = (upd: any) => {
-    const filterIntents = (ints: Array<TIntent>) => ints.filter(i => i.body.advert === hash)
-    const filterCommits = (cmts: Array<TCommit>) => cmts.filter(c => c.intent.advert === hash)
-    const filterReviews = (revs: Array<TReview>) => revs.filter(r => r.commit.intent.advert === hash)
-
-    console.log(`Got reviews update:`, upd)
-    if (!!upd.gather) {
-      const { intents, commits, reviews } = upd.gather
-      const filteredIntents = filterIntents(intents)
-      console.log(`Relevant intents:`, filteredIntents)
-      setIntents(filteredIntents)
-      const filteredCommits = filterCommits(commits)
-      console.log(`Relevant commits:`, filteredCommits)
-      setCommits(filteredCommits)
-      const filteredReviews = filterReviews(reviews)
-      console.log(`Relevant reviews:`, filteredReviews)
-      setReviews(filteredReviews)
-
-    } else if (!!upd.intent) {
-      console.log("Got new intent:", upd)
-      setIntents((oldIntents) => filterIntents([upd.intent, ...oldIntents]))
-
-    } else if (!!upd.commit) {
-      console.log("Got new commit:", upd)
-      setCommits((oldCommits) => filterCommits([upd.commit, ...oldCommits]))
-
-    } else if (!!upd.review) {
-      console.log("Got new review:", upd)
-      setReviews((oldReviews) => filterReviews([upd.review, ...oldReviews]))
-
-    } else if (!!upd.update) {
-      console.log("Got updated review:", upd)
-      setReviews((oldReviews) => {
-        const oldRev = upd.oldRev
-        const newRev = upd.newRev
-        const oldIdx = oldReviews.findIndex(r => r.hash == oldRev)
-        if (oldIdx === -1) {
-          console.log(`Uhh, no existing review matches this update.. Adding it as if it were a new review`)
-          return filterReviews([newRev, ...newRev])
-        }
-        return filterReviews([
-          ...oldReviews.slice(0, oldIdx),
-          newRev,
-          ...oldReviews.slice(oldIdx + 1)
-        ])
-      })
-
-    } else {
-      console.log("Unknown review updates. Got: ", upd)
-    }
-
   }
 
   useEffect(() => {
     async function init() {
       api.subscribe( { app: "bizbaz", path: '/json/adverts', event: updateAdvert } )
-      api.subscribe( { app: "bizbaz", path: '/json/votes', event: updateVotes } )
-      api.subscribe( { app: "bizbaz", path: '/json/reviews', event: updateReviews } )
     }
     init();
   }, []);

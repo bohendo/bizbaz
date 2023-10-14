@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Box, styled, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
+
+import { BizbazContext } from "../BizbazContext"
 
 // types
 import { TAdvert } from "../types";
@@ -26,27 +28,10 @@ export const Explore = ({
   api
 }: { api: any }) => {
   const theme = useTheme();
-  const [adverts, setAdverts] = useState([] as Array<TAdvert>);
+  const bizbaz = useContext(BizbazContext)
+  const { adverts } = bizbaz
 
   console.log(`Rendering ${adverts.length} adverts`)
-
-  const handleUpdate = ( upd: any) => {
-    console.log(`Got advert update:`, upd)
-    if (upd.gather) {
-      setAdverts(upd.gather.adverts || [] as Array<TAdvert>)
-    } else if (upd.create) {
-      setAdverts((oldAdverts: Array<TAdvert>) => [upd.create.advert, ...oldAdverts])
-    } else {
-      console.log(`Got unknown advert update:`, upd)
-    }
-  }
-
-  useEffect(() => {
-    async function init() {
-      api.subscribe( { app: "bizbaz", path: '/json/adverts', event: handleUpdate } )
-    }
-    init();
-  }, []);
 
   if(adverts.length == 0) return (
     <Typography>
