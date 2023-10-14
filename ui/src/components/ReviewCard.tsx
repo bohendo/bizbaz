@@ -1,6 +1,10 @@
 import React, { useEffect } from "react";
 import { TReview, TIntent } from "../types";
 
+// Components
+import { AdvertLink } from "./AdvertLink"
+import { ShipLink } from "./ShipLink"
+
 // MUI
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -21,14 +25,18 @@ export const ReviewCard = ({ review }: {
     <Card variant="outlined" sx={{ p: 1, mx: 6 }}>
 
       <CardHeader
-      title={
-        <Rating
-          defaultValue={review.body.score}
-          readOnly={true}
-          size="large"
-        />
-      }
-          subheader={`${reviewer} reviewed ${reviewee} on advert ...${advert.substring(advert.length - 5)}`}
+        title={
+          <Rating
+            defaultValue={review.body.score}
+            readOnly={true}
+            size="large"
+          />
+        }
+        subheader={
+          <Typography>
+            <ShipLink ship={reviewer}/> reviewed <ShipLink ship={reviewee}/> on <AdvertLink advert={advert}/>
+          </Typography>
+        }
       />
 
       <CardContent>

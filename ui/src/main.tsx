@@ -31,7 +31,7 @@ const router = createBrowserRouter([
         element: <Explore api={api} />,
       },
       {
-        path: "/profile",
+        path: "/profile/:ship",
         element: <Profile api={api} />,
       },
     ]

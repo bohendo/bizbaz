@@ -57,7 +57,7 @@ export const NavBar = ({api, tabPage}:{api: any, tabPage: ReactComponentElement<
                   aria-label="full width tabs example"
               >
                   <Tab component={Link} to={'/explore'} icon={<ExploreOutlined />} {...a11yProps(0)} />
-                  <Tab component={Link} to={'/profile'} icon={<Sigil config={{...config}}/>} {...a11yProps(2)} />
+                  <Tab component={Link} to={`/profile/~${window.ship}`} icon={<Sigil config={{...config}}/>} {...a11yProps(2)} />
               </Tabs>
           </AppBar>
           <Box marginTop={theme.spacing(4)}>
