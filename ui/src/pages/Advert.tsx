@@ -161,81 +161,84 @@ export const Advert = ({ api }: { api: any }) => {
     return <div> Advert does not exist </div>
   } else if (advert.body) {
     return (
-    <Paper variant="outlined" sx={{ p: 8, m: 8 }}>
-      <Typography variant="h2">
-        {advert.body.title}
-      </Typography>
-      <Typography variant="caption">
-        Posted by: {advert.vendor.ship}
-      </Typography>
-      <Typography variant="h5">
-        Tags: {advert.body.tags?.join(", ")}
-      </Typography>
-      <Typography variant="body1">
-        Description: {advert.body.description}
-      </Typography>
+      <div>
+        <Paper variant="outlined" sx={{ p: 8, m: 8 }}>
+          <Typography variant="h2">
+            {advert.body.title}
+          </Typography>
+          <Typography variant="caption">
+            Posted by: {advert.vendor.ship}
+          </Typography>
+          <Typography variant="h5">
+            Tags: {advert.body.tags?.join(", ")}
+          </Typography>
+          <Typography variant="body1">
+            Description: {advert.body.description}
+          </Typography>
 
-      <Votes votes={votes} vote={vote} />
-      <Intents intents={intents} intent={intent}
-        vendor={advert.vendor.ship === `~${window.ship}`}
-        commits={commits} commit={commit}
-      />
+          <Votes votes={votes} vote={vote} />
 
-      <br/>
-      <Button variant="contained" disabled={commits.length === 0} onClick={()=>setOpenNewReviewDialog(true)} sx={{ m:2 }}>
-        Review
-      </Button>
-      <br/>
+          <br/>
+          <Button variant="contained" disabled={commits.length === 0} onClick={()=>setOpenNewReviewDialog(true)} sx={{ m:2 }}>
+            Review
+          </Button>
+          <br/>
 
-      <Typography variant="body1">
-        Voted by: {votes.map(v => v.voter.ship).join(", ")}
-      </Typography>
+          <Typography variant="body1">
+            Voted by: {votes.map(v => v.voter.ship).join(", ")}
+          </Typography>
 
-      <Typography variant="body1">
-        Intents to buy by: {intents.map(i => i.client.ship).join(", ")}
-      </Typography>
+          <Typography variant="body1">
+            Intents to buy by: {intents.map(i => i.client.ship).join(", ")}
+          </Typography>
 
-      <Typography variant="body1">
-        Commitments to sell by: {commits.map(c => c.vendor.ship).join(", ")}
-      </Typography>
+          <Typography variant="body1">
+            Commitments to sell by: {commits.map(c => c.vendor.ship).join(", ")}
+          </Typography>
 
-      <Typography variant="body1">
-        Reviews by: {reviews.map(r => r.reviewer.ship).join(", ")}
-      </Typography>
+          <Typography variant="body1">
+            Reviews by: {reviews.map(r => r.reviewer.ship).join(", ")}
+          </Typography>
 
-      <Fab color='primary' sx={{
-        position: 'fixed',
-        right: theme.spacing(4),
-        bottom: theme.spacing(3)
-      }} onClick={() => setOpenNewAdvertDialog(true)}>
-        <EditIcon />
-      </Fab>
+          <Fab color='primary' sx={{
+            position: 'fixed',
+            right: theme.spacing(4),
+            bottom: theme.spacing(3)
+          }} onClick={() => setOpenNewAdvertDialog(true)}>
+            <EditIcon />
+          </Fab>
 
-      <NewAdvert
-        editAdvert={{
-          hash: advert.hash,
-          body: {
-            title: advert.body.title,
-            tags: advert.body.tags,
-            description: advert.body.description,
-            cover: advert.body.cover,
-            when: Date.now()
-          }
-        }}
-        edit={true}
-        open={openNewAdvertDialog} handleCloseDialog={() => setOpenNewAdvertDialog(false)}
-        api={api}
-      /> 
+          <NewAdvert
+            editAdvert={{
+              hash: advert.hash,
+              body: {
+                title: advert.body.title,
+                tags: advert.body.tags,
+                description: advert.body.description,
+                cover: advert.body.cover,
+                when: Date.now()
+              }
+            }}
+            edit={true}
+            open={openNewAdvertDialog} handleCloseDialog={() => setOpenNewAdvertDialog(false)}
+            api={api}
+          /> 
 
-      <NewReview
-        commit={commits[0]}
-        reviewee={advert?.vendor?.ship || ""}
-        open={openNewReviewDialog}
-        handleCloseDialog={() => setOpenNewReviewDialog(false)}
-        api={api}
-      />
+          <NewReview
+            commit={commits[0]}
+            reviewee={advert?.vendor?.ship || ""}
+            open={openNewReviewDialog}
+            handleCloseDialog={() => setOpenNewReviewDialog(false)}
+            api={api}
+          />
 
-    </Paper>
+        </Paper>
+
+        <Intents intents={intents} intent={intent}
+          vendor={advert.vendor.ship}
+          commits={commits} commit={commit}
+        />
+      </div>
   )} else return (
     <CircularProgress color="inherit" sx={{margin: theme.spacing(16)}} />
   )
