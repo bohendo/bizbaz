@@ -25,7 +25,6 @@ export const NewReview = ({
     handleCloseDialog: () => void;
     api: any // TODO: Fix api type
 }) => {
-    console.log(`Reviewing commit`, commit)
     const [newReview, setNewReview] = useState({
         score: 3,
         why: "",

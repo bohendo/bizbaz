@@ -14,7 +14,6 @@ import Rating from '@mui/material/Rating';
 export const ReviewCard = ({ review }: {
     review: TReview;
 }) => {
-  console.log(`Rendering review card for:`, review)
   const reviewer = review ? review.reviewer.ship : "..."
   const reviewee = review ? review.body.reviewee : "..."
   const advert = review ? review.commit.intent.advert : "..."
@@ -37,6 +36,8 @@ export const ReviewCard = ({ review }: {
           {review.body.why}
         </Typography>
       </CardContent>
+
+      {/* TODO: add edit button */}
 
     </Card>
   )

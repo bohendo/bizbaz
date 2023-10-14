@@ -9,18 +9,23 @@ import CardActions from '@mui/material/CardActions';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
-export const CommitCard = ({ commit, isVendor, doReview }: {
+const myShip = `~${window.ship}`
+
+export const CommitCard = ({ commit, doReview }: {
     commit: TCommit;
-    vendor: boolean;
     doReview: () => void;
 }) => {
-  console.log(`Rendering commit card for commit:`, commit)
+  const vendor = commit ? commit.vendor.ship : "..."
+  const client = commit ? commit.body.client.ship : "..."
+  const isVendor = myShip === vendor
   return (
     <Card variant="outlined" sx={{ p: 2, mx: 6 }}>
 
       <CardHeader
-          title={`${commit.vendor.ship} has commited to transacting with ${commit.body.client.ship}`}
-          subheader={`Proceed to complete the transaction, then leave your review`}
+        title={
+          `${isVendor ? "You have" : `${vendor} has`} commited to transacting with ${isVendor ? client : "you"}`
+        }
+        subheader={`Proceed to complete the transaction, then leave your review`}
       />
 
       <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: 2 }}>
