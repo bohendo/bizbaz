@@ -82,9 +82,9 @@ export const Advert = ({ api }: { api: any }) => {
   }
 
   const updateReviews = (upd: any) => {
-    const filterIntents = (ints) => ints.filter(i => i.body.advert === hash)
-    const filterCommits = (cmts) => cmts.filter(c => c.intent.advert === hash)
-    const filterReviews = (revs) => revs.filter(r => r.commit.intent.advert === hash)
+    const filterIntents = (ints: Array<TIntent>) => ints.filter(i => i.body.advert === hash)
+    const filterCommits = (cmts: Array<TCommit>) => cmts.filter(c => c.intent.advert === hash)
+    const filterReviews = (revs: Array<TReview>) => revs.filter(r => r.commit.intent.advert === hash)
 
     console.log(`Got reviews update:`, upd)
     if (!!upd.gather) {
@@ -114,12 +114,12 @@ export const Advert = ({ api }: { api: any }) => {
     } else if (!!upd.update) {
       console.log("Got updated review:", upd)
       setReviews((oldReviews) => {
-        oldRev = upd.oldRev
-        newRev = upd.newRev
-        oldIdx = oldReviews.findIndex(r => r.hash == oldRev)
+        const oldRev = upd.oldRev
+        const newRev = upd.newRev
+        const oldIdx = oldReviews.findIndex(r => r.hash == oldRev)
         if (oldIdx === -1) {
           console.log(`Uhh, no existing review matches this update.. Adding it as if it were a new review`)
-          return filterReviews([newRev, ...newReviews])
+          return filterReviews([newRev, ...newRev])
         }
         return filterReviews([
           ...oldReviews.slice(0, oldIdx),
@@ -213,9 +213,9 @@ export const Advert = ({ api }: { api: any }) => {
 
         </Paper>
 
-        <Intents intents={intents} intent={intent}
+        <Intents intents={intents} intentAction={intent}
           vendor={advert.vendor.ship}
-          commits={commits} commit={commit}
+          commitAction={commit}
         />
 
         <List>
@@ -224,7 +224,6 @@ export const Advert = ({ api }: { api: any }) => {
                     <ListItem key={i}>
                       <CommitCard
                           commit={commit}
-                          vendor={commit.vendor.ship == `~${window.ship}`}
                           doReview={() => doReview(commit)}
                       />
                     </ListItem>
@@ -268,7 +267,6 @@ export const Advert = ({ api }: { api: any }) => {
 
         <NewReview
           commit={reviewCommit}
-          reviewee={advert?.vendor?.ship || ""}
           open={openNewReviewDialog}
           handleCloseDialog={() => setOpenNewReviewDialog(false)}
           api={api}
