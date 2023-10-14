@@ -173,7 +173,7 @@
   ^-  (quip card _this)
   :: TODO: fix path validation
   :: ?>  |(?=(%reviews path) ?=(%adverts path))
-  ~&  path
+  :: ~&  path
   :_  this
   ?+  path  (on-watch:default path)
     :: paths for serving noun data to other ships
@@ -204,13 +204,13 @@
     [%json %adverts ~]
       =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
       ~&  (weld "mutual pals: " (spud (turn ~(tap in pals) |=(pal=ship (scot %p pal)))))
-      ~&  "watching adverts"
+      :: ~&  "watching adverts"
       [%give %fact ~ %advert-update !>(`update:advert`[%gather adverts])]~
     [%json %votes ~]
-      ~&  "watching votes"
+      :: ~&  "watching votes"
       [%give %fact ~ %vote-update !>(`update:vote`[%gather votes])]~
     [%json %reviews ~]
-      ~&  "watching intents & commits & reviews"
+      :: ~&  "watching intents & commits & reviews"
       [%give %fact ~ %review-update !>(`update:review`[%gather intents commits reviews])]~
   ==
 ++  on-arvo  :: handles responses from vanes
