@@ -5,6 +5,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Votes } from '../components/Votes';
 import { Intents } from '../components/Intents';
 import { CommitCard } from "../components/CommitCard";
+import { ReviewCard } from "../components/ReviewCard";
 import { NewAdvert } from "../components/NewAdvert";
 import { NewReview } from "../components/NewReview";
 
@@ -193,8 +194,7 @@ export const Advert = ({ api }: { api: any }) => {
         />
 
         <List>
-            {commits.map((commit: TIntent, i) => {
-                console.log(`preparing to render commit card for:`, commit);
+            {commits.map((commit: TCommit, i) => {
                 return(
                     <ListItem key={i}>
                       <CommitCard
@@ -202,6 +202,16 @@ export const Advert = ({ api }: { api: any }) => {
                           vendor={commit.vendor.ship == `~${window.ship}`}
                           doReview={() => doReview(commit)}
                       />
+                    </ListItem>
+                )
+            })}
+        </List>
+
+        <List>
+            {reviews.map((review: TReview, i) => {
+                return(
+                    <ListItem key={i}>
+                      <ReviewCard review={review} />
                     </ListItem>
                 )
             })}
