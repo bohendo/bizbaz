@@ -17,6 +17,7 @@ import Typography from '@mui/material/Typography';
 import Masonry from "@mui/lab/Masonry";
 import Paper from "@mui/material/Paper";
 
+import { AdvertCard } from "../components/AdvertCard";
 import { Sigil } from "../components/Sigil";
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -53,45 +54,8 @@ export const Explore = ({
       <Masonry columns={3} spacing={2}>
         {adverts.map((advert: TAdvert, index: number) => {
           // TODO set itemHeight based on cover image
-          const itemHeight = advert.body.description.length < 60 ? 200 : 260; 
-          const descriptionCutOff = 60; 
           return (
-            <Card key={index} sx={{ marginTop: theme.spacing(1) , height: itemHeight, width: 100 }}>
-              <CardActionArea disableRipple
-                sx={{ width: "100%", alignItems: "center" }}
-                component={Link} to={`/advert/${advert.hash}`}>
-                <Sigil config={{ point: advert.vendor.ship, size: 60, detail: 'default', space: 'large' }}/>
-
-                <CardContent
-                  sx={{
-                    backgroundColor: (theme) => theme.palette.mode === "light"
-                      ? "rgba(256, 256, 256, 0.90)"
-                      : "rgba(66,  66,  66,  0.90)",
-                    opacity: "0.99",
-                    height: "420px",
-                  }}>
-
-                    <Typography variant="body2">
-                      {advert.body.title}
-                    </Typography>
-
-                    <Typography variant="caption" display="block">
-                      Cover image: {advert.body.cover}
-                    </Typography>
-
-                    <Typography variant="caption" display="block">
-                      Tags: {advert.body.tags.join(", ")}
-                    </Typography>
-
-                    <Typography variant="caption" marginTop={theme.spacing(1)}>
-                      {advert.body.description.substring(0, descriptionCutOff)}
-                    </Typography>
-
-                </CardContent>
-
-              </CardActionArea>
-
-            </Card>
+            <AdvertCard key={index} advert={advert}/>
           )
         })}
       </Masonry>
