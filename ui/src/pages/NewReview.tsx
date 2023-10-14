@@ -10,26 +10,28 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Rating from '@mui/material/Rating';
 import TextField from '@mui/material/TextField';
 
+const myShip = `~${window.ship}`
+
 export const NewReview = ({
+    commit,
     editReview,
     open,
     handleCloseDialog,
     api,
-    reviewee,
-    commit
 }: {
+    commit: any;
     editReview?: any;
     open: boolean;
     handleCloseDialog: () => void;
     api: any // TODO: Fix api type
-    reviewee: string,
-    commit: any
 }) => {
     console.log(`Reviewing commit`, commit)
     const [newReview, setNewReview] = useState({
         score: 3,
         why: "",
     } as any);
+
+    const reviewee = commit?.vendor?.ship === myShip ? commit?.body?.client?.ship : commit?.vendor?.ship;
 
     const syncNewReview = (review: any) => {
        setNewReview(review);

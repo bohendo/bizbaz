@@ -4,6 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 // Components
 import { Votes } from '../components/Votes';
 import { Intents } from '../components/Intents';
+import { CommitCard } from "../components/CommitCard";
 
 // Pages
 import { NewAdvert } from "../pages/NewAdvert";
@@ -11,6 +12,8 @@ import { NewAdvert } from "../pages/NewAdvert";
 // MUI
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
 import Fab from '@mui/material/Fab'
 import Paper from "@mui/material/Paper";
 import Typography from '@mui/material/Typography';
@@ -33,6 +36,7 @@ export const Advert = ({ api }: { api: any }) => {
   const [intents, setIntents] = useState([] as Array<TIntent>);
   const [commits, setCommits] = useState([] as Array<TCommit>);
   const [reviews, setReviews] = useState([] as any[]);
+  const [reviewCommit, setReviewCommit] = useState<TCommit | undefined>(undefined);
   const [openNewAdvertDialog, setOpenNewAdvertDialog] = useState(false);
   const [openNewReviewDialog, setOpenNewReviewDialog] = useState(false);
 
@@ -156,52 +160,67 @@ export const Advert = ({ api }: { api: any }) => {
       })
   }
 
+  const doReview = (commit: TCommit) => {
+    setReviewCommit(commit)
+    setOpenNewReviewDialog(true)
+  }
+
   if (advert === undefined) {
     // TODO: create error 404 not found page
     return <div> Advert does not exist </div>
   } else if (advert.body) {
-    return (
-    <Paper variant="outlined" sx={{ p: 8, m: 8 }}>
-      <Typography variant="h2">
-        {advert.body.title}
-      </Typography>
-      <Typography variant="caption">
-        Posted by: {advert.vendor.ship}
-      </Typography>
-      <Typography variant="h5">
-        Tags: {advert.body.tags?.join(", ")}
-      </Typography>
-      <Typography variant="body1">
-        Description: {advert.body.description}
-      </Typography>
+    return (<div>
+      <Paper variant="outlined" sx={{ p: 8, m: 8 }}>
+        <Typography variant="h2">
+          {advert.body.title}
+        </Typography>
+        <Typography variant="caption">
+          Posted by: {advert.vendor.ship}
+        </Typography>
+        <Typography variant="h5">
+          Tags: {advert.body.tags?.join(", ")}
+        </Typography>
+        <Typography variant="body1">
+          Description: {advert.body.description}
+        </Typography>
 
-      <Votes votes={votes} vote={vote} />
-      <Intents intents={intents} intent={intent}
-        vendor={advert.vendor.ship === `~${window.ship}`}
-        commits={commits} commit={commit}
-      />
+        <Votes votes={votes} vote={vote} />
+        <Intents intents={intents} intent={intent}
+          vendor={advert.vendor.ship === `~${window.ship}`}
+          commits={commits} commit={commit}
+        />
 
-      <br/>
-      <Button variant="contained" disabled={commits.length === 0} onClick={()=>setOpenNewReviewDialog(true)} sx={{ m:2 }}>
-        Review
-      </Button>
-      <br/>
+        <Typography variant="body1">
+          Voted by: {votes.map(v => v.voter.ship).join(", ")}
+        </Typography>
 
-      <Typography variant="body1">
-        Voted by: {votes.map(v => v.voter.ship).join(", ")}
-      </Typography>
+        <Typography variant="body1">
+          Intents to buy by: {intents.map(i => i.client.ship).join(", ")}
+        </Typography>
 
-      <Typography variant="body1">
-        Intents to buy by: {intents.map(i => i.client.ship).join(", ")}
-      </Typography>
+        <Typography variant="body1">
+          Commitments to sell by: {commits.map(c => c.vendor.ship).join(", ")}
+        </Typography>
 
-      <Typography variant="body1">
-        Commitments to sell by: {commits.map(c => c.vendor.ship).join(", ")}
-      </Typography>
+        <Typography variant="body1">
+          Reviews by: {reviews.map(r => r.reviewer.ship).join(", ")}
+        </Typography>
+      </Paper>
 
-      <Typography variant="body1">
-        Reviews by: {reviews.map(r => r.reviewer.ship).join(", ")}
-      </Typography>
+      <List>
+          {commits.map((commit: TIntent, i) => {
+              console.log(`preparing to render commit card for:`, commit);
+              return(
+                  <ListItem key={i}>
+                    <CommitCard
+                        commit={commit}
+                        vendor={commit.vendor.ship == `~${window.ship}`}
+                        doReview={() => doReview(commit)}
+                    />
+                  </ListItem>
+              )
+          })}
+      </List>
 
       <Fab color='primary' sx={{
         position: 'fixed',
@@ -228,15 +247,14 @@ export const Advert = ({ api }: { api: any }) => {
       /> 
 
       <NewReview
-        commit={commits[0]}
+        commit={reviewCommit}
         reviewee={advert?.vendor?.ship || ""}
         open={openNewReviewDialog}
         handleCloseDialog={() => setOpenNewReviewDialog(false)}
         api={api}
       />
 
-    </Paper>
-  )} else return (
+  </div>)} else return (
     <CircularProgress color="inherit" sx={{margin: theme.spacing(16)}} />
   )
 }
