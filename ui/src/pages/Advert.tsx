@@ -169,92 +169,80 @@ export const Advert = ({ api }: { api: any }) => {
     // TODO: create error 404 not found page
     return <div> Advert does not exist </div>
   } else if (advert.body) {
-    return (<div>
-      <Paper variant="outlined" sx={{ p: 8, m: 8 }}>
-        <Typography variant="h2">
-          {advert.body.title}
-        </Typography>
-        <Typography variant="caption">
-          Posted by: {advert.vendor.ship}
-        </Typography>
-        <Typography variant="h5">
-          Tags: {advert.body.tags?.join(", ")}
-        </Typography>
-        <Typography variant="body1">
-          Description: {advert.body.description}
-        </Typography>
+    return (
+      <div>
+        <Paper variant="outlined" sx={{ p: 8, m: 8 }}>
+          <Typography variant="h2">
+            {advert.body.title}
+          </Typography>
+          <Typography variant="caption">
+            Posted by: {advert.vendor.ship}
+          </Typography>
+          <Typography variant="h5">
+            Tags: {advert.body.tags?.join(", ")}
+          </Typography>
+          <Typography variant="body1">
+            Description: {advert.body.description}
+          </Typography>
 
-        <Votes votes={votes} vote={vote} />
+          <Votes votes={votes} vote={vote} />
+
+        </Paper>
+
         <Intents intents={intents} intent={intent}
-          vendor={advert.vendor.ship === `~${window.ship}`}
+          vendor={advert.vendor.ship}
           commits={commits} commit={commit}
         />
 
-        <Typography variant="body1">
-          Voted by: {votes.map(v => v.voter.ship).join(", ")}
-        </Typography>
+        <List>
+            {commits.map((commit: TIntent, i) => {
+                console.log(`preparing to render commit card for:`, commit);
+                return(
+                    <ListItem key={i}>
+                      <CommitCard
+                          commit={commit}
+                          vendor={commit.vendor.ship == `~${window.ship}`}
+                          doReview={() => doReview(commit)}
+                      />
+                    </ListItem>
+                )
+            })}
+        </List>
 
-        <Typography variant="body1">
-          Intents to buy by: {intents.map(i => i.client.ship).join(", ")}
-        </Typography>
+        <Fab color='primary' sx={{
+          position: 'fixed',
+          right: theme.spacing(4),
+          bottom: theme.spacing(3)
+        }} onClick={() => setOpenNewAdvertDialog(true)}>
+          <EditIcon />
+        </Fab>
 
-        <Typography variant="body1">
-          Commitments to sell by: {commits.map(c => c.vendor.ship).join(", ")}
-        </Typography>
+        <NewAdvert
+          editAdvert={{
+            hash: advert.hash,
+            body: {
+              title: advert.body.title,
+              tags: advert.body.tags,
+              description: advert.body.description,
+              cover: advert.body.cover,
+              when: Date.now()
+            }
+          }}
+          edit={true}
+          open={openNewAdvertDialog} handleCloseDialog={() => setOpenNewAdvertDialog(false)}
+          api={api}
+        /> 
 
-        <Typography variant="body1">
-          Reviews by: {reviews.map(r => r.reviewer.ship).join(", ")}
-        </Typography>
-      </Paper>
+        <NewReview
+          commit={reviewCommit}
+          reviewee={advert?.vendor?.ship || ""}
+          open={openNewReviewDialog}
+          handleCloseDialog={() => setOpenNewReviewDialog(false)}
+          api={api}
+        />
 
-      <List>
-          {commits.map((commit: TIntent, i) => {
-              console.log(`preparing to render commit card for:`, commit);
-              return(
-                  <ListItem key={i}>
-                    <CommitCard
-                        commit={commit}
-                        vendor={commit.vendor.ship == `~${window.ship}`}
-                        doReview={() => doReview(commit)}
-                    />
-                  </ListItem>
-              )
-          })}
-      </List>
-
-      <Fab color='primary' sx={{
-        position: 'fixed',
-        right: theme.spacing(4),
-        bottom: theme.spacing(3)
-      }} onClick={() => setOpenNewAdvertDialog(true)}>
-        <EditIcon />
-      </Fab>
-
-      <NewAdvert
-        editAdvert={{
-          hash: advert.hash,
-          body: {
-            title: advert.body.title,
-            tags: advert.body.tags,
-            description: advert.body.description,
-            cover: advert.body.cover,
-            when: Date.now()
-          }
-        }}
-        edit={true}
-        open={openNewAdvertDialog} handleCloseDialog={() => setOpenNewAdvertDialog(false)}
-        api={api}
-      /> 
-
-      <NewReview
-        commit={reviewCommit}
-        reviewee={advert?.vendor?.ship || ""}
-        open={openNewReviewDialog}
-        handleCloseDialog={() => setOpenNewReviewDialog(false)}
-        api={api}
-      />
-
-  </div>)} else return (
+    </div>
+  )} else return (
     <CircularProgress color="inherit" sx={{margin: theme.spacing(16)}} />
   )
 }
