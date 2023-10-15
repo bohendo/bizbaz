@@ -53,7 +53,6 @@ export const Explore = ({
       </Typography>
       <Masonry columns={3} spacing={2}>
         {adverts.map((advert: TAdvert, index: number) => {
-          // TODO set itemHeight based on cover image
           return (
             <AdvertCard key={index} advert={advert}/>
           )

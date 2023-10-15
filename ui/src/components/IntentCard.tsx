@@ -12,32 +12,28 @@ import IconButton from '@mui/material/IconButton';
 import BackHandIcon from '@mui/icons-material/BackHand';
 import CommitIcon from '@mui/icons-material/Commit';
 
-export const IntentCard = ({intent, intentAction, commitAction, vendor}: {
+export const IntentCard = ({intent, commitAction}: {
     intent: TIntent | undefined;
-    intentAction: () => void;
     commitAction: () => void;
-    vendor: string;
 }) => {
+    const myShip = `~${window.ship}`
+    const vendor = intent ? intent?.body?.vendor?.ship : "..."
+    const client = intent ? intent?.client?.ship : "..."
     return (
-        <Card variant="outlined">
-            <CardHeader title={vendor === `~${window.ship}` ?
-                `${intent?.client.ship} has shown interest`
-                :intent ? `${vendor} has been notified about your interest in the advert `
-                        :`Express Intent in advert`
+        <Card variant="outlined" sx={{ p: 2, mt: 2 }}>
+            <CardHeader title={vendor === myShip ?
+                `${client} has shown interest`
+                : `${vendor} has been notified about your interest in the advert `
             }/>
 
-            <CardActions>
-                {vendor === `~${window.ship}` ? 
-                    <Button onClick={commitAction}>
-                        Commit
-                    </Button>
-                :!intent ?
-                    <IconButton onClick={intentAction}>
-                        <BackHandIcon />
-                    </IconButton>
-                    :null
-            }
-            </CardActions>
+            {(vendor === `~${window.ship}`) ? (
+              <CardActions>
+                  <Button onClick={commitAction}>
+                      Commit
+                  </Button>
+              </CardActions>
+            ) : null}
+
         </Card>
     )
 }

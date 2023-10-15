@@ -5,13 +5,14 @@ import { BizbazContext } from "../BizbazContext"
 
 // Components
 import { Votes } from '../components/Votes';
-import { Intents } from '../components/Intents';
+import { IntentList } from '../components/IntentList';
 import { CommitCard } from "../components/CommitCard";
 import { ReviewCard } from "../components/ReviewCard";
 import { NewAdvert } from "../components/NewAdvert";
 import { NewReview } from "../components/NewReview";
 
 // MUI
+import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import List from '@mui/material/List';
@@ -27,6 +28,8 @@ import { TAdvert, TCommit, TIntent, TReview, TVote } from "../types";
 // Icons
 import EditIcon from '@mui/icons-material/Edit';
 
+const myShip = `~${window.ship}`
+
 export const Advert = ({ api }: { api: any }) => {
   const bizbaz = useContext(BizbazContext);
   const theme = useTheme();
@@ -41,7 +44,10 @@ export const Advert = ({ api }: { api: any }) => {
 
   const { adverts, votes, intents, commits, reviews } = bizbaz;
 
-  console.log(`Got bizbaz context:`, bizbaz)
+  // console.log(`Got bizbaz context:`, bizbaz)
+
+  const advIntents = intents.filter(i => i.body.advert === hash);
+  console.log(`adv intents:`, advIntents)
 
   useEffect(() => {
     setAdvert(adverts.find((a: TAdvert) => a.hash === hash))
@@ -85,8 +91,7 @@ export const Advert = ({ api }: { api: any }) => {
       })
   }
 
-  const commit = () => {
-      const intent = intents[0]?.hash
+  const doCommit = (intent) => {
       if (!intent) {
           console.log(`No intent exists to commit to`)
           return
@@ -111,8 +116,8 @@ export const Advert = ({ api }: { api: any }) => {
     return <div> Advert does not exist </div>
   } else if (advert.body) {
     return (
-      <div>
-        <Paper variant="outlined" sx={{ p: 8, m: 8 }}>
+      <Box sx={{ p: 2, m: 2, mt: 8 }} >
+        <Paper variant="outlined" sx={{ p: 4 }}>
           <Typography variant="h2">
             {advert.body.title}
           </Typography>
@@ -128,11 +133,24 @@ export const Advert = ({ api }: { api: any }) => {
 
           <Votes votes={votes} vote={vote} />
 
+          {(myShip !== advert.vendor.ship) ? (
+            <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: 2 }}>
+              <Button
+                variant="contained"
+                onClick={intent}
+                disabled={!!advIntents.find(i => i.client.ship === myShip)}
+              >
+                Express Intent
+              </Button>
+            </Box>
+          ) : null}
+
         </Paper>
 
-        <Intents intents={intents} intentAction={intent}
-          vendor={advert.vendor.ship}
-          commitAction={commit}
+        <IntentList
+            intents={advIntents}
+            vendor={advert.vendor.ship}
+            commitAction={doCommit}
         />
 
         <List>
@@ -189,7 +207,7 @@ export const Advert = ({ api }: { api: any }) => {
           api={api}
         />
 
-    </div>
+    </Box>
   )} else return (
     <CircularProgress color="inherit" sx={{margin: theme.spacing(16)}} />
   )
