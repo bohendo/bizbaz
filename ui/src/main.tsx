@@ -28,11 +28,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/explore",
-        element: <Explore api={api} />,
+        element: <Explore />,
       },
       {
         path: "/profile/:ship",
-        element: <Profile api={api} />,
+        element: <Profile />,
       },
     ]
   },

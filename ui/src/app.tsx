@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState, useReducer } from "react";
 import { Outlet } from "react-router-dom";
 
 import { BizbazContext } from "./BizbazContext"
+import { TAdvert, TCommit, TIntent, TReview, TVote } from "./types";
 
 // Components
 import { NavBar } from "./components/Navbar";
@@ -60,7 +61,6 @@ export const App = ({ api }: { api: any }) => {
         } else {
           console.log(`This is a recast vote, updating the previous vote to ${newVote.choice}`)
           if (newVote.body.choice === "un") {
-            return [...oldVotes.slice(0, recast), ...oldVotes.slice(recast + 1)]
           } else {
             return [...oldVotes.slice(0, recast), newVote, ...oldVotes.slice(recast + 1)]
           }
@@ -102,9 +102,9 @@ export const App = ({ api }: { api: any }) => {
     } else if (!!upd.update) {
       console.log("Got updated review:", upd)
       setReviews((oldReviews) => {
-        oldRev = upd.oldRev
-        newRev = upd.newRev
-        oldIdx = oldReviews.findIndex(r => r.hash == oldRev)
+        const oldRev = upd.oldRev
+        const newRev = upd.newRev
+        const oldIdx = oldReviews.findIndex(r => r.hash == oldRev)
         if (oldIdx === -1) {
           console.log(`Uhh, no existing review matches this update.. Adding it as if it were a new review`)
           return [newRev, ...newReviews]

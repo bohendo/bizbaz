@@ -25,9 +25,7 @@ const Item = styled(Paper)(({ theme }) => ({
   textAlign: 'center',
 }))
 
-export const Explore = ({
-  api
-}: { api: any }) => {
+export const Explore = () => {
   const theme = useTheme();
   const bizbaz = useContext(BizbazContext)
   const { adverts } = bizbaz

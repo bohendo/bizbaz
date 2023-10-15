@@ -14,7 +14,7 @@ import { ReviewCard } from "../components/ReviewCard";
 
 const myShip = `~${window.ship}`
 
-export const Profile = ({ api }: { api: any }) => {
+export const Profile = () => {
   const bizbaz = useContext(BizbazContext);
   const { ship } = useParams();
   const theme = useTheme();
