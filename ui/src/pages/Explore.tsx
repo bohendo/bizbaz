@@ -25,9 +25,7 @@ const Item = styled(Paper)(({ theme }) => ({
   textAlign: 'center',
 }))
 
-export const Explore = ({
-  api
-}: { api: any }) => {
+export const Explore = () => {
   const theme = useTheme();
   const bizbaz = useContext(BizbazContext)
   const { adverts } = bizbaz
@@ -47,7 +45,7 @@ export const Explore = ({
     space:'none',
   }
   return (
-    <Box>
+    <Box sx={{width: "100%", mt: theme.spacing(10)}}>
       <Typography variant="h2">
         Adverts
       </Typography>

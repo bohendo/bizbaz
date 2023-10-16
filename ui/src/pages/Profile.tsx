@@ -1,20 +1,22 @@
 import React, { useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
-import { BizbazContext } from "../BizbazContext"
+import { BizbazContext } from '../BizbazContext'
+import { TAdvert, TReview, } from "../types";
 
 // MUI
-import { useTheme } from "@mui/material/styles"
+import { useTheme } from '@mui/material/styles'
+import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import Masonry from "@mui/lab/Masonry";
+import Masonry from '@mui/lab/Masonry';
 
 // Components
-import { AdvertCard } from "../components/AdvertCard";
-import { ReviewCard } from "../components/ReviewCard";
+import { AdvertCard } from '../components/AdvertCard';
+import { ReviewCard } from '../components/ReviewCard';
 
 const myShip = `~${window.ship}`
 
-export const Profile = ({ api }: { api: any }) => {
+export const Profile = () => {
   const bizbaz = useContext(BizbazContext);
   const { ship } = useParams();
   const theme = useTheme();
@@ -22,7 +24,7 @@ export const Profile = ({ api }: { api: any }) => {
   const { adverts, votes, intents, commits, reviews } = bizbaz;
 
   return (
-    <div>
+    <Box sx={{width: "100%", mt: theme.spacing(10)}}>
       <Typography variant="h2" sx={{ mx: 2, my: 6 }}>
         {ship == myShip ? "My Profile" : `Profile of ${ship}`}
       </Typography>
@@ -60,6 +62,6 @@ export const Profile = ({ api }: { api: any }) => {
         })}
       </Masonry>
 
-    </div>
+    </Box>
   )
 }

@@ -12,12 +12,12 @@ import Paper from "@mui/material/Paper";
 import Typography from '@mui/material/Typography';
 import { useTheme } from "@mui/material/styles"
 
-// Icons
-import EditIcon from '@mui/icons-material/Edit';
-
 import { BizbazContext } from "../BizbazContext"
 
 import { TAdvert, TCommit, TIntent, TReview, TVote } from "../types";
+
+// Icons
+import EditIcon from '@mui/icons-material/Edit';
 
 // Components
 import { Votes } from '../components/Votes';
@@ -116,8 +116,8 @@ export const Advert = ({ api }: { api: any }) => {
     return <div> Advert does not exist </div>
   } else if (advert.body) {
     return (
-      <Box sx={{ p: 2, m: 2, mt: 8 }} >
-        <Paper variant="outlined" sx={{ p: 4 }}>
+      <Box sx={{width: "100%", mt: theme.spacing(10)}}>
+        <Paper variant="outlined" sx={{ p: 8, m: 8 }}>
           <Typography variant="h2">
             {advert.body.title}
           </Typography>
@@ -131,7 +131,7 @@ export const Advert = ({ api }: { api: any }) => {
             Description: {advert.body.description}
           </Typography>
 
-          <Votes votes={votes} vote={vote} />
+          <Votes votes={votes.filter((v: TVote) => v.body.advert === hash)} vote={vote} />
 
           {(myShip !== advert.vendor.ship) ? (
             <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: 2 }}>

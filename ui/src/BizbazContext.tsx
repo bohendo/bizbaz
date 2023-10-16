@@ -1,6 +1,6 @@
 import { createContext } from 'react';
 
-import { TAdvert, TCommit, TIntent, TReview, TVote } from "../types";
+import { TAdvert, TCommit, TIntent, TReview, TVote } from "./types";
 
 export const BizbazContext = createContext({
   adverts: [] as Array<TAdvert>,
