@@ -37,6 +37,7 @@ export const Advert = ({ api }: { api: any }) => {
   const [reviewCommit, setReviewCommit] = useState<TCommit | undefined>(undefined);
   const [openNewAdvertDialog, setOpenNewAdvertDialog] = useState(false);
   const [openNewReviewDialog, setOpenNewReviewDialog] = useState(false);
+  const [imgError, setImgError] = useState(false);
 
   const ourShip = `~${window.ship}`
 
@@ -50,7 +51,9 @@ export const Advert = ({ api }: { api: any }) => {
   const advReviews = reviews.filter(r => r.commit.intent.advert === hash);
   const vndReviews = reviews
     .filter(r => r.commit.vendor.ship === vendor)
-    .filter(r => !advReviews.some(ar => ar.hash === r.hash))
+    .filter(r => !advReviews.some(ar => ar.hash === r.hash));
+  
+  console.log(advert);
 
   const updateAdvert = ( upd: any) => {
     if (upd.update) {
@@ -117,6 +120,21 @@ export const Advert = ({ api }: { api: any }) => {
     return (
       <Box sx={{width: "100%", mt: theme.spacing(10)}}>
         <Paper variant="outlined" sx={{ p: 8, m: 8 }}>
+          {advert.body.cover && !imgError ? 
+          <img src={advert.body.cover}
+            style={{
+              borderBottomLeftRadius: "0px",
+              borderBottomRightRadius: "0px",
+              borderTopLeftRadius: "4px",
+              borderTopRightRadius: "4px",
+              display: "block",
+              margin: "0 auto 16px auto",
+              maxWidth: "100%",
+              width: "100%",
+            }}
+            onError={() => setImgError(true)}
+
+          /> : null}
           <Typography variant="h2">
             {advert.body.title}
           </Typography>
