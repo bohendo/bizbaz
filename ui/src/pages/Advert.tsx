@@ -145,43 +145,51 @@ export const Advert = ({ api }: { api: any }) => {
           ) : null}
         </Paper>
 
-        <List>
-          {advIntents.map((intent: TIntent, i) => (
-            <ListItem key={i}>
-              <IntentCard
-                intent={intent}
-                doCommit={doCommit}
-              />
-            </ListItem>
-          ))}
-        </List>
+        {advIntents.length > 0 ? 
+          <List sx={{px: 0}}>
+            {advIntents.map((intent: TIntent, i) => (
+              <ListItem key={i} sx={{px: 0}}>
+                <IntentCard
+                  intent={intent}
+                  doCommit={doCommit}
+                />
+              </ListItem>
+            ))}
+          </List> : null
+        }
 
-        <List>
-          {advCommits.map((commit: TCommit, i) => (
-            <ListItem key={i}>
-              <CommitCard
-                commit={commit}
-                makeReview={() => makeReview(commit)}
-              />
-            </ListItem>
-          ))}
-        </List>
+        {advCommits.length > 0 ?
+          <List sx={{px: 0}}>
+            {advCommits.map((commit: TCommit, i) => (
+              <ListItem key={i} sx={{px: 0}}>
+                <CommitCard
+                  commit={commit}
+                  makeReview={() => makeReview(commit)}
+                />
+              </ListItem>
+            ))}
+          </List> : null
+        }
 
-        <List>
-          {advReviews.map((review: TReview, i) => (
-            <ListItem key={i}>
-              <ReviewCard review={review} />
-            </ListItem>
-          ))}
-        </List>
+        {advReviews.length > 0 ?
+          <List sx={{px: 0}}>
+            {advReviews.map((review: TReview, i) => (
+              <ListItem key={i} sx={{px: 0}}>
+                <ReviewCard review={review} />
+              </ListItem>
+            ))}
+          </List> : null
+        }
 
-        <List>
-          {vndReviews.map((review: TReview, i) => (
-            <ListItem key={i}>
-              <ReviewCard review={review} />
-            </ListItem>
-          ))}
-        </List>
+        {vndReviews.length > 0 ?
+          <List sx={{px: 0}}>
+            {vndReviews.map((review: TReview, i) => (
+              <ListItem key={i} sx={{px: 0}}>
+                <ReviewCard review={review} />
+              </ListItem>
+            ))}
+          </List> : null
+        }
 
         {advert.vendor.ship === ourShip ? 
           <>

@@ -130,11 +130,9 @@ export const App = ({ api }: { api: any }) => {
       <ThemeProvider theme={theme}>
           <CssBaseline />
           <NavBar api={api} toggleTheme={toggleTheme} />
-          <main>
-            <MainContainer>
-              <Outlet />
-            </MainContainer>
-          </main>
+          <MainContainer id="main">
+            <Outlet />
+          </MainContainer>
       </ThemeProvider>
     </BizbazContext.Provider>
   );
