@@ -66,11 +66,17 @@ export const IntentCard = ({intent, doCommit}: {
       </CardContent>
 
       {isVendor ? (
-        <CardActions>
-          <Button onClick={() => doCommit(intent)}>
-            Commit
-          </Button>
-        </CardActions>
+        <Box sx={{ display: 'flex', justifyContent: 'center', my: 1 }}>
+          <CardActions>
+            <Button
+              variant="contained"
+              disabled={!intent}
+              onClick={() => doCommit(intent)}
+            >
+              Commit
+            </Button>
+          </CardActions>
+        </Box>
       ) : null}
 
     </Card>
