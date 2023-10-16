@@ -167,8 +167,6 @@
 ++  on-watch  :: handles subscription requests
   |=  =path
   ^-  (quip card _this)
-  :: TODO: fix path validation
-  :: ?>  |(?=(%reviews path) ?=(%adverts path))
   :: ~&  path
   :_  this
   ?+  path  (on-watch:default path)
@@ -237,10 +235,10 @@
           ?-  -.upd
               ::
           %gather
-            :: TODO: drop invalid items
             =/  new-adverts  (skip adverts.upd (exists:advlib adverts))
-            ~&  (log-gather:utils [got=(lent adverts.upd) new=(lent new-adverts) from=src.bowl type="advert"])
-            [~ this(adverts (weld new-adverts adverts))]
+            =/  gud-adverts  (skim new-adverts ((validate:advlib bowl) adverts))
+            ~&  (log-gather:utils [got=(lent adverts.upd) new=(lent gud-adverts) from=src.bowl type="advert"])
+            [~ this(adverts (weld gud-adverts adverts))]
               ::
           %create
             ~&  "Got a %create %advert-update from our subscription"
@@ -345,10 +343,10 @@
           ?-  -.upd
               ::
               %gather
-            :: TODO: drop invalid items
             =/  new-votes  (skip votes.upd (vote-exists:votlib votes))
-            ~&  (log-gather:utils [got=(lent votes.upd) new=(lent new-votes) from=src.bowl type="vote"])
-            [~ this(votes (weld new-votes votes))]
+            =/  gud-votes  (skim new-votes ((validate:votlib bowl) votes))
+            ~&  (log-gather:utils [got=(lent votes.upd) new=(lent gud-votes) from=src.bowl type="vote"])
+            [~ this(votes (weld gud-votes votes))]
               ::
               :: TODO: drop adverts that we downvote
               ::       therefore, only allow unvotes on upvotes
@@ -391,19 +389,21 @@
           ?-  -.upd
               ::
               %gather
-            :: TODO: drop invalid items
             :: handle new intents
             =/  new-intents  (skip intents.upd (exists:intlib intents))
+            =/  gud-intents  (skim intents.upd (validate:intlib intents))
             ~&  (log-gather:utils [got=(lent intents.upd) new=(lent new-intents) from=src.bowl type="intent"])
-            =/  set-intents  (weld new-intents intents)
+            =/  set-intents  (weld gud-intents intents)
             :: handle new commits
             =/  new-commits  (skip commits.upd (exists:cmtlib commits))
+            =/  gud-commits  (skim commits.upd (validate:cmtlib commits))
             ~&  (log-gather:utils [got=(lent commits.upd) new=(lent new-commits) from=src.bowl type="commit"])
             =/  set-commits  (weld new-commits commits)
             :: handle new reviews
             =/  new-reviews  (skip reviews.upd (exists:revlib reviews))
+            =/  gud-reviews  (skim reviews.upd (validate:revlib reviews))
             ~&  (log-gather:utils [got=(lent reviews.upd) new=(lent new-reviews) from=src.bowl type="review"])
-            =/  set-reviews  (weld new-reviews reviews)
+            =/  set-reviews  (weld gud-reviews reviews)
             :: add new data to state
             [~ this(intents set-intents, commits set-commits, reviews set-reviews)]
               ::
