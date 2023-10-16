@@ -3,13 +3,14 @@ import { TReview, TIntent } from "../types";
 
 // MUI
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
+import CardHeader from '@mui/material/CardHeader';
+import Grid from '@mui/material/Grid';
 import Rating from '@mui/material/Rating';
+import Typography from '@mui/material/Typography';
 
 // Components
 import { AdvertLink } from "./AdvertLink"
@@ -34,7 +35,7 @@ export const ReviewCard = ({ review }: {
         }
         subheader={
           <Typography>
-            <ShipLink ship={reviewer}/> reviewed <ShipLink ship={reviewee}/> on <AdvertLink advert={advert}/>
+            <ShipLink ship={reviewer}/> reviewed <ShipLink ship={reviewee}/>
           </Typography>
         }
       />
@@ -43,6 +44,25 @@ export const ReviewCard = ({ review }: {
         <Typography variant="body1">
           {review.body.why}
         </Typography>
+      </CardContent>
+
+      <CardContent sx={{ m: 0, py: 0 }}>
+        <Grid container spacing={2}>
+          <Grid item xs={6}>
+            <Box sx={{ display: 'flex', justifyContent: 'left' }}>
+              <Typography variant='body1'>
+                <AdvertLink advert={review.commit.intent.advert}/>
+              </Typography>
+            </Box>
+          </Grid>
+          <Grid item xs={6}>
+            <Box sx={{ display: 'flex', justifyContent: 'right' }}>
+              <Typography variant='body1'>
+                {new Date(review.body.when * 1000).toLocaleString()}
+              </Typography>
+            </Box>
+          </Grid>
+        </Grid>
       </CardContent>
 
       {/* TODO: add edit button */}

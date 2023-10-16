@@ -21,7 +21,7 @@ import { TAdvert, TCommit, TIntent, TReview, TVote } from "../types";
 
 // Components
 import { Votes } from '../components/Votes';
-import { IntentList } from '../components/IntentList';
+import { IntentCard } from '../components/IntentCard';
 import { CommitCard } from "../components/CommitCard";
 import { ReviewCard } from "../components/ReviewCard";
 import { NewAdvert } from "../components/NewAdvert";
@@ -33,7 +33,6 @@ export const Advert = ({ api }: { api: any }) => {
   const theme = useTheme();
   const { hash } = useParams();
   const navigate = useNavigate();
-  const [advert, setAdvert] = useState({} as TAdvert);
 
   const [reviewCommit, setReviewCommit] = useState<TCommit | undefined>(undefined);
   const [ourVote, setOurVote] = useState({} as TVote);
@@ -41,16 +40,18 @@ export const Advert = ({ api }: { api: any }) => {
   const [openNewReviewDialog, setOpenNewReviewDialog] = useState(false);
 
   const myShip = `~${window.ship}`
+
   const { adverts, votes, intents, commits, reviews } = bizbaz;
 
-  // console.log(`Got bizbaz context:`, bizbaz)
+  console.log(`All reviews:`, reviews)
 
+  // Calculate some dynamic values from our bizbaz state
+  const advert = adverts.find(a => a.hash === hash) || {}
+  const vendor = advert?.vendor?.ship
   const advIntents = intents.filter(i => i.body.advert === hash);
-  console.log(`adv intents:`, advIntents)
-
-  useEffect(() => {
-    setAdvert(adverts.find((a: TAdvert) => a.hash === hash))
-  }, [adverts]);
+  const advCommits = commits.filter(c => c.intent.advert === hash);
+  const advReviews = reviews.filter(r => r.commit.intent.advert === hash);
+  const vndReviews = reviews.filter(r => r.commit.vendor.ship === vendor);
 
   const updateAdvert = ( upd: any) => {
     if (upd.update) {
@@ -146,33 +147,42 @@ export const Advert = ({ api }: { api: any }) => {
 
         </Paper>
 
-        <IntentList
-            intents={advIntents}
-            vendor={advert.vendor.ship}
-            doCommit={doCommit}
-        />
-
         <List>
-            {commits.map((commit: TCommit, i) => {
-                return(
-                    <ListItem key={i}>
-                      <CommitCard
-                          commit={commit}
-                          makeReview={() => makeReview(commit)}
-                      />
-                    </ListItem>
-                )
-            })}
+          {advIntents.map((intent: TIntent, i) => (
+            <ListItem key={i}>
+              <IntentCard
+                intent={intent}
+                doCommit={doCommit}
+              />
+            </ListItem>
+          ))}
         </List>
 
         <List>
-            {reviews.map((review: TReview, i) => {
-                return(
-                    <ListItem key={i}>
-                      <ReviewCard review={review} />
-                    </ListItem>
-                )
-            })}
+          {advCommits.map((commit: TCommit, i) => (
+            <ListItem key={i}>
+              <CommitCard
+                commit={commit}
+                makeReview={() => makeReview(commit)}
+              />
+            </ListItem>
+          ))}
+        </List>
+
+        <List>
+          {advReviews.map((review: TReview, i) => (
+            <ListItem key={i}>
+              <ReviewCard review={review} />
+            </ListItem>
+          ))}
+        </List>
+
+        <List>
+          {vndReviews.map((review: TReview, i) => (
+            <ListItem key={i}>
+              <ReviewCard review={review} />
+            </ListItem>
+          ))}
         </List>
 
         <Fab color='primary' sx={{

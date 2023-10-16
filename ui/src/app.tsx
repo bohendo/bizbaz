@@ -33,7 +33,7 @@ export const App = ({ api }: { api: any }) => {
   }, []);
 
   const updateAdverts = ( upd: any) => {
-    console.log(`Got advert update:`, upd)
+    console.log(`Got %${Object.keys(upd)} advert update:`, upd)
     if (upd.gather) {
       setAdverts(upd.gather.adverts || [] as Array<TAdvert>)
     } else if (upd.create) {
@@ -44,21 +44,20 @@ export const App = ({ api }: { api: any }) => {
   }
 
   const updateVotes = (upd: any) => {
+    console.log(`Got %${Object.keys(upd)} vote update:`, upd)
     if (upd.gather) {
       setVotes(upd.gather.votes)
     } else if (upd.vote) {
       const newVote = upd.vote
-      console.log(`New vote:`, newVote)
       setVotes((oldVotes) => {
         const recast = oldVotes.findIndex(v =>
           v.body.advert === newVote.body.advert && v.body.voter === newVote.body.voter
         )
-        console.log(`recast index:`, recast)
         if (recast === -1) {
-          console.log(`This is a new vote, adding it to the array`)
+          // console.log(`This is a new vote, adding it to the array`)
           return [...oldVotes, newVote]
         } else {
-          console.log(`This is a recast vote, updating the previous vote to ${newVote.choice}`)
+          // console.log(`This is a recast vote, updating the previous vote to ${newVote.choice}`)
           if (newVote.body.choice === "un") {
             return [...oldVotes.slice(0, recast), ...oldVotes.slice(recast + 1)]
           } else {
@@ -67,40 +66,23 @@ export const App = ({ api }: { api: any }) => {
         }
       })
     } else {
-      console.log(`Got unknown vote update:`, upd)
+      console.log(`Got unknown vote update`)
     }
   }
 
   const updateReviews = (upd: any) => {
-    // const filterIntents = (ints) => ints.filter(i => i.body.advert === hash)
-    // const filterCommits = (cmts) => cmts.filter(c => c.intent.advert === hash)
-    // const filterReviews = (revs) => revs.filter(r => r.commit.intent.advert === hash)
-    console.log(`Got reviews update:`, upd)
+    console.log(`Got %${Object.keys(upd)} reviews update:`, upd)
     if (!!upd.gather) {
       setIntents(upd.gather.intents)
       setCommits(upd.gather.commits)
       setReviews(upd.gather.reviews)
-      // const { intents, commits, reviews } = upd.gather
-      // const filteredIntents = filterIntents(intents)
-      // console.log(`Relevant intents:`, filteredIntents)
-      // setIntents(filteredIntents)
-      // const filteredCommits = filterCommits(commits)
-      // console.log(`Relevant commits:`, filteredCommits)
-      // setCommits(filteredCommits)
-      // const filteredReviews = filterReviews(reviews)
-      // console.log(`Relevant reviews:`, filteredReviews)
-      // setReviews(filteredReviews)
     } else if (!!upd.intent) {
-      console.log("Got new intent:", upd)
       setIntents((oldIntents) => [upd.intent, ...oldIntents])
     } else if (!!upd.commit) {
-      console.log("Got new commit:", upd)
       setCommits((oldCommits) => [upd.commit, ...oldCommits])
     } else if (!!upd.review) {
-      console.log("Got new review:", upd)
       setReviews((oldReviews) => [upd.review, ...oldReviews])
     } else if (!!upd.update) {
-      console.log("Got updated review:", upd)
       setReviews((oldReviews) => {
         oldRev = upd.oldRev
         newRev = upd.newRev
@@ -116,7 +98,7 @@ export const App = ({ api }: { api: any }) => {
         ]
       })
     } else {
-      console.log("Unknown review updates. Got: ", upd)
+      console.log("Unknown review updates")
     }
   }
 
