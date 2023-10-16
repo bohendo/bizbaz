@@ -28,6 +28,8 @@ export const IntentCard = ({intent, doCommit}: {
   const myShip = `~${window.ship}`
   const vendor = intent ? intent?.body?.vendor?.ship : '...'
   const client = intent ? intent?.client?.ship : '...'
+  const advert = intent ? intent?.body?.advert : '...'
+  const when = intent ? intent?.body?.when : 0
   const isVendor = myShip === vendor
   return (
     <Card variant='outlined' sx={{ p: 2, mt: 2 }}>
@@ -51,14 +53,14 @@ export const IntentCard = ({intent, doCommit}: {
           <Grid item xs={6}>
             <Box sx={{ display: 'flex', justifyContent: 'left' }}>
               <Typography variant='body1'>
-                <AdvertLink advert={intent.body.advert}/>
+                <AdvertLink advert={advert}/>
               </Typography>
             </Box>
           </Grid>
           <Grid item xs={6}>
             <Box sx={{ display: 'flex', justifyContent: 'right' }}>
               <Typography variant='body1'>
-                {new Date(intent.body.when * 1000).toLocaleString()}
+                {new Date(when * 1000).toLocaleString()}
               </Typography>
             </Box>
           </Grid>
@@ -71,7 +73,7 @@ export const IntentCard = ({intent, doCommit}: {
             <Button
               variant="contained"
               disabled={!intent}
-              onClick={() => doCommit(intent)}
+              onClick={() => doCommit(intent!)}
             >
               Commit
             </Button>
