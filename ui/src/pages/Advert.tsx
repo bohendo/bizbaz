@@ -1,16 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
-import { BizbazContext } from "../BizbazContext"
-
-// Components
-import { Votes } from '../components/Votes';
-import { IntentList } from '../components/IntentList';
-import { CommitCard } from "../components/CommitCard";
-import { ReviewCard } from "../components/ReviewCard";
-import { NewAdvert } from "../components/NewAdvert";
-import { NewReview } from "../components/NewReview";
-
 // MUI
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -22,13 +12,21 @@ import Paper from "@mui/material/Paper";
 import Typography from '@mui/material/Typography';
 import { useTheme } from "@mui/material/styles"
 
-import { TAdvert, TCommit, TIntent, TReview, TVote } from "../types";
-
-
 // Icons
 import EditIcon from '@mui/icons-material/Edit';
 
-const myShip = `~${window.ship}`
+import { BizbazContext } from "../BizbazContext"
+
+import { TAdvert, TCommit, TIntent, TReview, TVote } from "../types";
+
+// Components
+import { Votes } from '../components/Votes';
+import { IntentList } from '../components/IntentList';
+import { CommitCard } from "../components/CommitCard";
+import { ReviewCard } from "../components/ReviewCard";
+import { NewAdvert } from "../components/NewAdvert";
+import { NewReview } from "../components/NewReview";
+import { ShipLink } from "../components/ShipLink";
 
 export const Advert = ({ api }: { api: any }) => {
   const bizbaz = useContext(BizbazContext);
@@ -42,6 +40,7 @@ export const Advert = ({ api }: { api: any }) => {
   const [openNewAdvertDialog, setOpenNewAdvertDialog] = useState(false);
   const [openNewReviewDialog, setOpenNewReviewDialog] = useState(false);
 
+  const myShip = `~${window.ship}`
   const { adverts, votes, intents, commits, reviews } = bizbaz;
 
   // console.log(`Got bizbaz context:`, bizbaz)
@@ -106,7 +105,7 @@ export const Advert = ({ api }: { api: any }) => {
       })
   }
 
-  const doReview = (commit: TCommit) => {
+  const makeReview = (commit: TCommit) => {
     setReviewCommit(commit)
     setOpenNewReviewDialog(true)
   }
@@ -122,7 +121,7 @@ export const Advert = ({ api }: { api: any }) => {
             {advert.body.title}
           </Typography>
           <Typography variant="caption">
-            Posted by: {advert.vendor.ship}
+            Posted by: <ShipLink ship={advert.vendor.ship} />
           </Typography>
           <Typography variant="h5">
             Tags: {advert.body.tags?.join(", ")}
@@ -150,7 +149,7 @@ export const Advert = ({ api }: { api: any }) => {
         <IntentList
             intents={advIntents}
             vendor={advert.vendor.ship}
-            commitAction={doCommit}
+            doCommit={doCommit}
         />
 
         <List>
@@ -159,7 +158,7 @@ export const Advert = ({ api }: { api: any }) => {
                     <ListItem key={i}>
                       <CommitCard
                           commit={commit}
-                          doReview={() => doReview(commit)}
+                          makeReview={() => makeReview(commit)}
                       />
                     </ListItem>
                 )

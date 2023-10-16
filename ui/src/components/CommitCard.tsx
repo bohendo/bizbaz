@@ -9,12 +9,14 @@ import CardActions from '@mui/material/CardActions';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
-const myShip = `~${window.ship}`
+// Components
+import { ShipLink } from "./ShipLink"
 
-export const CommitCard = ({ commit, doReview }: {
+export const CommitCard = ({ commit, makeReview }: {
     commit: TCommit;
-    doReview: () => void;
+    makeReview: () => void;
 }) => {
+  const myShip = `~${window.ship}`
   const vendor = commit ? commit.vendor.ship : "..."
   const client = commit ? commit.body.client.ship : "..."
   const isVendor = myShip === vendor
@@ -22,9 +24,15 @@ export const CommitCard = ({ commit, doReview }: {
     <Card variant="outlined" sx={{ p: 2 }}>
 
       <CardHeader
-        title={
-          `${isVendor ? "You have" : `${vendor} has`} commited to transacting with ${isVendor ? client : "you"}`
-        }
+        title={isVendor ? (
+          <Typography variant='h5'>
+            You have commited to transacting with <ShipLink ship={client}/>
+          </Typography>
+        ) : (
+          <Typography variant='h5'>
+            <ShipLink ship={vendor}/> has commited to transacting with you
+          </Typography>
+        )}
         subheader={`Proceed to complete the transaction, then leave your review`}
       />
 
@@ -32,7 +40,7 @@ export const CommitCard = ({ commit, doReview }: {
         <Button
           variant="contained"
           disabled={!commit}
-          onClick={doReview}
+          onClick={makeReview}
         >
           Review
         </Button>

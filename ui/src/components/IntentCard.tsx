@@ -7,33 +7,47 @@ import CardActions from '@mui/material/CardActions';
 import { TIntent } from "../types";
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
 
 // Icons
 import BackHandIcon from '@mui/icons-material/BackHand';
 import CommitIcon from '@mui/icons-material/Commit';
 
-export const IntentCard = ({intent, commitAction}: {
+// Components
+import { ShipLink } from "./ShipLink"
+
+export const IntentCard = ({intent, doCommit}: {
     intent: TIntent | undefined;
-    commitAction: () => void;
+    doCommit: () => void;
 }) => {
-    const myShip = `~${window.ship}`
-    const vendor = intent ? intent?.body?.vendor?.ship : "..."
-    const client = intent ? intent?.client?.ship : "..."
-    return (
-        <Card variant="outlined" sx={{ p: 2, mt: 2 }}>
-            <CardHeader title={vendor === myShip ?
-                `${client} has shown interest`
-                : `${vendor} has been notified about your interest in the advert `
-            }/>
+  const myShip = `~${window.ship}`
+  const vendor = intent ? intent?.body?.vendor?.ship : "..."
+  const client = intent ? intent?.client?.ship : "..."
+  const isVendor = myShip === vendor
+  return (
+    <Card variant="outlined" sx={{ p: 2, mt: 2 }}>
 
-            {(vendor === `~${window.ship}`) ? (
-              <CardActions>
-                  <Button onClick={commitAction}>
-                      Commit
-                  </Button>
-              </CardActions>
-            ) : null}
+      <CardHeader
+        title={isVendor ? (
+          <Typography variant='h5'>
+            <ShipLink ship={client}/> has shown interest in this advert
+          </Typography>
+        ) : (
+          <Typography variant='h5'>
+            <ShipLink ship={vendor}/> has been notified of your interest in the advert
+          </Typography>
+        )}
+        subheader={`Wait to complete the transaction until the vendor commits`}
+      />
 
-        </Card>
-    )
+      {(vendor === myShip) ? (
+        <CardActions>
+          <Button onClick={() => doCommit(intent)}>
+            Commit
+          </Button>
+        </CardActions>
+      ) : null}
+
+    </Card>
+  )
 }

@@ -2,11 +2,6 @@ import React, { useContext, useEffect, useState } from "react";
 import { Box, styled, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
 
-import { BizbazContext } from "../BizbazContext"
-
-// types
-import { TAdvert } from "../types";
-
 // MUI
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
@@ -17,6 +12,13 @@ import Typography from '@mui/material/Typography';
 import Masonry from "@mui/lab/Masonry";
 import Paper from "@mui/material/Paper";
 
+// context
+import { BizbazContext } from "../BizbazContext"
+
+// types
+import { TAdvert } from "../types";
+
+// components
 import { Sigil } from "../components/Sigil";
 
 const Item = styled(Paper)(({ theme }) => ({

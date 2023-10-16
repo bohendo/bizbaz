@@ -13,10 +13,9 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { IntentCard } from './IntentCard';
 
-export const IntentList = ({ intents, vendor, commitAction }: {
+export const IntentList = ({ intents, doCommit }: {
     intents: Array<TIntent>;
-    vendor: string;
-    commitAction: () => void;
+    doCommit: (intent: Tintent) => void;
 }) => {
 
   if (intents.length > 0) {
@@ -27,7 +26,7 @@ export const IntentList = ({ intents, vendor, commitAction }: {
             <ListItem key={i}>
               <IntentCard
                 intent={intent}
-                commitAction={commitAction}
+                doCommit={doCommit}
               />
             </ListItem>
           )
