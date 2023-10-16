@@ -12,7 +12,7 @@ import { NewAdvert } from "../components/NewAdvert";
 import { NewReview } from "../components/NewReview";
 
 // MUI
-import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -21,7 +21,7 @@ import Paper from "@mui/material/Paper";
 import Typography from '@mui/material/Typography';
 import { useTheme } from "@mui/material/styles"
 
-import { TAdvert, TCommit, TIntent, TReview, TVote } from "../types";
+import { TAdvert, TCommit, TReview, TVote } from "../types";
 
 
 // Icons
@@ -111,7 +111,7 @@ export const Advert = ({ api }: { api: any }) => {
     return <div> Advert does not exist </div>
   } else if (advert.body) {
     return (
-      <div>
+      <Box sx={{width: "100%", mt: theme.spacing(10)}}>
         <Paper variant="outlined" sx={{ p: 8, m: 8 }}>
           <Typography variant="h2">
             {advert.body.title}
@@ -189,7 +189,7 @@ export const Advert = ({ api }: { api: any }) => {
           api={api}
         />
 
-    </div>
+    </Box>
   )} else return (
     <CircularProgress color="inherit" sx={{margin: theme.spacing(16)}} />
   )

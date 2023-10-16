@@ -6,10 +6,7 @@ import { NewAdvert } from '../components/NewAdvert';
 
 // MUI 
 import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Tab from '@mui/material/Tab';
 import IconButton from '@mui/material/IconButton';
-import Tabs from '@mui/material/Tabs';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
@@ -18,7 +15,8 @@ import Fab from '@mui/material/Fab';
 // Icons
 import AddIcon from '@mui/icons-material/Add';
 import HomeIcon from '@mui/icons-material/Home';
-import ExploreOutlined from '@mui/icons-material/ExploreOutlined';
+import LightIcon from '@mui/icons-material/BrightnessHigh';
+import DarkIcon from '@mui/icons-material/Brightness4';
 
 import { Sigil } from './Sigil'
 
@@ -36,7 +34,7 @@ function a11yProps(index: number) {
   };
 }
 
-export const NavBar = ({api}:{api: any}) => {
+export const NavBar = ({api, toggleTheme}:{api: any, toggleTheme: () => void}) => {
     const [value, setValue] = useState(0);
     const [openNewAdvertDialog, setOpenNewAdvertDialog] = useState(false);
     const location = useLocation();
@@ -47,8 +45,7 @@ export const NavBar = ({api}:{api: any}) => {
         setValue(newValue);
     };
 
-    return (
-    <>
+    return (<>
       <AppBar position="fixed" sx={{
           display: "flex",
           justifyContent: "stretch",
@@ -57,9 +54,12 @@ export const NavBar = ({api}:{api: any}) => {
           <IconButton component={Link} to={'/explore'}>
             <HomeIcon />
           </IconButton>
-          <Typography sx={{ flexGrow: 1, ml: theme.spacing(2)}}>
-            Explore
+          <Typography sx={{ flexGrow: 1, ml: theme.spacing(4)}}>
+            {location.pathname}
           </Typography>
+          <IconButton sx={{mr: 1}} onClick={toggleTheme}>
+            {theme.palette.mode === 'dark' ? <LightIcon /> : <DarkIcon />}
+          </IconButton>
           <IconButton component={Link} to={`/profile/~${window.ship}`} sx={{mr: 1}}>
             <Sigil config={{...config}}/>
           </IconButton>
@@ -67,16 +67,15 @@ export const NavBar = ({api}:{api: any}) => {
         </Toolbar>
       </AppBar>
           
-          { location.pathname === "/adverts" || location.pathname === "/profile" ?
-            <Fab color='primary' sx={{position: 'fixed', right: theme.spacing(4), bottom: theme.spacing(3)}}
-              onClick={() => setOpenNewAdvertDialog(true)}>
-                <AddIcon />
-            </Fab> : null
-          }
-          <NewAdvert
-            open={openNewAdvertDialog} handleCloseDialog={() => setOpenNewAdvertDialog(false)}
-            api={api}
-          /> 
-        </>
-    )
+      { location.pathname === "/advert" ? null :
+        <Fab color='primary' sx={{position: 'fixed', right: theme.spacing(4), bottom: theme.spacing(3)}}
+          onClick={() => setOpenNewAdvertDialog(true)}>
+            <AddIcon />
+        </Fab>
+      }
+      <NewAdvert
+        open={openNewAdvertDialog} handleCloseDialog={() => setOpenNewAdvertDialog(false)}
+        api={api}
+      /> 
+    </>)
 }

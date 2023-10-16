@@ -45,7 +45,7 @@ export const Explore = () => {
     space:'none',
   }
   return (
-    <Box>
+    <Box sx={{width: "100%", mt: theme.spacing(10)}}>
       <Typography variant="h2">
         Adverts
       </Typography>

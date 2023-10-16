@@ -9,7 +9,8 @@ import { NavBar } from "./components/Navbar";
 
 // MUI 
 import CssBaseline from "@mui/material/CssBaseline";
-import { ThemeProvider } from "@mui/material/styles";
+import Container from "@mui/material/Container";
+import { ThemeProvider, styled } from "@mui/material/styles";
 import { darkTheme, lightTheme } from "./styles";
 
 const savedTheme = localStorage.getItem("theme") || "";
@@ -131,6 +132,12 @@ export const App = ({ api }: { api: any }) => {
     }
   };
 
+  const MainContainer = styled(Container)(({ theme }) => ({
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+}));
+
   return (
     <BizbazContext.Provider value={{
       adverts: adverts,
@@ -141,9 +148,11 @@ export const App = ({ api }: { api: any }) => {
     }}>
       <ThemeProvider theme={theme}>
           <CssBaseline />
-          <NavBar api={api} />
+          <NavBar api={api} toggleTheme={toggleTheme} />
           <main>
-            <Outlet />
+            <MainContainer>
+              <Outlet />
+            </MainContainer>
           </main>
       </ThemeProvider>
     </BizbazContext.Provider>
