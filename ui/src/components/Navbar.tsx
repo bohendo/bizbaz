@@ -1,21 +1,24 @@
-import React, { ReactComponentElement, useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import React, { ReactComponentElement, useEffect, useState } from 'react';
+import { Link , useLocation } from 'react-router-dom';
 
 // Pages
-import { NewAdvert } from "../components/NewAdvert";
+import { NewAdvert } from '../components/NewAdvert';
 
 // MUI 
-import AppBar from "@mui/material/AppBar";
+import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
+import IconButton from '@mui/material/IconButton';
 import Tabs from '@mui/material/Tabs';
+import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import { useTheme } from "@mui/material/styles";
-import Fab from "@mui/material/Fab";
+import { useTheme } from '@mui/material/styles';
+import Fab from '@mui/material/Fab';
 
 // Icons
-import AddIcon from "@mui/icons-material/Add";
-import ExploreOutlined from "@mui/icons-material/ExploreOutlined";
+import AddIcon from '@mui/icons-material/Add';
+import HomeIcon from '@mui/icons-material/Home';
+import ExploreOutlined from '@mui/icons-material/ExploreOutlined';
 
 import { Sigil } from './Sigil'
 
@@ -33,7 +36,7 @@ function a11yProps(index: number) {
   };
 }
 
-export const NavBar = ({api, tabPage}:{api: any, tabPage: ReactComponentElement<any>}) => {
+export const NavBar = ({api}:{api: any}) => {
     const [value, setValue] = useState(0);
     const [openNewAdvertDialog, setOpenNewAdvertDialog] = useState(false);
     const location = useLocation();
@@ -45,24 +48,24 @@ export const NavBar = ({api, tabPage}:{api: any, tabPage: ReactComponentElement<
     };
 
     return (
-        <Box sx={{ width: '100%' }}>
-          <AppBar position="fixed" sx={{
-              display: "flex",
-              justifyContent: "stretch",
-          }}>
-              <Tabs value={value} onChange={handleChange}
-                  indicatorColor="secondary"
-                  textColor="inherit"
-                  variant="fullWidth"
-                  aria-label="full width tabs example"
-              >
-                  <Tab component={Link} to={'/explore'} icon={<ExploreOutlined />} {...a11yProps(0)} />
-                  <Tab component={Link} to={`/profile/~${window.ship}`} icon={<Sigil config={{...config}}/>} {...a11yProps(2)} />
-              </Tabs>
-          </AppBar>
-          <Box marginTop={theme.spacing(4)}>
-                {tabPage}
-          </Box>
+    <>
+      <AppBar position="fixed" sx={{
+          display: "flex",
+          justifyContent: "stretch",
+      }}>
+        <Toolbar>
+          <IconButton component={Link} to={'/explore'}>
+            <HomeIcon />
+          </IconButton>
+          <Typography sx={{ flexGrow: 1, ml: theme.spacing(2)}}>
+            Explore
+          </Typography>
+          <IconButton component={Link} to={`/profile/~${window.ship}`} sx={{mr: 1}}>
+            <Sigil config={{...config}}/>
+          </IconButton>
+
+        </Toolbar>
+      </AppBar>
           
           { location.pathname === "/adverts" || location.pathname === "/profile" ?
             <Fab color='primary' sx={{position: 'fixed', right: theme.spacing(4), bottom: theme.spacing(3)}}
@@ -74,6 +77,6 @@ export const NavBar = ({api, tabPage}:{api: any, tabPage: ReactComponentElement<
             open={openNewAdvertDialog} handleCloseDialog={() => setOpenNewAdvertDialog(false)}
             api={api}
           /> 
-        </Box>
+        </>
     )
 }

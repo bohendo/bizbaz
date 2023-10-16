@@ -44,7 +44,7 @@ export const Advert = ({ api }: { api: any }) => {
   console.log(`Got bizbaz context:`, bizbaz)
 
   useEffect(() => {
-    setAdvert(adverts.find((a: TAdvert) => a.hash === hash))
+    setAdvert(adverts.find((a: TAdvert) => a.hash === hash) || {} as TAdvert);
   }, [adverts]);
 
   const updateAdvert = ( upd: any) => {

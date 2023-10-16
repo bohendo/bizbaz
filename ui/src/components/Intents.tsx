@@ -23,11 +23,11 @@ export const Intents = ({ intents, vendor, intentAction, commitAction }: {
             return (
                 <List>
                     {intents.map((intent: TIntent, i) => {
-                        return(
-                            <ListItem key={i}>
-                                <IntentCard intent={intent} intentAction={intentAction} commitAction={commitAction} vendor={vendor} />
-                            </ListItem>
-                        )
+                      return(
+                          <ListItem key={i}>
+                              <IntentCard intent={intent} intentAction={intentAction} commitAction={commitAction} vendor={vendor} />
+                          </ListItem>
+                      )
                     })}
                 </List>
             )

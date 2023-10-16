@@ -50,19 +50,20 @@ export const App = ({ api }: { api: any }) => {
     } else if (upd.vote) {
       const newVote = upd.vote
       console.log(`New vote:`, newVote)
-      setVotes((oldVotes) => {
-        const recast = oldVotes.findIndex(v =>
+      setVotes((oldVotes: TVote[]): TVote[] => {
+        const recast = oldVotes!.findIndex(v =>
           v.body.advert === newVote.body.advert && v.body.voter === newVote.body.voter
         )
         console.log(`recast index:`, recast)
         if (recast === -1) {
           console.log(`This is a new vote, adding it to the array`)
-          return [...oldVotes, newVote]
+          return [...oldVotes!, newVote]
         } else {
           console.log(`This is a recast vote, updating the previous vote to ${newVote.choice}`)
           if (newVote.body.choice === "un") {
+            return [...oldVotes!.slice(0, recast), ...oldVotes!.slice(recast + 1)]
           } else {
-            return [...oldVotes.slice(0, recast), newVote, ...oldVotes.slice(recast + 1)]
+            return [...oldVotes!.slice(0, recast), newVote, ...oldVotes!.slice(recast + 1)]
           }
         }
       })
@@ -107,7 +108,7 @@ export const App = ({ api }: { api: any }) => {
         const oldIdx = oldReviews.findIndex(r => r.hash == oldRev)
         if (oldIdx === -1) {
           console.log(`Uhh, no existing review matches this update.. Adding it as if it were a new review`)
-          return [newRev, ...newReviews]
+          return [newRev, ...oldReviews]
         }
         return [
           ...oldReviews.slice(0, oldIdx),
@@ -133,14 +134,17 @@ export const App = ({ api }: { api: any }) => {
   return (
     <BizbazContext.Provider value={{
       adverts: adverts,
-      votes: votes,
+      votes: votes!,
       intents: intents,
       commits: commits,
       reviews: reviews,
     }}>
       <ThemeProvider theme={theme}>
           <CssBaseline />
-          <NavBar api={api} tabPage={<Outlet />}/>
+          <NavBar api={api} />
+          <main>
+            <Outlet />
+          </main>
       </ThemeProvider>
     </BizbazContext.Provider>
   );
