@@ -126,7 +126,7 @@ export const Advert = ({ api }: { api: any }) => {
             Description: {advert.body.description}
           </Typography>
 
-          <Votes votes={votes} vote={vote} />
+          <Votes votes={votes.filter((v: TVote) => v.body.advert === hash)} vote={vote} />
 
         </Paper>
 
@@ -136,16 +136,16 @@ export const Advert = ({ api }: { api: any }) => {
         />
 
         <List>
-            {commits.map((commit: TCommit, i) => {
-                return(
-                    <ListItem key={i}>
-                      <CommitCard
-                          commit={commit}
-                          doReview={() => doReview(commit)}
-                      />
-                    </ListItem>
-                )
-            })}
+          {commits.map((commit: TCommit, i) => {
+            return(
+              <ListItem key={i}>
+                <CommitCard
+                  commit={commit}
+                  doReview={() => doReview(commit)}
+                />
+              </ListItem>
+            )
+          })}
         </List>
 
         <List>

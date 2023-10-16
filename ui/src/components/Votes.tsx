@@ -27,11 +27,12 @@ export const Votes = ({
 
     useEffect(() => {
         if (votes.length > 0) {
-            setOurVote(votes.find((v: TVote) => v.voter.ship === `~${window.ship}`))
-            setVoteScore(votes.reduce((score, vote) => vote.body.choice === "up" ? score + 1 : score - 1, 0));
+          setOurVote(votes.find((v: TVote) => v.voter.ship === `~${window.ship}`))
+          setVoteScore(votes.reduce((score, vote) => vote.body.choice === "up" ? score + 1 : score - 1, 0));
         }
     }, [votes])
 
+    console.log(ourVote, votes)
     return (
         <Box display='flex' flexDirection='column' maxWidth={50}>
             <IconButton sx={{ m: theme.spacing(-2)}} color='primary' disabled={ourVote?.body?.choice === "up"}onClick={() => vote("up")}>
