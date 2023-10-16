@@ -47,11 +47,17 @@
     |=  votes=votes:vote
     |=  new-vote=vote:vote
     ^-  (unit @ud)
-    :: get a flat list of pairs of [advert voter]
-    =/  haystack  (reel votes |:([cur=*vote:vote cum=`(list @)`~] [`@`advert.body.cur `@`ship.voter.cur cum]))
-    %+  find
-      ~[advert.body.new-vote ship.voter.new-vote]
-      haystack
+    ::  get a list of votes where the advert + voter match this new-vote
+    =/  recasts
+    %+  skim  votes
+    |=  v=vote:vote
+    ?&  =(advert.body.v advert.body.new-vote)
+        =(ship.voter.v ship.voter.new-vote)
+    =/  num-recasts  (lent recasts)
+    ?:  =(num-recasts 0)
+        ~
+    ?<  (gth num-recasts 1)
+    %-  scag  1  recasts
 ::
 ++  vote-exists
     |=  votes=votes:vote
