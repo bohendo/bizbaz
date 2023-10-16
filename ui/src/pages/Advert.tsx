@@ -35,15 +35,12 @@ export const Advert = ({ api }: { api: any }) => {
   const navigate = useNavigate();
 
   const [reviewCommit, setReviewCommit] = useState<TCommit | undefined>(undefined);
-  const [ourVote, setOurVote] = useState({} as TVote);
   const [openNewAdvertDialog, setOpenNewAdvertDialog] = useState(false);
   const [openNewReviewDialog, setOpenNewReviewDialog] = useState(false);
 
-  const myShip = `~${window.ship}`
+  const ourShip = `~${window.ship}`
 
   const { adverts, votes, intents, commits, reviews } = bizbaz;
-
-  console.log(`All reviews:`, reviews)
 
   // Calculate some dynamic values from our bizbaz state
   const advert = adverts.find(a => a.hash === hash);
@@ -135,18 +132,17 @@ export const Advert = ({ api }: { api: any }) => {
 
           <Votes votes={votes.filter((v: TVote) => v.body.advert === hash)} vote={vote} />
 
-          {(myShip !== advert.vendor.ship) ? (
+          {(ourShip !== advert.vendor.ship) ? (
             <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: 2 }}>
               <Button
                 variant="contained"
                 onClick={intent}
-                disabled={!!advIntents.find(i => i.client.ship === myShip)}
+                disabled={!!advIntents.find(i => i.client.ship === ourShip)}
               >
                 Express Intent
               </Button>
             </Box>
           ) : null}
-
         </Paper>
 
         <List>
@@ -187,29 +183,33 @@ export const Advert = ({ api }: { api: any }) => {
           ))}
         </List>
 
-        <Fab color='primary' sx={{
-          position: 'fixed',
-          right: theme.spacing(4),
-          bottom: theme.spacing(3)
-        }} onClick={() => setOpenNewAdvertDialog(true)}>
-          <EditIcon />
-        </Fab>
+        {advert.vendor.ship === ourShip ? 
+          <>
+            <Fab color='primary' sx={{
+              position: 'fixed',
+              right: theme.spacing(4),
+              bottom: theme.spacing(3)
+            }} onClick={() => setOpenNewAdvertDialog(true)}>
+              <EditIcon />
+            </Fab>
 
-        <NewAdvert
-          editAdvert={{
-            hash: advert.hash,
-            body: {
-              title: advert.body.title,
-              tags: advert.body.tags,
-              description: advert.body.description,
-              cover: advert.body.cover,
-              when: Date.now()
-            }
-          }}
-          edit={true}
-          open={openNewAdvertDialog} handleCloseDialog={() => setOpenNewAdvertDialog(false)}
-          api={api}
-        /> 
+            <NewAdvert
+              editAdvert={{
+                hash: advert.hash,
+                body: {
+                  title: advert.body.title,
+                  tags: advert.body.tags,
+                  description: advert.body.description,
+                  cover: advert.body.cover,
+                  when: Date.now()
+                }
+              }}
+              edit={true}
+              open={openNewAdvertDialog} handleCloseDialog={() => setOpenNewAdvertDialog(false)}
+              api={api}
+            /> 
+          </> : null
+        }
 
         <NewReview
           commit={reviewCommit}
