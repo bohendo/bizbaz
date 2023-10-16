@@ -23,7 +23,7 @@ import { AdvertLink } from './AdvertLink'
 
 export const IntentCard = ({intent, doCommit}: {
     intent: TIntent | undefined;
-    doCommit: () => void;
+    doCommit: (intent: TIntent) => void;
 }) => {
   const myShip = `~${window.ship}`
   const vendor = intent ? intent?.body?.vendor?.ship : '...'

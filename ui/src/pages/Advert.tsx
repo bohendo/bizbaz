@@ -46,8 +46,8 @@ export const Advert = ({ api }: { api: any }) => {
   console.log(`All reviews:`, reviews)
 
   // Calculate some dynamic values from our bizbaz state
-  const advert = adverts.find(a => a.hash === hash) || {}
-  const vendor = advert?.vendor?.ship
+  const advert = adverts.find(a => a.hash === hash);
+  const vendor = advert?.vendor?.ship;
   const advIntents = intents.filter(i => i.body.advert === hash);
   const advCommits = commits.filter(c => c.intent.advert === hash);
   const advReviews = reviews.filter(r => r.commit.intent.advert === hash);
@@ -93,7 +93,7 @@ export const Advert = ({ api }: { api: any }) => {
       })
   }
 
-  const doCommit = (intent) => {
+  const doCommit = (intent: TIntent) => {
       if (!intent) {
           console.log(`No intent exists to commit to`)
           return
