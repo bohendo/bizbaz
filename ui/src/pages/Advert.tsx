@@ -51,7 +51,9 @@ export const Advert = ({ api }: { api: any }) => {
   const advIntents = intents.filter(i => i.body.advert === hash);
   const advCommits = commits.filter(c => c.intent.advert === hash);
   const advReviews = reviews.filter(r => r.commit.intent.advert === hash);
-  const vndReviews = reviews.filter(r => r.commit.vendor.ship === vendor);
+  const vndReviews = reviews
+    .filter(r => r.commit.vendor.ship === vendor)
+    .filter(r => !advReviews.some(ar => ar.hash === r.hash))
 
   const updateAdvert = ( upd: any) => {
     if (upd.update) {
