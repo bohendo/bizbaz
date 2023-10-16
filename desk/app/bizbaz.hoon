@@ -258,7 +258,6 @@
             ?.  ((validate:advlib bowl) new-advert)
               ~&  "Crashing, received advert is invalid"
               !!
-            :: TODO: ensure the new when.body is newer than the existing one
             ~&  (weld "%create: valid advert received from " (scow %p src.bowl))
             =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
             =/  is-pal  ?~((find ~[ship.vendor.new-advert] ~(tap in pals)) %.n %.y)
@@ -280,13 +279,18 @@
             ?.  ?~(existing-index %.y %.n)
               ~&  "we already have this advert, doing nothing"
               [~ this]
+            =/  old-ad-index  ((get-by-hash:advlib adverts) old-hash)
+            =/  old-advert  (snag (need old-ad-index) adverts)
+            ?:  (lth when.body.new-advert when.body.old-advert)
+              ~&  "Ignoring updated advert that's older than the existing one"
+              [~ this]
             ~&  "validating updated advert:"
             ~&  new-advert
             ?.  ((validate:advlib bowl) new-advert)
               ~&  "Crashing, received advert is invalid"
               !!
             ~&  (weld "%update: valid advert received from " (scow %p src.bowl))
-            =/  old-ad-index  ((get-by-hash:advlib adverts) old-hash)
+
             =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
             =/  is-pal  ?~((find ~[ship.vendor.new-advert] ~(tap in pals)) %.n %.y)
             ?:  is-pal
@@ -366,7 +370,6 @@
             ?.  ((validate:votlib bowl) new-vote)
               ~&  "Crashing, received vote is invalid"
               !!
-            :: TODO: ensure the new when.body is newer than the existing one
             ~&  (weld "%vote: valid vote received from " (scow %p src.bowl))
             =/  new-votes  ((upsert-vote:votlib votes) new-vote)
             =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)

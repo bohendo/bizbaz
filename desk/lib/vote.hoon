@@ -17,6 +17,10 @@
         ~&  "Ignoring new unvote"
         votes
       [new-vote votes]
+    =/  old-vote  (snag (need recast-vote) votes)
+    ?:  (lth when.body.new-vote when.body.old-vote)
+      ~&  "Ignoring updated vote that's older than the existing one"
+      votes
     ~&  "found an existing vote, updating it"
     ?:  ?=(%un choice.body.new-vote)
       ~&  "removing unvote"
