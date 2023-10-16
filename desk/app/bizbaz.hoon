@@ -49,24 +49,20 @@
 ++  on-poke  :: handles one-off requests that may change the data
   |=  [=mark =vase]
   ^-  (quip card _this)
-  ?:  ?=(%sub-to-pals mark)
+  ?:  ?=(%sync mark)
     =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
-    ~&  (weld "Subscribing to mutual pals: " (spud (turn ~(tap in pals) |=(pal=ship (scot %p pal)))))
-    =/  advert-subs  (turn ~(tap in pals) |=(pal=ship (sub-card:advlib pal)))
-    =/  vote-subs  (turn ~(tap in pals) |=(pal=ship (sub-card:votlib pal)))
-    =/  review-subs  (turn ~(tap in pals) |=(pal=ship (sub-card:revlib pal)))
+    ~&  (weld "Subscribing & syncing data w mutual pals: " (spud (turn ~(tap in pals) |=(pal=ship (scot %p pal)))))
+    =/  advert-subs  `(list card)`(turn ~(tap in pals) |=(pal=ship (sub-card:advlib pal)))
+    =/  vote-subs  `(list card)`(turn ~(tap in pals) |=(pal=ship (sub-card:votlib pal)))
+    =/  review-subs  `(list card)`(turn ~(tap in pals) |=(pal=ship (sub-card:revlib pal)))
+    ::  TODO: only share stuff from direct pals
     :_  this
     %+  weld  advert-subs
     %+  weld  vote-subs
-              review-subs
-  ?:  ?=(%syncsubs mark)
-    =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
-    ~&  (weld "Syncing data w mutual pals: " (spud (turn ~(tap in pals) |=(pal=ship (scot %p pal)))))
-    ::  TODO: only share stuff from direct pals
-    :_  this
-    :~  [%give %fact ~[/noun/adverts] %advert-update !>(`update:advert`[%gather adverts])]
-        [%give %fact ~[/noun/votes] %vote-update !>(`update:vote`[%gather votes])]
-        [%give %fact ~[/noun/reviews] %review-update !>(`update:review`[%gather intents commits reviews])]
+    %+  weld  review-subs
+    :~  `card`[%give %fact ~[/noun/adverts] %advert-update !>(`update:advert`[%gather adverts])]
+        `card`[%give %fact ~[/noun/votes] %vote-update !>(`update:vote`[%gather votes])]
+        `card`[%give %fact ~[/noun/reviews] %review-update !>(`update:review`[%gather intents commits reviews])]
     ==
   ?>  |(?=(%advert-action mark) ?=(%vote-action mark) ?=(%review-action mark))
   ?+  mark  !!

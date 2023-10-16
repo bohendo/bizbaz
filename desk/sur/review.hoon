@@ -11,9 +11,6 @@
 +$  commit  [=hash vendor=signature body=commit-body intent=intent-body]
 +$  commits  (list commit)
 ::  a commit is valid if:
-::  - the intent hash matches to a known, valid intent
-::  - hash.commit matches sham(commit-body)
-::  - the client's signature of the intent hash is valid
 ::  - the vendor's signature of the advert hash is valid
 ::  the client:
 ::  - receives a commit from the vendor via ames
