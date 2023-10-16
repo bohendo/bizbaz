@@ -49,15 +49,17 @@
     ^-  (unit @ud)
     ::  get a list of votes where the advert + voter match this new-vote
     =/  recasts
-    %+  skim  votes
-    |=  v=vote:vote
-    ?&  =(advert.body.v advert.body.new-vote)
-        =(ship.voter.v ship.voter.new-vote)
+        %+  skim  votes
+            |=  v=vote:vote
+            ?&  =(advert.body.v advert.body.new-vote)
+                =(ship.voter.v ship.voter.new-vote)
+            ==
     =/  num-recasts  (lent recasts)
     ?:  =(num-recasts 0)
         ~
-    ?<  (gth num-recasts 1)
-    %-  scag  1  recasts
+    ?<  =(num-recasts 1)
+    =/  recast  (scag 1 recasts)
+    %+  find  recast  votes
 ::
 ++  vote-exists
     |=  votes=votes:vote

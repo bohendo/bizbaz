@@ -51,18 +51,25 @@
   ^-  (quip card _this)
   ?:  ?=(%sync mark)
     =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
-    ~&  (weld "Subscribing & syncing data w mutual pals: " (spud (turn ~(tap in pals) |=(pal=ship (scot %p pal)))))
+    ~&  (weld "Syncing data w mutual pals: " (spud (turn ~(tap in pals) |=(pal=ship (scot %p pal)))))
+    ::  only share data from our direct pals
+    =/  pal-adverts  (skim adverts |=(adv=advert:advert (~(has in pals) ship.vendor.adv)))
+    =/  pal-votes  (skim votes |=(vote=vote:vote (~(has in pals) ship.voter.vote)))
+    =/  pal-intents  (skim intents |=(int=intent:review (~(has in pals) ship.client.int)))
+    =/  pal-commits  (skim commits |=(cmt=commit:review (~(has in pals) ship.vendor.cmt)))
+    =/  pal-reviews  (skim reviews |=(rev=review:review (~(has in pals) ship.reviewer.rev)))
+    ::  gather list of subscription cards
     =/  advert-subs  `(list card)`(turn ~(tap in pals) |=(pal=ship (sub-card:advlib pal)))
     =/  vote-subs  `(list card)`(turn ~(tap in pals) |=(pal=ship (sub-card:votlib pal)))
     =/  review-subs  `(list card)`(turn ~(tap in pals) |=(pal=ship (sub-card:revlib pal)))
-    ::  TODO: only share stuff from direct pals
     :_  this
+    ::  weld subscription cards to data push cards
     %+  weld  advert-subs
     %+  weld  vote-subs
     %+  weld  review-subs
-    :~  `card`[%give %fact ~[/noun/adverts] %advert-update !>(`update:advert`[%gather adverts])]
-        `card`[%give %fact ~[/noun/votes] %vote-update !>(`update:vote`[%gather votes])]
-        `card`[%give %fact ~[/noun/reviews] %review-update !>(`update:review`[%gather intents commits reviews])]
+    :~  `card`[%give %fact ~[/noun/adverts] %advert-update !>(`update:advert`[%gather pal-adverts])]
+        `card`[%give %fact ~[/noun/votes] %vote-update !>(`update:vote`[%gather pal-votes])]
+        `card`[%give %fact ~[/noun/reviews] %review-update !>(`update:review`[%gather pal-intents pal-commits pal-reviews])]
     ==
   ?>  |(?=(%advert-action mark) ?=(%vote-action mark) ?=(%review-action mark))
   ?+  mark  !!
@@ -236,7 +243,7 @@
               ::
           %gather
             =/  new-adverts  (skip adverts.upd (exists:advlib adverts))
-            =/  gud-adverts  (skim new-adverts ((validate:advlib bowl) adverts))
+            =/  gud-adverts  (skim new-adverts (validate:advlib bowl))
             ~&  (log-gather:utils [got=(lent adverts.upd) new=(lent gud-adverts) from=src.bowl type="advert"])
             [~ this(adverts (weld gud-adverts adverts))]
               ::
@@ -344,7 +351,7 @@
               ::
               %gather
             =/  new-votes  (skip votes.upd (vote-exists:votlib votes))
-            =/  gud-votes  (skim new-votes ((validate:votlib bowl) votes))
+            =/  gud-votes  (skim new-votes (validate:votlib bowl))
             ~&  (log-gather:utils [got=(lent votes.upd) new=(lent gud-votes) from=src.bowl type="vote"])
             [~ this(votes (weld gud-votes votes))]
               ::
@@ -391,17 +398,17 @@
               %gather
             :: handle new intents
             =/  new-intents  (skip intents.upd (exists:intlib intents))
-            =/  gud-intents  (skim intents.upd (validate:intlib intents))
+            =/  gud-intents  (skim intents.upd (validate:intlib bowl))
             ~&  (log-gather:utils [got=(lent intents.upd) new=(lent new-intents) from=src.bowl type="intent"])
             =/  set-intents  (weld gud-intents intents)
             :: handle new commits
             =/  new-commits  (skip commits.upd (exists:cmtlib commits))
-            =/  gud-commits  (skim commits.upd (validate:cmtlib commits))
+            =/  gud-commits  (skim commits.upd (validate:cmtlib bowl))
             ~&  (log-gather:utils [got=(lent commits.upd) new=(lent new-commits) from=src.bowl type="commit"])
             =/  set-commits  (weld new-commits commits)
             :: handle new reviews
             =/  new-reviews  (skip reviews.upd (exists:revlib reviews))
-            =/  gud-reviews  (skim reviews.upd (validate:revlib reviews))
+            =/  gud-reviews  (skim reviews.upd (validate:revlib bowl))
             ~&  (log-gather:utils [got=(lent reviews.upd) new=(lent new-reviews) from=src.bowl type="review"])
             =/  set-reviews  (weld gud-reviews reviews)
             :: add new data to state
