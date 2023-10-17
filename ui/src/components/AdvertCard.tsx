@@ -1,16 +1,16 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Box, styled, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
 
 // MUI
-import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardActionArea from "@mui/material/CardActionArea";
 import CardContent from "@mui/material/CardContent";
 import Chip from "@mui/material/Chip";
-import Typography from '@mui/material/Typography';
 import Masonry from "@mui/lab/Masonry";
 import Paper from "@mui/material/Paper";
+import Typography from '@mui/material/Typography';
+import { styled, useTheme } from "@mui/material/styles";
 
 // context
 import { BizbazContext } from "../BizbazContext"
@@ -21,24 +21,44 @@ import { TAdvert } from "../types";
 // components
 import { Sigil } from "../components/Sigil";
 
-const Item = styled(Paper)(({ theme }) => ({
-  padding: theme.spacing(3),
-  textAlign: 'center',
+const StyledDiv = styled("div")(({ theme }) => ({
+  width: "100%",
+  height: "210px",
 }))
+
+const StyledCardImg = styled("img")(( { theme }) => ({
+  height: "auto",
+  maxWidth: "100%",
+}));
 
 export const AdvertCard = ({
   advert
 }: { advert: TAdvert }) => {
   const theme = useTheme();
   // TODO set itemHeight based on cover image
-  const itemHeight = advert.body.description.length < 60 ? 200 : 260; 
+  const [imgError, setImgError] = useState(false);
+  const itemHeight = imgError ? 200 : 400; 
   const descriptionCutOff = 60; 
   return (
-    <Card sx={{ marginTop: theme.spacing(1) , height: itemHeight, width: 100 }}>
+    <Card sx={{ marginTop: theme.spacing(1) , height: itemHeight, width: 200 }}>
       <CardActionArea disableRipple
         sx={{ width: "100%", alignItems: "center" }}
         component={Link} to={`/advert/${advert.hash}`}>
-        <Sigil config={{ point: advert.vendor.ship, size: 60, detail: 'default', space: 'large' }}/>
+        <Box sx={{display: 'flex', }}>
+          <Sigil config={{ point: advert.vendor.ship, size: 60, detail: 'default', space: 'large' }}/>
+          <Typography variant="body1" sx={{ mx: 4, mt: 2 }}>
+            {advert.body.title}
+          </Typography>
+        </Box>
+        {advert.body.cover && !imgError?
+          <StyledDiv>
+            <StyledCardImg
+              src={advert.body.cover}
+              onError={() => setImgError(true)}
+            />
+          </StyledDiv>
+          : null}
+
 
         <CardContent
           sx={{
@@ -49,12 +69,8 @@ export const AdvertCard = ({
             height: "420px",
           }}>
 
-            <Typography variant="body2">
-              {advert.body.title}
-            </Typography>
-
-            <Typography variant="caption" display="block">
-              Cover image: {advert.body.cover}
+            <Typography variant="caption">
+              Vendor: {advert.vendor.ship}
             </Typography>
 
             <Typography variant="caption" display="block">
