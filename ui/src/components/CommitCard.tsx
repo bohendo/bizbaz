@@ -24,7 +24,7 @@ export const CommitCard = ({ commit, makeReview }: {
   const client = commit ? commit.body.client.ship : "..."
   const isVendor = myShip === vendor
   return (
-    <Card variant="outlined" sx={{ p: 2 }}>
+    <Card variant="outlined" sx={{ p: 8, mx: 8, my: 2 }}>
 
       <CardHeader
         title={isVendor ? (
