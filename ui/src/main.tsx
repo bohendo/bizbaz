@@ -23,6 +23,10 @@ const router = createBrowserRouter([
     element: <App api={api} />,
     children: [
       {
+        path: "/",
+        element: <Explore />,
+      },
+      {
         path: "/advert/:hash",
         element: <Advert api={api} />,
       },

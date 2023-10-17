@@ -5,6 +5,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
+import Grid from '@mui/material/Grid';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import Fab from '@mui/material/Fab'
@@ -70,16 +71,17 @@ export const Advert = ({ api }: { api: any }) => {
   }, []);
 
   const vote = (choice: string) => {
-      api.poke({
-        app: 'bizbaz',
-        mark: 'vote-action',
-        json: { 
-          'vote': { 
-            advert: hash,
-            choice: choice
-          }
+    console.log(choice);
+    api.poke({
+      app: 'bizbaz',
+      mark: 'vote-action',
+      json: { 
+        'vote': { 
+          advert: hash,
+          choice: choice
         }
-      })
+      }
+    })
   }
 
   const intent = () => {
@@ -121,34 +123,46 @@ export const Advert = ({ api }: { api: any }) => {
     return (
       <Box sx={{width: "100%", mt: theme.spacing(10)}}>
         <Paper variant="outlined" sx={{ p: 8, m: 8 }}>
-          {advert.body.cover && !imgError ? 
-          <img src={advert.body.cover}
-            style={{
-              borderBottomLeftRadius: "0px",
-              borderBottomRightRadius: "0px",
-              borderTopLeftRadius: "4px",
-              borderTopRightRadius: "4px",
-              display: "block",
-              margin: "0 auto 16px auto",
-              maxWidth: "100%",
-              width: "100%",
-            }}
-            onError={() => setImgError(true)}
-
-          /> : null}
-          <Typography variant="h2">
-            {advert.body.title}
-          </Typography>
-          <Typography variant="caption">
-            Posted by: <ShipLink ship={advert.vendor.ship} />
-          </Typography>
-          <Typography variant="h5">
-            Tags: {advert.body.tags?.join(", ")}
-          </Typography>
-
-          <Markdown content={advert.body.description} />
-
-          <Votes votes={votes.filter((v: TVote) => v.body.advert === hash)} vote={vote} />
+          <Grid container spacing={2}>
+            <Grid item xs={1}>
+              <Votes votes={votes.filter((v: TVote) => v.body.advert === hash)} vote={vote} />
+            </Grid>
+            <Grid item xs container direction="column" spacing={2}>
+              <Grid item xs>
+                {advert.body.cover && !imgError ? 
+                  <img src={advert.body.cover}
+                    style={{
+                      borderBottomLeftRadius: "0px",
+                      borderBottomRightRadius: "0px",
+                      borderTopLeftRadius: "4px",
+                      borderTopRightRadius: "4px",
+                      display: "block",
+                      margin: "0 auto 16px auto",
+                      maxWidth: "auto",
+                      maxHeight: "400px",
+                    }}
+                    onError={() => setImgError(true)}
+                  /> : null}
+              </Grid>
+              <Grid item xs>
+                <Typography variant="h2">
+                  {advert.body.title}
+                </Typography>
+                <Typography variant="h5">
+                  Tags: {advert.body.tags?.join(", ")}
+                </Typography>
+                <Markdown content={advert.body.description} />
+              </Grid>
+            </Grid>
+            <Grid item xs={2}>
+              <Typography variant="caption" display="block">
+                Posted by: <ShipLink ship={advert.vendor.ship} />
+              </Typography>
+              <Typography variant="caption">
+                {(new Date(advert.body.when)).toLocaleString()}
+              </Typography>
+            </Grid>
+          </Grid>
 
           {(ourShip !== advert.vendor.ship) ? (
             <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: 2 }}>

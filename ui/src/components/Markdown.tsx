@@ -57,7 +57,7 @@ const getChildValue = (child: any): any => {
 };
 
 const StyledMarkdown = styled(ReactMarkdown)(({ theme }) => ({
-    padding: "20px",
+    padding: "2px",
     textAlign: "justify",
     fontVariant: "discretionary-ligatures",
     "& > blockquote": {

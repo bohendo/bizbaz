@@ -32,20 +32,20 @@ export const Votes = ({
         }
     }, [votes])
 
-    console.log(ourVote, votes)
     return (
         <Box display='flex' flexDirection='column' maxWidth={50}>
-            <IconButton sx={{ m: theme.spacing(-2)}} color='primary' disabled={ourVote?.body?.choice === "up"}onClick={() => vote("up")}>
+            <IconButton sx={{ m: theme.spacing(-2)}}
+              color={ourVote?.body?.choice === "up" ? 'primary' : 'default'}
+              onClick={() => vote(ourVote?.body?.choice === "up" ? "un" : "up")}>
                 <ArrowDropUpIcon sx={{ fontSize: 60 }} />
             </IconButton>
             <Avatar sx={{ width: 24, height: 24, m: 1.5 }}>
                 {voteScore}
             </Avatar>
-            <IconButton sx={{ m: theme.spacing(-2)}} color='primary' disabled={ourVote?.body?.choice === "down"}onClick={() =>vote("down")}>
+            <IconButton sx={{ m: theme.spacing(-2)}}
+              color={ourVote?.body?.choice === "down" ? 'primary' : 'default'}
+              onClick={() => vote(ourVote?.body?.choice === "down" ? "un" : "down")}>
                 <ArrowDropDownIcon sx={{ fontSize: 60 }} />
-            </IconButton>
-            <IconButton color='primary' disabled={!ourVote} onClick={() => vote("un")}>
-                <NotInterestedIcon sx={{ fontSize: 30 }} />
             </IconButton>
         </Box>
     )
