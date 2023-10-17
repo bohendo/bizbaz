@@ -54,7 +54,7 @@ const getChildValue = (child: any): any => {
   return;
 };
 
-const StyledReactMarkdown = styled(ReactMarkdown)(({ theme }) => ({
+const StyledMarkdown = styled(ReactMarkdown)(({ theme }) => ({
     padding: "20px",
     textAlign: "justify",
     fontVariant: "discretionary-ligatures",
@@ -217,21 +217,37 @@ export const Markdown = ({
 
   console.log("Rendering post")
   return (
-    <StyledReactMarkdown
+    <StyledMarkdown
       components={{
-        a: LinkRenderer,
-        code: CodeBlockRenderer,
-        h1: HeadingRenderer,
-        h2: HeadingRenderer,
-        h3: HeadingRenderer,
-        h4: HeadingRenderer,
-        h5: HeadingRenderer,
-        h6: HeadingRenderer,
+        a(props: any) {
+          return (<LinkRenderer node={props.node} />)
+        },
+        code(props: any) {
+          return (<CodeBlockRenderer children={props.children} className={props.className} inline={props.inline} node={props.node} />)
+        },
+        h1(props: any) {
+          return (<HeadingRenderer level={props.level} node={props.node} />)
+        },
+        h2(props: any) {
+          return (<HeadingRenderer level={props.level} node={props.node} />)
+        },
+        h3(props: any) {
+          return (<HeadingRenderer level={props.level} node={props.node} />)
+        },
+        h4(props: any) {
+          return (<HeadingRenderer level={props.level} node={props.node} />)
+        },
+        h5(props: any) {
+          return (<HeadingRenderer level={props.level} node={props.node} />)
+        },
+        h6(props: any) {
+          return (<HeadingRenderer level={props.level} node={props.node} />)
+        },
         img: ImageRenderer,
       }}
       remarkPlugins={[gfm]}
     >
       {replaceEmojiString(content)}
-    </StyledReactMarkdown>
+    </StyledMarkdown>
   );
 };

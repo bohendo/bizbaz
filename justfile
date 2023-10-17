@@ -8,7 +8,7 @@ start-ui:
 install:
   cd ui && npm install
 
-build-ui:
+build-ui: install
   cd ui && npm run build
   cp ui/dist/index.html ui/dist/index.html.backup
   sed 's/<script src=/<script type="module" src=/' ui/dist/index.html.backup > ui/dist/index.html
