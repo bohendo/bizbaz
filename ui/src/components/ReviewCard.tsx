@@ -23,7 +23,7 @@ export const ReviewCard = ({ review }: {
   const reviewee = review ? review.body.reviewee : "..."
   const advert = review ? review.commit.intent.advert : "..."
   return (
-    <Card variant="outlined" sx={{ p: 8, mx: 8, my: 2 }}>
+    <Card variant="outlined" sx={{ p: 2, mx: 8, my: 2 }}>
       <CardHeader
         title={
           <Rating
