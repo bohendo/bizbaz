@@ -61,7 +61,7 @@
     =/  num-recasts  (lent recasts)
     ?:  =(num-recasts 0)
         ~
-    ?<  =(num-recasts 1)
+    ?>  =(num-recasts 1)
     =/  recast  (scag 1 recasts)
     %+  find  recast  votes
 ::
