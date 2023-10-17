@@ -11,6 +11,7 @@ import { atomDark, vs } from "react-syntax-highlighter/dist/esm/styles/prism";
 import gfm from "remark-gfm";
 import emoji from "emoji-dictionary";
 import axios from "axios";
+import Typography from '@mui/material/Typography';
 
 import { Renderer3D } from "./renderer3D";
 import { HashLink } from "./HashLink";
@@ -20,19 +21,20 @@ SceneLoader.RegisterPlugin(new GLTFFileLoader());
 export const replaceEmojiString = (s: string) =>
   s.replace(/:\w+:/gi, name => emoji.getUnicode(name) || name);
 
-const fetchMediaType = async (url: string):Promise<string> => {
-    console.log(`Fetching media ${url}`);
-    try {
-      const response = await axios(url);
-      if (response.status === 200) {
-        return response.headers['content-type'];
-      } else {
-        throw new Error(`Got bad data from ${url}`);
-      }
-    } catch (e) {
-        throw new Error(`Got bad data from ${url}`);
-    }
-  };  
+// const fetchMediaType = async (url: string):Promise<string> => {
+//     console.log(`Fetching media ${url}`);
+//     try {
+//       const response = await axios(url);
+//       if (response.status === 200) {
+//         return response.headers['content-type'];
+//       } else {
+//         throw new Error(`Got bad data from ${url}`);
+//       }
+//     } catch (e) {
+//         console.log(`Got response: `, e, `from url: ${url}`)
+//         throw new Error(`Got bad data from ${url}`);
+//     }
+//   };  
 
 const slugify = (s: string) => s
   .toLocaleLowerCase()
@@ -45,7 +47,7 @@ const slugify = (s: string) => s
   .replace(/-$/g, "");
 
 const getChildValue = (child: any): any => {
-  console.log(typeof(child));
+  // console.log(typeof(child));
   if (!child) return;
   if (child?.value) return child.value;
   if (child?.props?.value) return child.props.value;
@@ -90,15 +92,16 @@ export const Markdown = ({
     node?: any;
   }) => {
     const src = node.properties.src;
-    const [renderType, setRenderType] = useState("");
-    useEffect(() => {
-      (async () => {
-        const mediaType = await fetchMediaType(node.properties.src);
-        setRenderType(mediaType);
-      })()
-    }, []);
+    const [imgError, setImgError] = useState(false);
+    const [vidError, setVidError] = useState(false);
+    // useEffect(() => {
+    //   (async () => {
+    //     const mediaType = await fetchMediaType(node.properties.src);
+    //     setRenderType(mediaType);
+    //   })()
+    // }, []);
 
-    if (renderType === "model/gltf-binary") {
+    if (imgError && vidError) {
       const onSceneReady = (scene: Scene, src: any) => {
         (async () => {
           if (!scene) return;
@@ -117,19 +120,21 @@ export const Markdown = ({
       }
       console.log("Calling renderer after reciving node: ", node);
       return <Renderer3D src={node.properties.src} onSceneReady={onSceneReady} style={{ maxWidth: "90%" }} />
-    } else if (renderType.slice(0,5) === "video") {
+    } else if (imgError) {
         return <video
           onError={() => {
-            console.log("Got video errors")
+            console.log("Got video error, trying glb..")
+            setVidError(true)
           }}
           controls
           src={src}
           style={{ display: "block", margin: "auto", maxWidth: "90%" }}
         />
-    } else if(renderType.slice(0,5) === "image"){
+    } else {
       return <img
         onError={() => {
-          console.log("Got image errors")
+          console.log("Got image error, trying video..")
+          setImgError(true)
         }}
         src={src}
         alt={node.properties.alt}
@@ -198,24 +203,12 @@ export const Markdown = ({
     const hashlinkSlug = slugify(value);
     const Heading = `h${level}` as "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
     return (<>
-      <Heading id={hashlinkSlug} style={{ marginTop: "-65px", paddingTop: "65px" }}>
+      <Typography variant={Heading}>
         {value}
-        <IconButton
-          color="secondary"
-          component={HashLink as any}
-          edge="start"
-          style={{ marginLeft: "2px" }}
-          key={hashlinkSlug}
-          title="Link to position on page"
-          to={`#${hashlinkSlug}`}
-        >
-          <LinkIcon />
-        </IconButton>
-      </Heading>
+      </Typography>
     </>);
   };
 
-  console.log("Rendering post")
   return (
     <StyledMarkdown
       components={{
@@ -226,24 +219,26 @@ export const Markdown = ({
           return (<CodeBlockRenderer children={props.children} className={props.className} inline={props.inline} node={props.node} />)
         },
         h1(props: any) {
-          return (<HeadingRenderer level={props.level} node={props.node} />)
+          return (<HeadingRenderer level={1} node={props.node} />)
         },
         h2(props: any) {
-          return (<HeadingRenderer level={props.level} node={props.node} />)
+          return (<HeadingRenderer level={2} node={props.node} />)
         },
         h3(props: any) {
-          return (<HeadingRenderer level={props.level} node={props.node} />)
+          return (<HeadingRenderer level={3} node={props.node} />)
         },
         h4(props: any) {
-          return (<HeadingRenderer level={props.level} node={props.node} />)
+          return (<HeadingRenderer level={4} node={props.node} />)
         },
         h5(props: any) {
-          return (<HeadingRenderer level={props.level} node={props.node} />)
+          return (<HeadingRenderer level={5} node={props.node} />)
         },
         h6(props: any) {
-          return (<HeadingRenderer level={props.level} node={props.node} />)
+          return (<HeadingRenderer level={6} node={props.node} />)
         },
-        img: ImageRenderer,
+        img(props: any) {
+          return (<ImageRenderer node={props.node} />)
+        },
       }}
       remarkPlugins={[gfm]}
     >

@@ -27,6 +27,7 @@ import { ReviewCard } from "../components/ReviewCard";
 import { NewAdvert } from "../components/NewAdvert";
 import { NewReview } from "../components/NewReview";
 import { ShipLink } from "../components/ShipLink";
+import { Markdown } from "../components/Markdown";
 
 export const Advert = ({ api }: { api: any }) => {
   const bizbaz = useContext(BizbazContext);
@@ -144,9 +145,8 @@ export const Advert = ({ api }: { api: any }) => {
           <Typography variant="h5">
             Tags: {advert.body.tags?.join(", ")}
           </Typography>
-          <Typography variant="body1">
-            Description: {advert.body.description}
-          </Typography>
+
+          <Markdown content={advert.body.description} />
 
           <Votes votes={votes.filter((v: TVote) => v.body.advert === hash)} vote={vote} />
 

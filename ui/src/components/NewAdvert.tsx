@@ -159,6 +159,7 @@ export const NewAdvert = ({
                  defaultValue={newAdvert.body.description}
                  margin="dense"
                  id="description"
+                 multiline={true}
                  label="Description"
                  type="text"
                  fullWidth
