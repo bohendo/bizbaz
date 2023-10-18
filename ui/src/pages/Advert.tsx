@@ -82,7 +82,7 @@ export const Advert = ({ api }: { api: any }) => {
     })
   }
 
-  const intent = () => {
+  const doIntent = () => {
       api.poke({
         app: 'bizbaz',
         mark: 'review-action',
@@ -168,7 +168,7 @@ export const Advert = ({ api }: { api: any }) => {
             <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 8 }}>
               <Button
                 variant="contained"
-                onClick={intent}
+                onClick={doIntent}
                 disabled={!!advIntents.find(i => i.client.ship === ourShip)}
               >
                 Express Intent

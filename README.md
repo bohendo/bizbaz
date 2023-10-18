@@ -1,4 +1,8 @@
 
+## TODO
+
+- ensure no duplicate intents or commits can be created
+
 ## Data Types
 
 see sur
