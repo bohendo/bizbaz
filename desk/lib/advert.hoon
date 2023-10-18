@@ -95,7 +95,6 @@
     ++  en-update
         |=  [old=hash:signatures new=advert:advert]
         ^-  json
-        %+  frond  'update'
         %-  pairs
         :~  ['old' (parse-hash old)]
             ['new' (parse-advert new)]

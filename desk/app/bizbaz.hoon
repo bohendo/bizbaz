@@ -419,17 +419,17 @@
           %gather
         :: handle new intents
         =/  new-intents  (skip intents.upd (exists:intlib intents))
-        =/  gud-intents  (skim intents.upd (validate:intlib bowl))
+        =/  gud-intents  (skim new-intents (validate:intlib bowl))
         ~&  (log-gather:utils [got=(lent intents.upd) new=(lent new-intents) from=src.bowl type="intent"])
         =/  set-intents  (weld gud-intents intents)
         :: handle new commits
         =/  new-commits  (skip commits.upd (exists:cmtlib commits))
-        =/  gud-commits  (skim commits.upd (validate:cmtlib bowl))
+        =/  gud-commits  (skim new-commits (validate:cmtlib bowl))
         ~&  (log-gather:utils [got=(lent commits.upd) new=(lent new-commits) from=src.bowl type="commit"])
         =/  set-commits  (weld new-commits commits)
         :: handle new reviews
         =/  new-reviews  (skip reviews.upd (exists:revlib reviews))
-        =/  gud-reviews  (skim reviews.upd (validate:revlib bowl))
+        =/  gud-reviews  (skim new-reviews (validate:revlib bowl))
         ~&  (log-gather:utils [got=(lent reviews.upd) new=(lent new-reviews) from=src.bowl type="review"])
         =/  set-reviews  (weld gud-reviews reviews)
         :: add new data to state
@@ -460,8 +460,7 @@
           ~&  "new intent by non-pal doesn't concern us, ignoring it"
           [~ this]
         ~&  (weld "%intent received from " (scow %p src.bowl))
-        =/  new-intents  [new-intent intents]
-        [~ this(intents new-intents)]
+        [~ this(intents [new-intent intents])]
       ::
           %commit
         ~&  "Got a new commit from our subscription"
@@ -484,8 +483,7 @@
           ~&  "new commit by non-pal doesn't concern us, ignoring it"
           [~ this]
         ~&  (weld "%commit received from " (scow %p src.bowl))
-        =/  new-commits  [new-commit commits]
-        [~ this(commits new-commits)]
+        [~ this(commits [new-commit commits])]
       ::
           %review
         ~&  "Got a new review from our subscription"
