@@ -351,11 +351,11 @@
         [%noun %votes ~]
       ?+  -.sign  (on-agent:default wire sign)
         %fact
-          ?+  p.cage.sign  (on-agent:default wire sign)
-            %vote-update
-              =/  upd  !<(update:vote q.cage.sign)
-              ?-  -.upd
-              ::
+          ?+    p.cage.sign  (on-agent:default wire sign)
+              %vote-update
+            =/  upd  !<(update:vote q.cage.sign)
+            ?-  -.upd
+            ::
               %gather
             =/  new-votes  (skip votes.upd (vote-exists:votlib votes))
             =/  gud-votes  (skim new-votes ((validate:votlib bowl) adverts))
@@ -377,9 +377,13 @@
               ~&  "new vote was created by our pal, re-broadcasting to our pals"
               :_  this(votes new-votes)
               :~  [%give %fact ~[/json/votes] %vote-update !>(`update:vote`[%vote new-vote])]
+                  [%give %fact ~[/noun/votes] %vote-update !>(`update:vote`[%vote new-vote])]
+              ==
+            ~&  "new vote was NOT created by our pal, not re-broadcasting"
+              :_  this(votes new-votes)
+              :~  [%give %fact ~[/json/votes] %vote-update !>(`update:vote`[%vote new-vote])]
               ==
             ==
-          ==
         ==
       ==
       ::

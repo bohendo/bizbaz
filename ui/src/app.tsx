@@ -52,13 +52,22 @@ export const App = ({ api }: { api: any }) => {
     } else if (upd.vote) {
       const newVote = upd.vote
       setVotes((oldVotes: TVote[]): TVote[] => {
+        if (oldVotes.find(v => v.hash === newVote.hash) !== undefined) {
+          console.log(`Ignoring duplicate vote w hash ${newVote.hash}`)
+          return oldVotes
+        }
         const recast = oldVotes!.findIndex(v =>
           v.body.advert === newVote.body.advert && v.body.voter === newVote.body.voter
         )
         if (recast === -1) {
+          if (newVote.body.choice === "un") {
+            console.log(`Ignoring new unvote`)
+            return oldVotes
+          }
+          console.log(`Adding new vote`)
           return [...oldVotes!, newVote]
         } else {
-          // console.log(`This is a recast vote, updating the previous vote to ${newVote.choice}`)
+          console.log(`This is a recast vote, updating the previous vote to ${newVote.body.choice}`)
           if (newVote.body.choice === "un") {
             return [...oldVotes!.slice(0, recast), ...oldVotes!.slice(recast + 1)]
           } else {
