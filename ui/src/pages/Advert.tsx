@@ -140,7 +140,8 @@ export const Advert = ({ api }: { api: any }) => {
             </Grid>
             <Grid item xs container spacing={2}>
               <Grid item xs={1}>
-                <Votes votes={votes.filter((v: TVote) => v.body.advert === hash)} vote={vote} />
+                <Votes votes={votes.filter((v: TVote) => v.body.advert === hash)}
+                  vote={vote} disabled={ourShip === advert.vendor.ship} />
               </Grid>
               <Grid item xs container direction="column" spacing={2}>
                 <Grid item xs>

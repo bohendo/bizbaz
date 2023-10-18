@@ -21,10 +21,11 @@ import { TVote } from "../types";
 export const Votes = ({
     votes,
     vote,
-
+    disabled,
 }: {
     votes: Array<TVote>;
     vote: (choice: string) => void;
+    disabled: boolean;
 }) => {
     const theme = useTheme();
     const [ourVote, setOurVote] = useState<TVote | undefined>(undefined);
@@ -43,6 +44,7 @@ export const Votes = ({
           <IconButton sx={{ m: theme.spacing(-2)}}
             color={ourVote?.body?.choice === "up" ? 'primary' : 'default'}
             onClick={() => vote(ourVote?.body?.choice === "up" ? "un" : "up")}
+            disabled={disabled}
           >
             <ArrowDropUpIcon sx={{ fontSize: 60 }} />
           </IconButton>
@@ -51,7 +53,9 @@ export const Votes = ({
           </Avatar>
           <IconButton sx={{ m: theme.spacing(-2)}}
             color={ourVote?.body?.choice === "down" ? 'primary' : 'default'}
-            onClick={() => setOpen(true)}>
+            onClick={() => setOpen(true)}
+            disabled={disabled}
+          >
             <ArrowDropDownIcon sx={{ fontSize: 60 }} />
           </IconButton>
           <Dialog open={open} onClose={() => setOpen(false)}>
