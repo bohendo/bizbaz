@@ -51,7 +51,7 @@ export const NavBar = ({api, toggleTheme}:{api: any, toggleTheme: () => void}) =
           justifyContent: "stretch",
       }}>
         <Toolbar>
-          <IconButton component={Link} to={'/explore'}>
+          <IconButton component={Link} to={'/'}>
             <HomeIcon />
           </IconButton>
           <Typography sx={{ flexGrow: 1, ml: theme.spacing(4)}}>

@@ -31,10 +31,6 @@ const router = createBrowserRouter([
         element: <Advert api={api} />,
       },
       {
-        path: "/explore",
-        element: <Explore />,
-      },
-      {
         path: "/profile/:ship",
         element: <Profile />,
       },

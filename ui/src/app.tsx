@@ -57,7 +57,7 @@ export const App = ({ api }: { api: any }) => {
       setAdverts((oldAdverts: Array<TAdvert>) =>
         oldAdverts.filter((ad: TAdvert) => upd.delete.advert !== ad.hash)
       )
-      navigate(`/explore`)
+      navigate(`/`)
     } else {
       console.log(`Unknown vote update`)
     }
