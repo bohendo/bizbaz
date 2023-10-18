@@ -121,44 +121,46 @@ export const Advert = ({ api }: { api: any }) => {
     return (
       <Box sx={{width: "100%", mt: theme.spacing(10)}}>
         <Paper variant="outlined" sx={{ p: 8, m: 8 }}>
-          <Grid container spacing={2}>
-            <Grid item xs={1}>
-              <Votes votes={votes.filter((v: TVote) => v.body.advert === hash)} vote={vote} />
+          <Grid container direction="column" spacing={2}>
+            <Grid item xs>
+              {advert.body.cover && !imgError ? 
+                <img src={advert.body.cover}
+                  style={{
+                    borderBottomLeftRadius: "0px",
+                    borderBottomRightRadius: "0px",
+                    borderTopLeftRadius: "4px",
+                    borderTopRightRadius: "4px",
+                    display: "block",
+                    margin: "0 auto 16px auto",
+                    maxWidth: "auto",
+                    maxHeight: "400px",
+                  }}
+                  onError={() => setImgError(true)}
+                /> : null}
             </Grid>
-            <Grid item xs container direction="column" spacing={2}>
-              <Grid item xs>
-                {advert.body.cover && !imgError ? 
-                  <img src={advert.body.cover}
-                    style={{
-                      borderBottomLeftRadius: "0px",
-                      borderBottomRightRadius: "0px",
-                      borderTopLeftRadius: "4px",
-                      borderTopRightRadius: "4px",
-                      display: "block",
-                      margin: "0 auto 16px auto",
-                      maxWidth: "auto",
-                      maxHeight: "400px",
-                    }}
-                    onError={() => setImgError(true)}
-                  /> : null}
+            <Grid item xs container spacing={2}>
+              <Grid item xs={1}>
+                <Votes votes={votes.filter((v: TVote) => v.body.advert === hash)} vote={vote} />
               </Grid>
-              <Grid item xs>
-                <Typography variant="h2">
-                  {advert.body.title}
-                </Typography>
-                <Typography variant="h5">
-                  Tags: {advert.body.tags?.join(", ")}
-                </Typography>
-                <Markdown content={advert.body.description} />
+              <Grid item xs container direction="column" spacing={2}>
+                <Grid item xs>
+                  <Typography variant="caption" display="block">
+                    Posted by: <ShipLink ship={advert.vendor.ship} />
+                  </Typography>
+                  <Typography variant="caption">
+                    {(new Date(advert.body.when)).toLocaleString()}
+                  </Typography>
+                </Grid>
+                <Grid item xs>
+                  <Typography variant="h2">
+                    {advert.body.title}
+                  </Typography>
+                  <Typography variant="h5">
+                    Tags: {advert.body.tags?.join(", ")}
+                  </Typography>
+                  <Markdown content={advert.body.description} />
               </Grid>
-            </Grid>
-            <Grid item xs={2}>
-              <Typography variant="caption" display="block">
-                Posted by: <ShipLink ship={advert.vendor.ship} />
-              </Typography>
-              <Typography variant="caption">
-                {(new Date(advert.body.when)).toLocaleString()}
-              </Typography>
+              </Grid>
             </Grid>
           </Grid>
 
