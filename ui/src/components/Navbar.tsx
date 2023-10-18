@@ -2,7 +2,7 @@ import React, { ReactComponentElement, useEffect, useState } from 'react';
 import { Link , useLocation } from 'react-router-dom';
 
 // Pages
-import { NewAdvert } from '../components/NewAdvert';
+import { AdvertEditor } from '../components/AdvertEditor';
 
 // MUI 
 import AppBar from '@mui/material/AppBar';
@@ -73,7 +73,7 @@ export const NavBar = ({api, toggleTheme}:{api: any, toggleTheme: () => void}) =
             <AddIcon />
         </Fab>
       }
-      <NewAdvert
+      <AdvertEditor
         open={openNewAdvertDialog} handleCloseDialog={() => setOpenNewAdvertDialog(false)}
         api={api}
       /> 

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { TReview, TIntent } from "../types";
 
 // MUI
@@ -18,10 +18,14 @@ import EditIcon from '@mui/icons-material/Edit';
 // Components
 import { AdvertLink } from "./AdvertLink"
 import { ShipLink } from "./ShipLink"
+import { ReviewEditor } from "../components/ReviewEditor";
 
-export const ReviewCard = ({ review }: {
-    review: TReview;
+export const ReviewCard = ({ review, api }: {
+  api: any
+  review: TReview;
 }) => {
+  const [openNewReviewDialog, setOpenNewReviewDialog] = useState(false);
+
   const reviewer = review ? review.reviewer.ship : "...";
   const reviewee = review ? review.body.reviewee : "...";
   const advert = review ? review.commit.intent.advert : "...";
@@ -67,15 +71,23 @@ export const ReviewCard = ({ review }: {
           </Grid>
         </Grid>
       </CardContent>
+
       {reviewer === ourShip ?
         <CardActions sx={{justifyContent: 'right'}}>
-          <IconButton onClick={() => console.log('edit')}>
+          <IconButton onClick={() => setOpenNewReviewDialog(true)}>
             <EditIcon />
           </IconButton>
         </CardActions>
       : null}
-      {/* TODO: add edit button */}
 
-    </Card>
-  )
+      <ReviewEditor
+        commit={review.commit}
+        oldReview={review}
+        open={openNewReviewDialog}
+        handleCloseDialog={() => setOpenNewReviewDialog(false)}
+        api={api}
+      />
+
+  </Card>
+)
 }

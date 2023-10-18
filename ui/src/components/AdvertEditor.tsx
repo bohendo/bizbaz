@@ -10,7 +10,7 @@ import Button from "@mui/material/Button";
 
 import { TNewAdvert, TAdvertValidation  } from "../types";
 
-export const NewAdvert = ({
+export const AdvertEditor = ({
     editAdvert,
     edit,
     open,

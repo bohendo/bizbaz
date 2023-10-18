@@ -34,8 +34,8 @@ import { Votes } from '../components/Votes';
 import { IntentCard } from '../components/IntentCard';
 import { CommitCard } from "../components/CommitCard";
 import { ReviewCard } from "../components/ReviewCard";
-import { NewAdvert } from "../components/NewAdvert";
-import { NewReview } from "../components/NewReview";
+import { AdvertEditor } from "../components/AdvertEditor";
+import { ReviewEditor } from "../components/ReviewEditor";
 import { ShipLink } from "../components/ShipLink";
 import { Markdown } from "../components/Markdown";
 
@@ -66,19 +66,6 @@ export const Advert = ({ api }: { api: any }) => {
   const vndReviews = reviews
     .filter(r => r.commit.vendor.ship === vendor)
     .filter(r => !advReviews.some(ar => ar.hash === r.hash));
-  
-  const updateAdvert = ( upd: any) => {
-    if (upd.update) {
-      navigate(`advert/${upd.update.update.new.hash}`)
-    }
-  }
-
-  useEffect(() => {
-    async function init() {
-      api.subscribe( { app: "bizbaz", path: '/json/adverts', event: updateAdvert } )
-    }
-    init();
-  }, []);
 
   const vote = (choice: string) => {
     console.log(choice);
@@ -233,7 +220,7 @@ export const Advert = ({ api }: { api: any }) => {
           <List sx={{px: 0}}>
             {advReviews.map((review: TReview, i) => (
               <ListItem key={i} sx={{px: 0}}>
-                <ReviewCard review={review} />
+                <ReviewCard review={review} api={api} />
               </ListItem>
             ))}
           </List> : null
@@ -243,7 +230,7 @@ export const Advert = ({ api }: { api: any }) => {
           <List sx={{px: 0}}>
             {vndReviews.map((review: TReview, i) => (
               <ListItem key={i} sx={{px: 0}}>
-                <ReviewCard review={review} />
+                <ReviewCard review={review} api={api} />
               </ListItem>
             ))}
           </List> : null
@@ -277,7 +264,7 @@ export const Advert = ({ api }: { api: any }) => {
               
             </SpeedDial>
 
-            <NewAdvert
+            <AdvertEditor
               editAdvert={{
                 hash: advert.hash,
                 body: {
@@ -295,7 +282,7 @@ export const Advert = ({ api }: { api: any }) => {
           </> : null
         }
 
-        <NewReview
+        <ReviewEditor
           commit={reviewCommit}
           open={openNewReviewDialog}
           handleCloseDialog={() => setOpenNewReviewDialog(false)}

@@ -35,17 +35,31 @@ export const App = ({ api }: { api: any }) => {
     init();
   }, []);
 
-  console.log(adverts)
   const updateAdverts = ( upd: any) => {
     console.log(`Got ${Object.keys(upd)} advert update:`, upd)
     if (upd.gather) {
       setAdverts(upd.gather.adverts || [] as Array<TAdvert>)
     } else if (upd.create) {
       setAdverts((oldAdverts: Array<TAdvert>) => [upd.create.advert, ...oldAdverts])
-    } else {
+    } else if (upd.update) {
+      const newAdvert = upd.update.new
+      const oldHash = upd.update.old
+      const oldAdvert = adverts.findIndex(a => a.hash === newAdvert.hash)
+      if (oldAdvert === -1) {
+        setAdverts((oldAdverts: Array<TAdvert>) => [upd.update.new, ...oldAdverts])
+      } else {
+        setAdverts((oldAdverts: Array<TAdvert>) =>
+          [...oldAdverts!.slice(0, oldAdvert), upd.update.new, ...oldAdverts!.slice(oldAdvert + 1)]
+        )
+      }
+      navigate(`/advert/${newAdvert.hash}`)
+    } else if (upd.delete) {
       setAdverts((oldAdverts: Array<TAdvert>) =>
-        oldAdverts.filter((ad: TAdvert) => upd.delete.advert !== ad.hash))
-     navigate(`/explore`)
+        oldAdverts.filter((ad: TAdvert) => upd.delete.advert !== ad.hash)
+      )
+      navigate(`/explore`)
+    } else {
+      console.log(`Unknown vote update`)
     }
   }
 
@@ -80,7 +94,7 @@ export const App = ({ api }: { api: any }) => {
         }
       })
     } else {
-      console.log(`Got unknown vote update`)
+      console.log(`Unknown vote update`)
     }
   }
 
