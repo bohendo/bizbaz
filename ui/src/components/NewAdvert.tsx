@@ -6,7 +6,6 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
 import Button from "@mui/material/Button";
 
 import { TNewAdvert, TAdvertValidation  } from "../types";
@@ -104,78 +103,78 @@ export const NewAdvert = ({
 
     return (
         <Dialog open={open} onClose={handleCloseDialog}>
-            <DialogContent>
-               <DialogContentText>
-                  {edit ? 
-                    <>Edit Advert {newAdvert.hash}</>
-                    : <> Create New Advert </>
-                  }
-               </DialogContentText>
-               <TextField
-                 autoFocus
-                 defaultValue={newAdvert.body.title}
-                 error={!!validation.errorMsgs.titleError}
-                 margin="dense"
-                 id="title"
-                 label="Title"
-                 type="text"
-                 fullWidth
-                 helperText={validation.errorMsgs.titleError}
-                 variant="standard"
-                 onChange={(event) => {
-                     syncNewAdvert({ hash: newAdvert.hash, body: {...newAdvert.body, [event.target.id]: event.target.value} })}
-                 }
-               />
-               <TextField
-                 error={!!validation.errorMsgs.coverError}
-                 defaultValue={newAdvert.body.cover}
-                 margin="dense"
-                 id="cover"
-                 label="Cover"
-                 type="text"
-                 fullWidth
-                 helperText={validation.errorMsgs.coverError}
-                 variant="standard"
-                 onChange={(event) => {
-                     syncNewAdvert({ hash: newAdvert.hash, body: {...newAdvert.body, [event.target.id]: event.target.value} })}
-                 }
-               />
-                <TextField
-                 error={!!validation.errorMsgs.tagsError}
-                 defaultValue={newAdvert.body.tags}
-                 margin="dense"
-                 id="tags"
-                 label="Tags"
-                 type="text"
-                 fullWidth
-                 helperText={validation.errorMsgs.tagsError}
-                 variant="standard"
-                 onChange={(event) => {
-                     syncNewAdvert({ hash: newAdvert.hash, body: { ...newAdvert.body, [event.target.id]: event.target.value.toLowerCase().trim().split(" ") }})}
-                 }
-                />
-               <TextField
-                 error={!!validation.errorMsgs.descriptionError}
-                 defaultValue={newAdvert.body.description}
-                 margin="dense"
-                 id="description"
-                 multiline={true}
-                 label="Description"
-                 type="text"
-                 fullWidth
-                 helperText={validation.errorMsgs.descriptionError}
-                 variant="standard"
-                 onChange={(event) => {
-                     syncNewAdvert({ hash: newAdvert.hash, body: {...newAdvert.body, [event.target.id]: event.target.value} })}
-                 }
-                />
+          <DialogContent>
+            <DialogContentText>
+              {edit ? 
+                <>Edit Advert {newAdvert.hash}</>
+                : <> Create New Advert </>
+              }
+            </DialogContentText>
+            <TextField
+              autoFocus
+              defaultValue={newAdvert.body.title}
+              error={!!validation.errorMsgs.titleError}
+              margin="dense"
+              id="title"
+              label="Title"
+              type="text"
+              fullWidth
+              helperText={validation.errorMsgs.titleError}
+              variant="standard"
+              onChange={(event) => {
+                syncNewAdvert({ hash: newAdvert.hash, body: {...newAdvert.body, [event.target.id]: event.target.value} })}
+              }
+            />
+            <TextField
+              error={!!validation.errorMsgs.coverError}
+              defaultValue={newAdvert.body.cover}
+              margin="dense"
+              id="cover"
+              label="Cover"
+              type="text"
+              fullWidth
+              helperText={validation.errorMsgs.coverError}
+              variant="standard"
+              onChange={(event) => {
+                  syncNewAdvert({ hash: newAdvert.hash, body: {...newAdvert.body, [event.target.id]: event.target.value} })}
+              }
+            />
+            <TextField
+              error={!!validation.errorMsgs.tagsError}
+              defaultValue={newAdvert.body.tags}
+              margin="dense"
+              id="tags"
+              label="Tags"
+              type="text"
+              fullWidth
+              helperText={validation.errorMsgs.tagsError}
+              variant="standard"
+              onChange={(event) => {
+                  syncNewAdvert({ hash: newAdvert.hash, body: { ...newAdvert.body, [event.target.id]: event.target.value.toLowerCase().trim().split(" ") }})}
+              }
+            />
+            <TextField
+              error={!!validation.errorMsgs.descriptionError}
+              defaultValue={newAdvert.body.description}
+              margin="dense"
+              id="description"
+              multiline={true}
+              label="Description"
+              type="text"
+              fullWidth
+              helperText={validation.errorMsgs.descriptionError}
+              variant="standard"
+              onChange={(event) => {
+                  syncNewAdvert({ hash: newAdvert.hash, body: {...newAdvert.body, [event.target.id]: event.target.value} })}
+              }
+            />
 
-            </DialogContent>
-            <DialogActions>
-                <Button variant="contained" onClick={postAdvert}>
-                    Submit
-                </Button>
-            </DialogActions>
+          </DialogContent>
+          <DialogActions>
+            <Button variant="contained" onClick={postAdvert}>
+              Submit
+            </Button>
+          </DialogActions>
         </Dialog>
     )
 }

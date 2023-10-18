@@ -107,6 +107,9 @@
               ~|((weld "No advert with hash " (scow %uv advert.req.act)) !!)
             =/  new-vote  ((build-vote:votlib bowl) req.act)
             =/  new-votes  ((upsert-vote:votlib votes) new-vote)
+            ?:  ?&(=(ship.voter.new-vote src.bowl) =(choice.body.new-vote %down))
+                :_  this(votes new-votes, adverts (oust [(need adv-index) 1] adverts))
+                (pub-card:votlib `update:vote`[%vote new-vote])
             :_  this(votes new-votes)
             (pub-card:votlib `update:vote`[%vote new-vote])
       == 

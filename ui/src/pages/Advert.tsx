@@ -55,8 +55,6 @@ export const Advert = ({ api }: { api: any }) => {
     .filter(r => r.commit.vendor.ship === vendor)
     .filter(r => !advReviews.some(ar => ar.hash === r.hash));
   
-  console.log(advert);
-
   const updateAdvert = ( upd: any) => {
     if (upd.update) {
       navigate(`advert/${upd.update.update.new.hash}`)
