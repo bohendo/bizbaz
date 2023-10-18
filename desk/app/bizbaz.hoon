@@ -351,43 +351,43 @@
         [%noun %votes ~]
       ?+  -.sign  (on-agent:default wire sign)
         %fact
-        ?+  p.cage.sign  (on-agent:default wire sign)
+          ?+  p.cage.sign  (on-agent:default wire sign)
             %vote-update
-          =/  upd  !<(update:vote q.cage.sign)
-          ?-  -.upd
+              =/  upd  !<(update:vote q.cage.sign)
+              ?-  -.upd
               ::
-              %gather
-            =/  new-votes  (skip votes.upd (vote-exists:votlib votes))
-            =/  gud-votes  (skim new-votes (validate:votlib bowl))
-            ~&  (log-gather:utils [got=(lent votes.upd) new=(lent gud-votes) from=src.bowl type="vote"])
-            [~ this(votes (weld gud-votes votes))]
+            %gather
+              =/  new-votes  (skip votes.upd (vote-exists:votlib votes))
+              =/  gud-votes  (skim new-votes (validate:votlib bowl))
+              ~&  (log-gather:utils [got=(lent votes.upd) new=(lent gud-votes) from=src.bowl type="vote"])
+              [~ this(votes (weld gud-votes votes))]
               ::
               :: TODO: drop adverts that we downvote
               ::       therefore, only allow unvotes on upvotes
-              %vote
-            ~&  "Got a %create %vote-update from our subscription"
-            =/  new-vote  vote.upd
-            =/  adv-index  ((get-by-hash:advlib adverts) advert.body.new-vote)
-            ?~  adv-index
-              ~|((weld "No advert with hash " (scow %uv advert.body.new-vote)) !!)
-            ?.  ((validate:votlib bowl) new-vote)
-              ~&  "Crashing, received vote is invalid"
-              !!
-            ~&  (weld "%vote: valid vote received from " (scow %p src.bowl))
-            =/  new-votes  ((upsert-vote:votlib votes) new-vote)
-            =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
-            =/  is-pal  ?~((find ~[ship.voter.new-vote] ~(tap in pals)) %.n %.y)
-            ?:  is-pal
-              ~&  "new vote was created by our pal, re-broadcasting to our pals"
+            %vote
+              ~&  "Got a %create %vote-update from our subscription"
+              =/  new-vote  vote.upd
+              =/  adv-index  ((get-by-hash:advlib adverts) advert.body.new-vote)
+              ?~  adv-index
+                ~|((weld "No advert with hash " (scow %uv advert.body.new-vote)) !!)
+              ?.  ((validate:votlib bowl) new-vote)
+                ~&  "Crashing, received vote is invalid"
+                !!
+              ~&  (weld "%vote: valid vote received from " (scow %p src.bowl))
+              =/  new-votes  ((upsert-vote:votlib votes) new-vote)
+              =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
+              =/  is-pal  ?~((find ~[ship.voter.new-vote] ~(tap in pals)) %.n %.y)
+              ?:  is-pal
+                ~&  "new vote was created by our pal, re-broadcasting to our pals"
+                :_  this(votes new-votes)
+                :~  [%give %fact ~[/json/votes] %vote-update !>(`update:vote`[%vote new-vote])]
+                    [%give %fact ~[/noun/votes] %vote-update !>(`update:vote`[%vote new-vote])]
+                ==
+              ~&  "new vote was NOT created by our pal, not re-broadcasting"
               :_  this(votes new-votes)
               :~  [%give %fact ~[/json/votes] %vote-update !>(`update:vote`[%vote new-vote])]
-                  [%give %fact ~[/noun/votes] %vote-update !>(`update:vote`[%vote new-vote])]
               ==
-            ~&  "new vote was NOT created by our pal, not re-broadcasting"
-            :_  this(votes new-votes)
-            :~  [%give %fact ~[/json/votes] %vote-update !>(`update:vote`[%vote new-vote])]
             ==
-          ==
         ==
       ==
       ::
@@ -523,24 +523,21 @@
         ==
       ==
       :: TODO: send all 3 gather updates to new pals
-      :: [%newpals ~]
-      :: ?+  -.sign  `this
-      ::   %fact
-      ::   ?+  p.cage.sign  `this
-      ::       %pals-effect
-      ::     =/  fx  !<(effect:pals q.cage.sign)
-      ::     ?+    -.fx  (on-agent:default wire sign)
-      ::         %meet
-      ::       :_  this ::(adverts adverts.upd)
-      ::       :~  [%pass /bizbaz %agent [+.fx %gather] %watch /bizbaz]
-      ::       ==
-      ::         %part
-      ::       :_  this(adverts adverts.upd)
-      ::       :~  [%pass /bizbaz %agent [+.fx %gather] %leave /bizbaz]
-      ::       ==
-      ::     ==
-      ::   ==
-      :: ==
+      [%newpals ~]
+      ?+  -.sign  (on-agent:default wire sign)
+        %fact
+          ?+  p.cage.sign  (on-agent:default wire sign)
+            %pals-effect
+              =/  fx  !<(effect:pals q.cage.sign)
+              ?+  -.fx  (on-agent:default wire sign)
+                %meet
+                  !!
+                  :: :_  this ::(adverts adverts.upd)
+                  :: :~  [%pass /bizbaz %agent [+.fx %gather] %watch /bizbaz]
+                  :: ==
+              ==
+          ==
+      ==
     ==
 
 ++  on-fail  :: runs during certain types of crashes

@@ -159,13 +159,13 @@ export const Advert = ({ api }: { api: any }) => {
                     Tags: {advert.body.tags?.join(", ")}
                   </Typography>
                   <Markdown content={advert.body.description} />
-              </Grid>
+                </Grid>
               </Grid>
             </Grid>
           </Grid>
 
           {(ourShip !== advert.vendor.ship) ? (
-            <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: 2 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 8 }}>
               <Button
                 variant="contained"
                 onClick={intent}
