@@ -3,7 +3,7 @@ import { TReview, TIntent } from "../types";
 
 // MUI
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
@@ -12,6 +12,9 @@ import Grid from '@mui/material/Grid';
 import Rating from '@mui/material/Rating';
 import Typography from '@mui/material/Typography';
 
+// Icons
+import EditIcon from '@mui/icons-material/Edit';
+
 // Components
 import { AdvertLink } from "./AdvertLink"
 import { ShipLink } from "./ShipLink"
@@ -19,9 +22,10 @@ import { ShipLink } from "./ShipLink"
 export const ReviewCard = ({ review }: {
     review: TReview;
 }) => {
-  const reviewer = review ? review.reviewer.ship : "..."
-  const reviewee = review ? review.body.reviewee : "..."
-  const advert = review ? review.commit.intent.advert : "..."
+  const reviewer = review ? review.reviewer.ship : "...";
+  const reviewee = review ? review.body.reviewee : "...";
+  const advert = review ? review.commit.intent.advert : "...";
+  const ourShip = `~${window.ship}`
   return (
     <Card variant="outlined" sx={{ p: 2, mx: 8, my: 2 }}>
       <CardHeader
@@ -63,7 +67,13 @@ export const ReviewCard = ({ review }: {
           </Grid>
         </Grid>
       </CardContent>
-
+      {reviewer === ourShip ?
+        <CardActions sx={{justifyContent: 'right'}}>
+          <IconButton onClick={() => console.log('edit')}>
+            <EditIcon />
+          </IconButton>
+        </CardActions>
+      : null}
       {/* TODO: add edit button */}
 
     </Card>

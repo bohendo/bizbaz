@@ -50,6 +50,7 @@ export const Advert = ({ api }: { api: any }) => {
   const [openNewReviewDialog, setOpenNewReviewDialog] = useState(false);
   const [openBackdrop, setOpenBackdrop] = useState(false);
   const [openDeleteConfirmation, setOpenDeleteConfirmation] = useState(false);
+  const [openEditReview, setOpenEditReview] = useState(false);
   const [imgError, setImgError] = useState(false);
 
   const ourShip = `~${window.ship}`
