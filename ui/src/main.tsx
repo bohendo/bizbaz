@@ -32,7 +32,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/profile/:ship",
-        element: <Profile />,
+        element: <Profile api={api} />,
       },
     ]
   },

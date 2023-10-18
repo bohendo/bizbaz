@@ -16,7 +16,7 @@ import { ReviewCard } from '../components/ReviewCard';
 
 const myShip = `~${window.ship}`
 
-export const Profile = () => {
+export const Profile = ({ api }: { api: any }) => {
   const bizbaz = useContext(BizbazContext);
   const { ship } = useParams();
   const theme = useTheme();
@@ -46,7 +46,7 @@ export const Profile = () => {
       <Masonry columns={3} spacing={2}>
         {reviews.filter(r => r.reviewer.ship === ship).map((review: TReview, index: number) => {
           return (
-            <ReviewCard key={index} review={review}/>
+            <ReviewCard key={index} review={review} api={api} />
           )
         })}
       </Masonry>
@@ -57,7 +57,7 @@ export const Profile = () => {
       <Masonry columns={3} spacing={2}>
         {reviews.filter(r => r.body.reviewee === ship).map((review: TReview, index: number) => {
           return (
-            <ReviewCard key={index} review={review}/>
+            <ReviewCard key={index} review={review} api={api} />
           )
         })}
       </Masonry>

@@ -10,6 +10,8 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Rating from '@mui/material/Rating';
 import TextField from '@mui/material/TextField';
 
+import { TReview } from "../types";
+
 const myShip = `~${window.ship}`
 
 export const ReviewEditor = ({
