@@ -72,8 +72,8 @@
         `card`[%give %fact ~[/noun/reviews] %review-update !>(`update:review`[%gather palints palcmts palrevs])]
         :: subscribe to pals updates
         `card`[%give %fact ~[/noun/reviews] %review-update !>(`update:review`[%gather palints palcmts palrevs])]
-        `card`[%pass /pals/targets %agent [our.bowl %pals] %watch /targets]
-        `card`[%pass /pals/leeches %agent [our.bowl %pals] %watch /leeches]
+        :: `card`[%pass /pals/targets %agent [our.bowl %pals] %watch /targets]
+        :: `card`[%pass /pals/leeches %agent [our.bowl %pals] %watch /leeches]
     ==
   ?>  |(?=(%advert-action mark) ?=(%vote-action mark) ?=(%review-action mark))
   ?+    mark  !!
@@ -539,42 +539,42 @@
   ::
   :: pals subscription updates
   ::
-      [%pals %target ~]
-    ?+    -.sign  (on-agent:default wire sign)
-        %fact
-      :: this wire only handles pal effects
-      ~&  "Got pals target cage:"
-      ~&  cage.sign
-      ?.  =(p.cage.sign %pals-effect)
-        (on-agent:default wire sign)
-      =/  fx  !<(effect:pals q.cage.sign)
-      ?+    -.fx  (on-agent:default wire sign)
-      ::
-          %target
-        ~&  (weld "Subscribing to new pal: " "?") :: (scot %p pal)
-        ~&  fx
-        =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
-        =/  pal  ~zod :: TODO set to our real, new pal
-        ::  only share data from our direct pals
-        =/  paladvs  (skim adverts |=(adv=advert:advert (~(has in pals) ship.vendor.adv)))
-        =/  palvots  (skim votes |=(vote=vote:vote (~(has in pals) ship.voter.vote)))
-        =/  palints  (skim intents |=(int=intent:review (~(has in pals) ship.client.int)))
-        =/  palcmts  (skim commits |=(cmt=commit:review (~(has in pals) ship.vendor.cmt)))
-        =/  palrevs  (skim reviews |=(rev=review:review (~(has in pals) ship.reviewer.rev)))
-        ::  gather list of subscription cards
-        =/  advsub  `card`(sub-card:advlib pal)
-        =/  votsub  `card`(sub-card:votlib pal)
-        =/  revsub  `card`(sub-card:revlib pal)
-        :_  this
-        ::  subscription to all 3 wires on our new pal
-        %+  weld  ~[advsub votsub revsub]
-        :: broadcast all of our data so the new pal can grab it
-        :~  `card`[%give %fact ~[/noun/adverts] %advert-update !>(`update:advert`[%gather paladvs])]
-            `card`[%give %fact ~[/noun/votes] %vote-update !>(`update:vote`[%gather palvots])]
-            `card`[%give %fact ~[/noun/reviews] %review-update !>(`update:review`[%gather palints palcmts palrevs])]
-        ==
-      ==
-    ==
+    ::   [%pals %target ~]
+    :: ?+    -.sign  (on-agent:default wire sign)
+    ::     %fact
+    ::   :: this wire only handles pal effects
+    ::   ~&  "Got pals target cage:"
+    ::   ~&  cage.sign
+    ::   ?.  =(p.cage.sign %pals-effect)
+    ::     (on-agent:default wire sign)
+    ::   =/  fx  !<(effect:pals q.cage.sign)
+    ::   ?+    -.fx  (on-agent:default wire sign)
+    ::   ::
+    ::       %target
+    ::     ~&  (weld "Subscribing to new pal: " "?") :: (scot %p pal)
+    ::     ~&  fx
+    ::     =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
+    ::     =/  pal  ~zod :: TODO set to our real, new pal
+    ::     ::  only share data from our direct pals
+    ::     =/  paladvs  (skim adverts |=(adv=advert:advert (~(has in pals) ship.vendor.adv)))
+    ::     =/  palvots  (skim votes |=(vote=vote:vote (~(has in pals) ship.voter.vote)))
+    ::     =/  palints  (skim intents |=(int=intent:review (~(has in pals) ship.client.int)))
+    ::     =/  palcmts  (skim commits |=(cmt=commit:review (~(has in pals) ship.vendor.cmt)))
+    ::     =/  palrevs  (skim reviews |=(rev=review:review (~(has in pals) ship.reviewer.rev)))
+    ::     ::  gather list of subscription cards
+    ::     =/  advsub  `card`(sub-card:advlib pal)
+    ::     =/  votsub  `card`(sub-card:votlib pal)
+    ::     =/  revsub  `card`(sub-card:revlib pal)
+    ::     :_  this
+    ::     ::  subscription to all 3 wires on our new pal
+    ::     %+  weld  ~[advsub votsub revsub]
+    ::     :: broadcast all of our data so the new pal can grab it
+    ::     :~  `card`[%give %fact ~[/noun/adverts] %advert-update !>(`update:advert`[%gather paladvs])]
+    ::         `card`[%give %fact ~[/noun/votes] %vote-update !>(`update:vote`[%gather palvots])]
+    ::         `card`[%give %fact ~[/noun/reviews] %review-update !>(`update:review`[%gather palints palcmts palrevs])]
+    ::     ==
+    ::   ==
+    :: ==
   ::
       [%pals %leeche ~]
     ?+    -.sign  (on-agent:default wire sign)
