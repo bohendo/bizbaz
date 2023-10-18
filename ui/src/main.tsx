@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import {
   createBrowserRouter,
   RouterProvider,
@@ -42,9 +42,8 @@ const router = createBrowserRouter([
   },
 ], { basename: "/apps/bizbaz" });
 
-ReactDOM.render(
+createRoot(document.getElementById('app')!).render(
   <React.StrictMode>
     <RouterProvider router={router} />
   </React.StrictMode>,
-  document.getElementById('app')
 );
