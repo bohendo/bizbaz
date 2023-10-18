@@ -42,7 +42,8 @@ export const Votes = ({
         <Box display='flex' flexDirection='column' maxWidth={50}>
           <IconButton sx={{ m: theme.spacing(-2)}}
             color={ourVote?.body?.choice === "up" ? 'primary' : 'default'}
-            onClick={() => vote(ourVote?.body?.choice === "up" ? "un" : "up")}>
+            onClick={() => vote(ourVote?.body?.choice === "up" ? "un" : "up")}
+          >
             <ArrowDropUpIcon sx={{ fontSize: 60 }} />
           </IconButton>
           <Avatar sx={{ width: 24, height: 24, m: 1.5 }}>

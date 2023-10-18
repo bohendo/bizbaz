@@ -1,4 +1,6 @@
 /-  vote 
+/-  advert 
+/+  advlib=advert 
 /+  signatures
 |% 
 ::
@@ -88,6 +90,7 @@
 ::
 ++  build-vote
     |=  =bowl:gall
+    |=  adverts=adverts:advert
     |=  req=vote-req:vote
     ^-  vote:vote
     :: update when in the body
@@ -105,17 +108,27 @@
           vote-body
       ==
     :: crash if our new vote is invalid
-    ?>  ((validate bowl) new-vote)
+    ?>  (((validate bowl) adverts) new-vote)
     new-vote
 ::
 ++  validate
     |=  =bowl:gall
+    |=  adverts=adverts:advert
     |=  vote=vote:vote
     ^-  ?
-    =/  true-hash  (sham body.vote)
-    ?.  =(hash.vote true-hash)
+    ?.  =(hash.vote (sham body.vote))
+      ~&  "vote hash does not match digest of the body"
       %.n
     ?.  (is-signature-valid:signatures [our.bowl voter.vote hash.vote now.bowl])
+      ~&  "voter sig on the vote hash is invalid"
+      %.n
+    =/  adv-index  ((get-by-hash:advlib adverts) advert.body.vote)
+    ?~  adv-index
+      ~&  "no advert exists for this vote"
+      %.n
+    =/  adv  (snag (need adv-index) adverts)
+    ?:  =(ship.vendor.adv ship.voter.vote)
+      ~&  "voting on your own advert is not allowed"
       %.n
     %.y
 ::

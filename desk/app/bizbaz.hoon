@@ -105,7 +105,7 @@
             =/  adv-index  ((get-by-hash:advlib adverts) advert.req.act)
             ?~  adv-index
               ~|((weld "No advert with hash " (scow %uv advert.req.act)) !!)
-            =/  new-vote  ((build-vote:votlib bowl) req.act)
+            =/  new-vote  (((build-vote:votlib bowl) adverts) req.act)
             =/  new-votes  ((upsert-vote:votlib votes) new-vote)
             ?:  ?&(=(ship.voter.new-vote src.bowl) =(choice.body.new-vote %down))
                 :_  this(votes new-votes, adverts (oust [(need adv-index) 1] adverts))
@@ -211,7 +211,7 @@
       :: ~&  "watching adverts"
       [%give %fact ~ %advert-update !>(`update:advert`[%gather adverts])]~
     [%json %votes ~]
-      :: ~&  "watching votes"
+      ~&  "watching votes"
       [%give %fact ~ %vote-update !>(`update:vote`[%gather votes])]~
     [%json %reviews ~]
       :: ~&  "watching intents & commits & reviews"
@@ -356,38 +356,30 @@
               =/  upd  !<(update:vote q.cage.sign)
               ?-  -.upd
               ::
-            %gather
-              =/  new-votes  (skip votes.upd (vote-exists:votlib votes))
-              =/  gud-votes  (skim new-votes (validate:votlib bowl))
-              ~&  (log-gather:utils [got=(lent votes.upd) new=(lent gud-votes) from=src.bowl type="vote"])
-              [~ this(votes (weld gud-votes votes))]
+              %gather
+            =/  new-votes  (skip votes.upd (vote-exists:votlib votes))
+            =/  gud-votes  (skim new-votes ((validate:votlib bowl) adverts))
+            ~&  (log-gather:utils [got=(lent votes.upd) new=(lent gud-votes) from=src.bowl type="vote"])
+            [~ this(votes (weld gud-votes votes))]
               ::
               :: TODO: drop adverts that we downvote
               ::       therefore, only allow unvotes on upvotes
-            %vote
-              ~&  "Got a %create %vote-update from our subscription"
-              =/  new-vote  vote.upd
-              =/  adv-index  ((get-by-hash:advlib adverts) advert.body.new-vote)
-              ?~  adv-index
-                ~|((weld "No advert with hash " (scow %uv advert.body.new-vote)) !!)
-              ?.  ((validate:votlib bowl) new-vote)
-                ~&  "Crashing, received vote is invalid"
-                !!
-              ~&  (weld "%vote: valid vote received from " (scow %p src.bowl))
-              =/  new-votes  ((upsert-vote:votlib votes) new-vote)
-              =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
-              =/  is-pal  ?~((find ~[ship.voter.new-vote] ~(tap in pals)) %.n %.y)
-              ?:  is-pal
-                ~&  "new vote was created by our pal, re-broadcasting to our pals"
-                :_  this(votes new-votes)
-                :~  [%give %fact ~[/json/votes] %vote-update !>(`update:vote`[%vote new-vote])]
-                    [%give %fact ~[/noun/votes] %vote-update !>(`update:vote`[%vote new-vote])]
-                ==
-              ~&  "new vote was NOT created by our pal, not re-broadcasting"
+              %vote
+            ~&  (weld "Got a %vote update from " (scow %p src.bowl))
+            =/  new-vote  vote.upd
+            ?.  (((validate:votlib bowl) adverts) new-vote)
+              ~&  "Crashing, invalid vote received"
+              !!
+            =/  new-votes  ((upsert-vote:votlib votes) new-vote)
+            =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
+            =/  is-pal  ?~((find ~[ship.voter.new-vote] ~(tap in pals)) %.n %.y)
+            ?:  is-pal
+              ~&  "new vote was created by our pal, re-broadcasting to our pals"
               :_  this(votes new-votes)
               :~  [%give %fact ~[/json/votes] %vote-update !>(`update:vote`[%vote new-vote])]
               ==
             ==
+          ==
         ==
       ==
       ::
