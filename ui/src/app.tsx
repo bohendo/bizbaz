@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useState, useReducer } from "react";
-import { Outlet } from "react-router-dom";
+import React, { useContext, useEffect, useState, useCallback } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
 
 import { BizbazContext } from "./BizbazContext"
 import { TAdvert, TCommit, TIntent, TReview, TVote } from "./types";
@@ -18,6 +18,7 @@ const savedTheme = localStorage.getItem("theme") || "";
 export const App = ({ api }: { api: any }) => {
   const [theme, setTheme] = useState(savedTheme === "dark" || savedTheme === "" ? darkTheme : lightTheme);
   const bizbaz = useContext(BizbazContext)
+  const navigate = useNavigate();
 
   const [adverts, setAdverts] = useState([] as Array<TAdvert>);
   const [votes, setVotes] = useState([] as Array<TVote>);
@@ -34,14 +35,17 @@ export const App = ({ api }: { api: any }) => {
     init();
   }, []);
 
+  console.log(adverts)
   const updateAdverts = ( upd: any) => {
-    console.log(`Got %${Object.keys(upd)} advert update:`, upd)
+    console.log(`Got ${Object.keys(upd)} advert update:`, upd)
     if (upd.gather) {
       setAdverts(upd.gather.adverts || [] as Array<TAdvert>)
     } else if (upd.create) {
       setAdverts((oldAdverts: Array<TAdvert>) => [upd.create.advert, ...oldAdverts])
     } else {
-      console.log(`TODO: implement missing advert update:`, upd)
+      setAdverts((oldAdverts: Array<TAdvert>) =>
+        oldAdverts.filter((ad: TAdvert) => upd.delete.advert !== ad.hash))
+     navigate(`/explore`)
     }
   }
 
@@ -126,6 +130,7 @@ export const App = ({ api }: { api: any }) => {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+    backgroundColor: 'primary.dark',
 }));
 
   return (

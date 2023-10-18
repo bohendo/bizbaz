@@ -75,27 +75,26 @@ export const NewAdvert = ({
         };
 
         if (edit) {
-            const req = {
-                'update': {
-                    hash: newAdvert.hash,
-                    ...body,
-                }
+          const req = {
+            'update': {
+              hash: newAdvert.hash,
+              ...body,
             }
-            console.log(req);
-            api.poke({
-                app: 'bizbaz',
-                mark: 'advert-action',
-                json: req,
-            })
+          }
+          console.log(req);
+          api.poke({
+            app: 'bizbaz',
+            mark: 'advert-action',
+            json: req,
+          })
         } else {
             const req = {
                 'create': body
             }
-            console.log(req);
             api.poke({
-            app: 'bizbaz',
-            mark: 'advert-action',
-            json: req,
+              app: 'bizbaz',
+              mark: 'advert-action',
+              json: req,
           })
         }
         handleCloseDialog()

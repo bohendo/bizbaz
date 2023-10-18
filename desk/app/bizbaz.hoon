@@ -345,7 +345,7 @@
           ~&  "we do not have this advert, doing nothing"
           [~ this]
         :: TODO: think of validation logic for delete request so
-        :: that a malicious ship cannor shadow ban ad advert by
+        :: that a malicious ship cannot shadow ban ad advert by
         :: sending a delete update to network
         ?.  ((validate:advlib bowl) ad)
           ~&  "Crashing, received advert is invalid"

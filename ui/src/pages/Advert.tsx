@@ -2,14 +2,21 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
 // MUI
+import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
 import Grid from '@mui/material/Grid';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import Fab from '@mui/material/Fab'
 import Paper from "@mui/material/Paper";
+import SpeedDial from "@mui/material/SpeedDial";
+import SpeedDialAction from "@mui/material/SpeedDialAction";
 import Typography from '@mui/material/Typography';
 import { useTheme } from "@mui/material/styles"
 
@@ -18,7 +25,9 @@ import { BizbazContext } from "../BizbazContext"
 import { TAdvert, TCommit, TIntent, TReview, TVote } from "../types";
 
 // Icons
+import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
 // Components
 import { Votes } from '../components/Votes';
@@ -39,6 +48,8 @@ export const Advert = ({ api }: { api: any }) => {
   const [reviewCommit, setReviewCommit] = useState<TCommit | undefined>(undefined);
   const [openNewAdvertDialog, setOpenNewAdvertDialog] = useState(false);
   const [openNewReviewDialog, setOpenNewReviewDialog] = useState(false);
+  const [openBackdrop, setOpenBackdrop] = useState(false);
+  const [openDeleteConfirmation, setOpenDeleteConfirmation] = useState(false);
   const [imgError, setImgError] = useState(false);
 
   const ourShip = `~${window.ship}`
@@ -82,6 +93,18 @@ export const Advert = ({ api }: { api: any }) => {
     })
   }
 
+  const deleteAd = (adHash: string) => {
+    api.poke({
+      app: 'bizbaz',
+      mark: 'advert-action',
+      json: { 
+        'delete': { 
+          hash: hash,
+        }
+      }
+    })
+  }
+
   const doIntent = () => {
       api.poke({
         app: 'bizbaz',
@@ -118,6 +141,7 @@ export const Advert = ({ api }: { api: any }) => {
     // TODO: create error 404 not found page
     return <div> Advert does not exist </div>
   } else if (advert.body) {
+    console.log(advIntents)
     return (
       <Box sx={{width: "100%", mt: theme.spacing(10)}}>
         <Paper variant="outlined" sx={{ p: 8, m: 8 }}>
@@ -226,13 +250,31 @@ export const Advert = ({ api }: { api: any }) => {
 
         {advert.vendor.ship === ourShip ? 
           <>
-            <Fab color='primary' sx={{
-              position: 'fixed',
-              right: theme.spacing(4),
-              bottom: theme.spacing(3)
-            }} onClick={() => setOpenNewAdvertDialog(true)}>
-              <EditIcon />
-            </Fab>
+            <Backdrop open={openBackdrop} />
+            <SpeedDial
+              ariaLabel="Edit Advert SpeedDial"
+              sx={{ position: 'fixed', bottom: theme.spacing(3), right: theme.spacing(4) }}
+              icon={<ExpandLessIcon />}
+              onClose={() => setOpenBackdrop(false)}
+              onOpen={() => setOpenBackdrop(true)}
+              open={openBackdrop}
+            >
+              <SpeedDialAction
+                key="edit"
+                icon={<EditIcon />}
+                tooltipTitle="Edit"
+                tooltipOpen
+                onClick={() => {setOpenNewAdvertDialog(true); setOpenBackdrop(false)}}
+              />
+              <SpeedDialAction
+                key="delete"
+                icon={<DeleteIcon />}
+                tooltipTitle="Delete"
+                tooltipOpen
+                onClick={() => {setOpenDeleteConfirmation(true); setOpenBackdrop(false)}}
+              />
+              
+            </SpeedDial>
 
             <NewAdvert
               editAdvert={{
@@ -258,6 +300,23 @@ export const Advert = ({ api }: { api: any }) => {
           handleCloseDialog={() => setOpenNewReviewDialog(false)}
           api={api}
         />
+
+        <Dialog open={openDeleteConfirmation} onClose={() => setOpenDeleteConfirmation(false)}>
+          <DialogContent>
+            <DialogContentText>
+              Are you sure you want to delete this advert?
+              This is an irreversible action.
+            </DialogContentText>
+            <DialogActions>
+              <Button variant="contained" onClick={() => { deleteAd(advert.hash); setOpenDeleteConfirmation(false)}}>
+                Yes, I'm sure! Delete ad.
+              </Button>
+              <Button variant="contained" onClick={() => setOpenDeleteConfirmation(false)}>
+                Cancel
+              </Button>
+            </DialogActions>
+          </DialogContent>
+        </Dialog>
 
     </Box>
   )} else return (
