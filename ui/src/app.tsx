@@ -27,12 +27,12 @@ export const App = ({ api }: { api: any }) => {
   const [reviews, setReviews] = useState([] as Array<TReview>);
 
   useEffect(() => {
-    async function init() {
+    (async () => {
+      console.log(`Subscribing to ALL bizbaz paths`)
       api.subscribe( { app: "bizbaz", path: '/json/adverts', event: updateAdverts } )
       api.subscribe( { app: "bizbaz", path: '/json/votes', event: updateVotes } )
       api.subscribe( { app: "bizbaz", path: '/json/reviews', event: updateReviews } )
-    }
-    init();
+    })()
   }, []);
 
   const updateAdverts = ( upd: any) => {
@@ -40,6 +40,7 @@ export const App = ({ api }: { api: any }) => {
     if (upd.gather) {
       setAdverts(upd.gather.adverts || [] as Array<TAdvert>)
     } else if (upd.create) {
+      console.log(`Adding newly created advert`)
       setAdverts((oldAdverts: Array<TAdvert>) => [upd.create.advert, ...oldAdverts])
     } else if (upd.update) {
       const newAdvert = upd.update.new
