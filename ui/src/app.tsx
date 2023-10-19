@@ -17,14 +17,13 @@ const savedTheme = localStorage.getItem("theme") || "";
 
 export const App = ({ api }: { api: any }) => {
   const [theme, setTheme] = useState(savedTheme === "dark" || savedTheme === "" ? darkTheme : lightTheme);
-  const bizbaz = useContext(BizbazContext)
-  const navigate = useNavigate();
-
   const [adverts, setAdverts] = useState([] as Array<TAdvert>);
   const [votes, setVotes] = useState([] as Array<TVote>);
   const [intents, setIntents] = useState([] as Array<TIntent>);
   const [commits, setCommits] = useState([] as Array<TCommit>);
   const [reviews, setReviews] = useState([] as Array<TReview>);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     (async () => {
