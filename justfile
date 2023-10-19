@@ -2,11 +2,11 @@
 start:
   bash start-fake-ship.sh
 
-start-ui:
-  cd ui && npm run dev
-
 install:
   cd ui && npm install
+
+start-ui: install
+  cd ui && npm run dev
 
 build-ui: install
   cd ui && npm run build
