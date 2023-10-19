@@ -14,7 +14,7 @@ import { Advert } from './pages/Advert';
 import { Explore } from "./pages/Explore";
 import { Profile } from "./pages/Profile";
 
-const api = new Urbit('', '', window.desk);
+const api = new Urbit('', '', 'bizbaz');
 api.ship = window.ship;
 
 const router = createBrowserRouter([
