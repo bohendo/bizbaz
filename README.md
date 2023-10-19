@@ -2,20 +2,17 @@
 
 **The Bizarre Bazaar**
 
-Lets you buy & sell goods & services from your pals-of-pals
+For buying & selling goods & services with your pals-of-pals
 
-### Installation
+### Live Installation
 
 Use the following app link to install bizbaz on the live urbit network:
 
 `<coming soon>`
 
-If you don't see any advertisements, add new pals or create your own
-with the `+` button in the bottom right.
+### Local Installation
 
-### Getting Started
-
-To experiment with a local copy of bizbaz, start up a new fake ship and install bizbaz:
+To experiment with a local copy of bizbaz, start by cloning this repo and `cd`ing into it. Then, run:
 - `me@bizbaz$ bash start-fake-ship.sh zod # or 'just start'`
 - `~zod:dojo> |new-desk %bizbaz`
 - `~zod:dojo> |mount %bizbaz`
