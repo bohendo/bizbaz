@@ -36,9 +36,7 @@
   =/  revsubs  (turn ~(tap in pals) |=(pal=ship (sub-card:revlib pal)))
   :_  this
   %+  weld  advsubs
-  %+  weld  votsubs
-  %+  weld  revsubs
-      `(list card)`~[[%pass /eyre %arvo %e %connect [~ /apps/bizbaz] %bizbaz]]
+  %+  weld  votsubs  revsubs
 ::
 ++  on-save  :: exports the state before suspending or uninstalling
   !>(state)
@@ -87,6 +85,7 @@
         %create 
       =/  new-advert  ((build:advlib bowl) req.act)
       :_  this(adverts [new-advert adverts])
+      ~&  "Created new advert, publishing it"
       (pub-card:advlib `update:advert`[%create new-advert])
     ::
         %update
