@@ -17,6 +17,7 @@ import Fab from '@mui/material/Fab'
 import Paper from "@mui/material/Paper";
 import SpeedDial from "@mui/material/SpeedDial";
 import SpeedDialAction from "@mui/material/SpeedDialAction";
+import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useTheme } from "@mui/material/styles"
 
@@ -28,6 +29,7 @@ import { TAdvert, TCommit, TIntent, TReview, TVote } from "../types";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import MessageIcon from '@mui/icons-material/Message';
 
 // Components
 import { Votes } from '../components/Votes';
@@ -178,7 +180,7 @@ export const Advert = ({ api }: { api: any }) => {
           </Grid>
 
           {(ourShip !== advert.vendor.ship) ? (
-            <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 8 }}>
+            <Stack direction="row" sx={{ justifyContent: "center", marginTop: 8 }} spacing={2}>
               <Button
                 variant="contained"
                 onClick={doIntent}
@@ -186,7 +188,17 @@ export const Advert = ({ api }: { api: any }) => {
               >
                 Express Intent
               </Button>
-            </Box>
+              <Button
+                variant="contained"
+                onClick={() => {
+                  window.open(`${window.location.origin}/apps/talk/dm/${advert.vendor.ship}`,
+                  '_blank');
+                }}
+                startIcon={<MessageIcon />}
+              >
+               Message Vendor 
+              </Button>
+            </Stack>
           ) : null}
         </Paper>
 
