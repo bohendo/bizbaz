@@ -144,9 +144,12 @@ export const App = ({ api }: { api: any }) => {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    backgroundColor: 'primary.dark',
+    height: "100%",
+    backgroundColor: theme.palette.background.default,
 }));
 
+
+  console.log(theme.palette)
   return (
     <BizbazContext.Provider value={{
       adverts: adverts,
@@ -156,7 +159,6 @@ export const App = ({ api }: { api: any }) => {
       reviews: reviews,
     }}>
       <ThemeProvider theme={theme}>
-          <CssBaseline />
           <NavBar api={api} toggleTheme={toggleTheme} />
           <MainContainer id="main">
             <Outlet />

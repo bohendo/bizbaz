@@ -131,7 +131,6 @@ export const Advert = ({ api }: { api: any }) => {
     // TODO: create error 404 not found page
     return <div> Advert does not exist </div>
   } else if (advert.body) {
-    console.log(advIntents)
     return (
       <Box sx={{width: "100%", mt: theme.spacing(10)}}>
         <Paper variant="outlined" sx={{ p: 8, m: 8 }}>
