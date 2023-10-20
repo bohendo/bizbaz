@@ -1,4 +1,4 @@
-import React, { ReactComponentElement, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Link , useLocation } from 'react-router-dom';
 
 // Pages
@@ -46,19 +46,19 @@ export const NavBar = ({api, toggleTheme}:{api: any, toggleTheme: () => void}) =
     };
 
     return (<>
-      <AppBar position="fixed" sx={{
+      <AppBar color='primary' position="fixed" sx={{
           display: "flex",
           justifyContent: "stretch",
       }}>
         <Toolbar>
           <IconButton component={Link} to={'/'}>
-            <HomeIcon />
+            <HomeIcon color='secondary' />
           </IconButton>
           <Typography sx={{ flexGrow: 1, ml: theme.spacing(4)}}>
             {location.pathname}
           </Typography>
           <IconButton sx={{mr: 1}} onClick={toggleTheme}>
-            {theme.palette.mode === 'dark' ? <LightIcon /> : <DarkIcon />}
+            {theme.palette.mode === 'dark' ? <LightIcon color='secondary' /> : <DarkIcon color='secondary' />}
           </IconButton>
           <IconButton component={Link} to={`/profile/~${window.ship}`} sx={{mr: 1}}>
             <Sigil config={{...config}}/>

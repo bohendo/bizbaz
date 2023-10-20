@@ -39,7 +39,5 @@ const router = createBrowserRouter([
 ], { basename: "/apps/bizbaz" });
 
 createRoot(document.getElementById('app')!).render(
-  <React.StrictMode>
-    <RouterProvider router={router} />
-  </React.StrictMode>,
+  <RouterProvider router={router} />
 );

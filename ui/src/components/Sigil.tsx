@@ -1,6 +1,8 @@
 import React from 'react';
 import '@urbit/sigil-js'
 
+import { useTheme } from '@mui/material/styles';
+
 interface SigilConfig {
   point?: string;
   size?: number;
@@ -19,16 +21,19 @@ declare global {
   }
 }
 
-const defaultConfig: SigilConfig = {
-  point: '~zod',
-  size: 24,
-  foreground: "#eee",
-  background: "#111",
-  space: 'none',
-  detail: 'default',
-}
-
 export const Sigil = (props: { config: SigilConfig }) => {
+  const theme = useTheme();
+
+  const defaultConfig: SigilConfig = {
+    point: '~zod',
+    size: 24,
+    foreground: "#eee",
+    background: theme.palette.mode === "dark" ?
+      theme.palette.background.paper : theme.palette.primary.main,
+    space: 'none',
+    detail: 'default',
+  }
+
   const {
     point, size, foreground, background, space, detail
   } = { ...defaultConfig, ...props.config };

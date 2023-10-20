@@ -17,14 +17,13 @@ const savedTheme = localStorage.getItem("theme") || "";
 
 export const App = ({ api }: { api: any }) => {
   const [theme, setTheme] = useState(savedTheme === "dark" || savedTheme === "" ? darkTheme : lightTheme);
-  const bizbaz = useContext(BizbazContext)
-  const navigate = useNavigate();
-
   const [adverts, setAdverts] = useState([] as Array<TAdvert>);
   const [votes, setVotes] = useState([] as Array<TVote>);
   const [intents, setIntents] = useState([] as Array<TIntent>);
   const [commits, setCommits] = useState([] as Array<TCommit>);
   const [reviews, setReviews] = useState([] as Array<TReview>);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     (async () => {
@@ -145,9 +144,12 @@ export const App = ({ api }: { api: any }) => {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    backgroundColor: 'primary.dark',
+    height: "100%",
+    backgroundColor: theme.palette.background.default,
 }));
 
+
+  console.log(theme.palette)
   return (
     <BizbazContext.Provider value={{
       adverts: adverts,
@@ -157,7 +159,6 @@ export const App = ({ api }: { api: any }) => {
       reviews: reviews,
     }}>
       <ThemeProvider theme={theme}>
-          <CssBaseline />
           <NavBar api={api} toggleTheme={toggleTheme} />
           <MainContainer id="main">
             <Outlet />
