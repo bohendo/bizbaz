@@ -29,6 +29,7 @@
 ++  on-init  :: runs one time after installing to set up the initial state
   ^-  (quip card _this)
   ~&  >  "%bizbaz initialized successfully."
+  :: TODO: warn user if pals is not installed yet
   =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
   ~&  (weld "subscribing to mutual pals: " (spud (turn ~(tap in pals) |=(pal=ship (scot %p pal)))))
   =/  advsubs  (turn ~(tap in pals) |=(pal=ship (sub-card:advlib pal)))
