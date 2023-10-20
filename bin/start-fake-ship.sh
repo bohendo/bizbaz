@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 name="${1:-zod}"
-root=$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )
+root=$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." >/dev/null 2>&1 && pwd )
 data="$root/data"
 fresh="fresh-$name"
 reset="${2:-"false"}" # or "true" to reset all persistent data to fresh state
