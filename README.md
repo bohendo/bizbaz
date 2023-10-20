@@ -4,13 +4,17 @@
 
 Buy & sell stuff with pals-of-pals
 
-### Live Installation
+## Live Installation
 
 Use the following app link to install bizbaz on the live urbit network:
 
 `<coming soon>`
 
-### Local Installation
+## Usage
+
+
+
+## Local Installation
 
 To experiment with a local copy of bizbaz, start by cloning this repo and `cd`ing into it.
 
@@ -44,54 +48,73 @@ Visit http://localhost:8080 (confirm this link from the startup logs, sometimes 
 
 Follow the same instructions for additional ships (eg `nec` and `bud`) to test out interactions between ships. Don't forget to add these other ships as pals so bizbaz can communicate with them.
 
-### Development
+## Development
 
 Run `just symlink zod` to link the `./desk` dir into `./data/zod/bizbaz` so that you can make changes to `./desk` and then `|commit` without needing to re-copy files over every time you edit a file.
 
 Run `just start-ui` to start a vite development server. It will also install `node_modules` and add a `.env.local` file (ignored by git) to the `ui` subdirectory telling vite to look for an urbit server on port 8080. The vite development server will proxy all requests to the ship except for those powering the interface, allowing you to see live data.
 
-### Deploying
+If you have `nix` installed, run `nix develop` (or `direnv allow` if you're using direnv) then `just code` to start up an editor pre-configured with hoon, bash, and typescript syntax highlights (plus vim-mode).
+
+## Deploying
 
 Note: the dev server runs on port 3000 but, while deploying, we'll be talking directly to the local urbit server (at port 8080 by default).
 
-### One-time per development env: Setting up a development desk
+### Once per development env: Setting up the %globber desk 
 
-- bash: `bash start-fake-ship.sh` to create or launch a fake urbit ship, keep this terminal open & use it to enter all dojo commands
-- dojo: `+code` to generate an access code, visit `http://localhost:8080` and enter this code to login.
-- dojo: `|merge %globber our %base` to create a new globber desk from a fork of the built-in base desk
-- dojo: `|mount %globber` to make our globber desk accessible from the host filesystem at `data/zod/globber` where `data/zod` is the fake urbit's pier.
+We'll use this local %globber desk to create UI globs on our dev computer.
+
+- `me@bizbaz$ just start` (if you don't already have a zod running)
+- `~zod:dojo> |merge %globber our %base` to create a new globber desk from a fork of the built-in base desk
+- `~zod:dojo> |mount %globber` to make our globber desk accessible from the host filesystem
 
 ### Build a deployable glob
 
-- bash: `(cd ui && npm install && npm run build)` to install ui deps & build a prod bundle in `ui/dist` (from a 2nd terminal tab bc first one should still have dojo open)
-- bash: `rsync -avL --delete ui/dist/ data/zod/globber/bizbaz` to copy prod js bundle into the urbit globber desk. Note the trailing slashes, they're important.
-- dojo: `|commit %globber` to import filesystem changes into urbit, you should see new files logged in dojo
-- dojo: `=dir /=garden=` to change to the garden desk, arg to `=dir` (aka `cd`) is a 3-part `beak` (like a `path`) composed of the ship, desk, and revision (`=` for any of these three uses the default value)
-- dojo: `-make-glob %globber /bizbaz` to call the `-make-glob` utility function that the garden desk provides, this util groups files from the bizbaz dir of the globber desk into one file & puts that file into the host filesystem at `data/zod/.urb/put/`. The file name looks like `glob-0v5.fdf99.nph65.qecq3.ncpjn.q13mb.glob` where the characters between `glob-` and `.glob` are a hash of the glob's contents.
+- `me@bizbaz$ just build-ui` to install ui deps & build a prod bundle in `ui/dist`. This helper-command will auto-patch `type="module"` into the generated `index.html` script tags and `rsync` it into the %globber desk under a `bizbaz` sub directory.
+- `~zod:dojo> |commit %globber` you should see a few newly built ui files logged in dojo
+- `~zod:dojo> -landscape!make-glob %globber /bizbaz` this will compile all our files from the bizbaz dir of the globber desk into one glob file & export it to the host filesystem in `data/zod/.urb/put/`. The file name looks like `glob-0v5.fdf99.nph65.qecq3.ncpjn.q13mb.glob` where the characters between `glob-` and `.glob` are a hash of the glob's contents. Note this hash, you'll need it later.
 
-### One-time per production env: setting up a prod desk
+### One-time per production env: setting up the %bizbaz desk 
 
-- dojo: `|merge %bizbaz our %garden` to create new production desk, we need to use garden as the base bc it has necessary libs
-- dojo: `|mount %bizbaz` to make prod desk available for update via the host fs
+Open the dojo of your production server and setup a new %bizbaz desk:
 
-### To deploy glob to urbit ship
+- `~sampel-palnet:dojo> |new-desk %bizbaz` to create the desk we'll use in production
+- `~sampel-palnet:dojo> |mount %bizbaz` to make the prod desk available for modification via the host filesystem
 
-- dev bash: `bash publish.sh data/zod/.urb/put/glob-0v1.hgamp.m7c2c.bomag.81l5r.d71h6.glob $BLOG_URL/ipfs` to upload the glob to ipfs or upload somewhere else like AWS S3
-  - where `$BLOG_URL` can include a username and password eg `https://admin:password@myblog.com`
-  - change the glob name to one from your own `zod/.urb/put` dir
-- dev bash: `vim desk/desk.docket-0`
-  - Both the full URL and the hash of the `glob-http` key should be updated to match the glob we just created
-  - That line should look something like this when you're done: `glob-http+['https://myblog.com/ipfs/Qmabc123' 0v5.fdf99.nph65.qecq3.ncpjn.q13mb]`
-  - Update info & other stuff if needed
-- dev bash: `git commit --all -m "update deployment"` to save the updated deployment info
-- dev bash: `ssh://blog:/home/admin/bizbaz/` or similar to push updated deployment info to remote server
-- prod bash: `cp -f desk/* data/zod/bizbaz/` to copy our updated docket into the prod desk
-- prod dojo: `|commit %bizbaz` to load fs updates into urbit
-- prod dojo: `|install our %bizbaz` to activate this desk as an app (only needed once, it'll auto update next time)
-- browser: visit your homepage at http://localhost:8080 and explore your newly installed app
+You'll need to get this bizbaz code onto the same computer you use to host your urbit. One nice way to do this is to setup a remote git repo and push.
 
-[Other docs](https://developers.urbit.org/guides/core/app-school-full-stack/8-desk) to check out if the above doesn't work..
+```
+ssh myserver 'mkdir bizbaz && cd bizbaz && git init`
+git remote add myserver ssh://myserver:/home/admin/bizbaz/
+git push myserver main
+ssh myserver 'cd bizbaz && git checkout --force main' # necessary bc just pushing doesn't update the working copy of the dir
+```
 
-[react]: https://reactjs.org/
-[tailwind css]: https://tailwindcss.com/
-[vite]: https://vitejs.dev/
+### To deploy new glob to production
+
+First, upload our glob to some internet-accessible storage like AWS S3 or ipfs. If your env includes a `$BLOG_URL` env var which points to a server that supports [POST requests to an ipfs node](https://github.com/bohendo/bloggit/blob/main/modules/server/src/ipfs/index.ts#L56-L68), you can run `just publish` and that will retrieve the newest glob file from `data/zod/.urb/put` and upload it to IPFS. Regardless of where you host it, note the url from which your glob will be accessible.
+
+Then, edit the `desk/desk.docket-o` file. If, for example, your glob file is `glob-0v6.mj5re.5lvhd.qqkiq.5bplt.p35u4.glob` and it can be fetched from the url `https://bohendo.com/ipfs/QmWV7peZZPFH2rpaxeR7c2bAVNSkjniRQSidUJs8DSs18S`, then edit the `glob-http` entry of the docket file so it reads:
+```
+    glob-http+['https://bohendo.com/ipfs/QmWV7peZZPFH2rpaxeR7c2bAVNSkjniRQSidUJs8DSs18S' 0v6.mj5re.5lvhd.qqkiq.5bplt.p35u4]
+```
+Make sure you don't lose any single quotes `'` or brackets `]` while copy/pasting the new data in.
+
+Commit your changes once you're all set and push the new code to production:
+
+```
+git commit -m "prep for prod"
+git push myserver main
+ssh myserver 'cd bizbaz && git checkout --force main'
+```
+
+Next, we'll `ssh myserver` and finish up, assuming you have an urbit pier at `~/sampel-palnet`
+
+- `admin@myserver$ rm -rf sampel-palnet/bizbaz/*` remove old copy of the bizbaz code, if present
+- `admin@myserver$ cp -f bizbaz/desk/* sampel-palnet/bizbaz/` copy our updated code into our urbit ship
+- `~sampel-palnet:dojo> |commit %bizbaz`
+- `~sampel-palnet:dojo> |install our %bizbaz`
+
+Done. Now, visit your server's urbit endpoint and explore your newly installed %bizbaz
+
+Check out these [other docs](https://developers.urbit.org/guides/core/app-school-full-stack/8-desk) if the above doesn't work..

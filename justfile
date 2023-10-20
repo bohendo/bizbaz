@@ -1,6 +1,6 @@
 
-start:
-  bash start-fake-ship.sh
+start ship="zod":
+  bash bin/start-fake-ship.sh {{ship}}
 
 install:
   cd ui && npm install
@@ -16,6 +16,10 @@ build-ui: install
   cp ui/dist/index.html ui/dist/index.html.backup
   sed 's/<script src=/<script type="module" src=/' ui/dist/index.html.backup > ui/dist/index.html
   rm ui/dist/index.html.backup
+  if [[ -d data/zod/globber ]]; then rsync -avL --delete ui/dist/ data/zod/globber/bizbaz; fi
+
+publish:
+  bash bin/ipfs-upload.sh
 
 sync-app ship: 
   rm -rf data/{{ship}}/bizbaz

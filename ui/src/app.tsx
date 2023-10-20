@@ -28,7 +28,7 @@ export const App = ({ api }: { api: any }) => {
 
   useEffect(() => {
     (async () => {
-      console.log(`Subscribing to ALL bizbaz paths`)
+      console.log(`Subscribing to all bizbaz paths`)
       api.subscribe( { app: "bizbaz", path: '/json/adverts', event: updateAdverts } )
       api.subscribe( { app: "bizbaz", path: '/json/votes', event: updateVotes } )
       api.subscribe( { app: "bizbaz", path: '/json/reviews', event: updateReviews } )
