@@ -6,9 +6,7 @@ Buy & sell stuff with pals-of-pals
 
 ## Live Installation
 
-Use the following app link to install bizbaz on the live urbit network:
-
-`<coming soon>`
+Go to `apps/landscape/search/~dibmet-narren/apps` on your urbit ship and install the `bizbaz` app.
 
 ## Usage
 
