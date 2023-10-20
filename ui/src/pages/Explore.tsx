@@ -42,16 +42,20 @@ export const Explore = () => {
     space:'none',
   }
   return (
-    <Box sx={{width: "100%", mt: theme.spacing(10)}}>
+    <Box sx={{width: "100%", mt: theme.spacing(10), minHeight: '100vh' }}>
       <Typography variant="h2">
         Adverts
       </Typography>
       <Masonry columns={3} spacing={2}>
-        {adverts.map((advert: TAdvert, index: number) => {
+        {adverts.length > 0 ? adverts.map((advert: TAdvert, index: number) => {
           return (
             <AdvertCard key={index} advert={advert}/>
           )
-        })}
+        }): 
+          <Typography>
+            No Ads posted or synced to the ship 
+          </Typography>
+        }
       </Masonry>
     </Box>
   )

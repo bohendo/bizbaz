@@ -132,7 +132,7 @@ export const Advert = ({ api }: { api: any }) => {
     return <div> Advert does not exist </div>
   } else if (advert.body) {
     return (
-      <Box sx={{width: "100%", mt: theme.spacing(10)}}>
+      <Box sx={{width: "100%", mt: theme.spacing(10), minHeight: '100vh' }}>
         <Paper variant="outlined" sx={{ p: 8, m: 8 }}>
           <Grid container direction="column" spacing={2}>
             <Grid item xs>

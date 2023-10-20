@@ -28,8 +28,7 @@ export const Sigil = (props: { config: SigilConfig }) => {
     point: '~zod',
     size: 24,
     foreground: "#eee",
-    background: theme.palette.mode === "dark" ?
-      theme.palette.background.paper : theme.palette.primary.main,
+    background: theme.palette.primary.main,
     space: 'none',
     detail: 'default',
   }

@@ -144,8 +144,7 @@ export const App = ({ api }: { api: any }) => {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    height: "100%",
-    backgroundColor: theme.palette.background.default,
+    minWidth: '100vh',
 }));
 
 

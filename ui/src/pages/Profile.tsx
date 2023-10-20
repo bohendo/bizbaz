@@ -24,7 +24,7 @@ export const Profile = ({ api }: { api: any }) => {
   const { adverts, votes, intents, commits, reviews } = bizbaz;
 
   return (
-    <Box sx={{width: "100%", mt: theme.spacing(10)}}>
+    <Box sx={{width: "100%", mt: theme.spacing(10), minHeight: '100vh' }}>
       <Typography variant="h2" sx={{ mx: 2, my: 6 }}>
         {ship == myShip ? "My Profile" : `Profile of ${ship}`}
       </Typography>
