@@ -5,7 +5,10 @@ start:
 install:
   cd ui && npm install
 
-start-ui: install
+init-ui: install
+  echo 'VITE_SHIP_URL=http://127.0.0.1:8080' > ui/.env.local
+
+start-ui: init-ui
   cd ui && npm run dev
 
 build-ui: install
@@ -15,8 +18,8 @@ build-ui: install
   rm ui/dist/index.html.backup
 
 sync-app ship: 
-  rm -rf {{ship}}/bizbaz
-  cp -rf desk {{ship}}/bizbaz
+  rm -rf data/{{ship}}/bizbaz
+  cp -rf desk data/{{ship}}/bizbaz
 
 sync-lib ship dir: 
   rm -rf data/{{ship}}/{{dir}}

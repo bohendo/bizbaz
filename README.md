@@ -2,7 +2,7 @@
 
 **The Bizarre Bazaar**
 
-For buying & selling goods & services with your pals-of-pals
+Buy & sell stuff with pals-of-pals
 
 ### Live Installation
 
@@ -12,20 +12,47 @@ Use the following app link to install bizbaz on the live urbit network:
 
 ### Local Installation
 
-To experiment with a local copy of bizbaz, start by cloning this repo and `cd`ing into it. Then, run:
-- `me@bizbaz$ bash start-fake-ship.sh zod # or 'just start'`
+To experiment with a local copy of bizbaz, start by cloning this repo and `cd`ing into it.
+
+Make sure you have [`just`](https://github.com/casey/just) installed or check the `justfile` and run the relevant commands manually.
+
+Also, make sure you have either an `urbit` runtime ([`vere`](https://github.com/urbit/vere)) or `docker` installed if you want to run this app locally.
+
+You can start up a fresh zod ship by running urbit directly, but this repo includes a start script with a few convenience features:
+- `me@bizbaz$ just start` (this will take a few mins the first time you do it)
+- `~zod:dojo> |exit` or hit `ctrl-d` (the start-fake-ship script will preserve a copy of the freshly booted ship so you can quickly reset if something breaks)
+- `me@bizbaz$ just start` (this will use `sudo` to reset permissions and copy over the fresh ship's data, it should boot up instantly)
+
+Create and mount new desks for both bizbaz and pals:
+- `~zod:dojo> |new-desk %pals`
+- `~zod:dojo> |mount %pals`
 - `~zod:dojo> |new-desk %bizbaz`
 - `~zod:dojo> |mount %bizbaz`
-- Open 2nd terminal to run shell commands while the fake ship stays up in the 1st
-- `me@bizbaz$ cp -rf desk zod/bizbaz # or 'just sync-app zod'`
+
+Open a 2nd terminal to run extra shell commands while the fake ship stays up in the 1st. Then, copy our files into your zod desks:
+- `me@bizbaz$ just sync-lib zod pals`
+- `me@bizbaz$ just sync-app zod`
+
+Commit and install both pals and bizbaz
+- `~zod:dojo> |commit %pals`
+- `~zod:dojo> |install our %pals`
 - `~zod:dojo> |commit %bizbaz`
 - `~zod:dojo> |install our %bizbaz`
+- `~zod:dojo> +code`
 
-To start a dev UI, you first need to add a `.env.local` file to the `ui` directory. This file will not be committed. Adding `VITE_SHIP_URL={URL}` where **{URL}** is the URL of the ship you would like to point to, will allow you to run `npm run dev`. This will proxy all requests to the ship except for those powering the interface, allowing you to see live data.
+Visit http://localhost:8080 (confirm this link from the startup logs, sometimes urbit on mac uses an unusual port by default), login with the code printed to the console, and click the bizbaz tile to get started.
+
+Follow the same instructions for additional ships (eg `nec` and `bud`) to test out interactions between ships. Don't forget to add these other ships as pals so bizbaz can communicate with them.
+
+### Development
+
+Run `just symlink zod` to link the `./desk` dir into `./data/zod/bizbaz` so that you can make changes to `./desk` and then `|commit` without needing to re-copy files over every time you edit a file.
+
+Run `just start-ui` to start a vite development server. It will also install `node_modules` and add a `.env.local` file (ignored by git) to the `ui` subdirectory telling vite to look for an urbit server on port 8080. The vite development server will proxy all requests to the ship except for those powering the interface, allowing you to see live data.
 
 ### Deploying
 
-Note: the dev server runs on port 3000 but, while deploying, we'll be talking directly to the urbit server at port 8080.
+Note: the dev server runs on port 3000 but, while deploying, we'll be talking directly to the local urbit server (at port 8080 by default).
 
 ### One-time per development env: Setting up a development desk
 
