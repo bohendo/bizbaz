@@ -24,6 +24,7 @@ export const App = ({ api }: { api: any }) => {
   const [reviews, setReviews] = useState([] as Array<TReview>);
 
   const navigate = useNavigate();
+  const myShip = `~${window.ship}`
 
   useEffect(() => {
     (async () => {
@@ -101,11 +102,16 @@ export const App = ({ api }: { api: any }) => {
   const updateReviews = (upd: any) => {
     console.log(`Got %${Object.keys(upd)} reviews update:`, upd)
     if (!!upd.gather) {
-      setIntents(upd.gather.intents)
+      setIntents(upd.gather.intents.filter(
+        (i: TIntent) => i.client.ship === myShip || i.body.vendor.ship === myShip
+      ));
       setCommits(upd.gather.commits)
       setReviews(upd.gather.reviews)
     } else if (!!upd.intent) {
-      setIntents((oldIntents) => [upd.intent, ...oldIntents])
+      let newIntent = upd.intent as TIntent;
+      if (newIntent.client.ship === myShip || newIntent.body.vendor.ship === myShip) {
+        setIntents((oldIntents) => [newIntent, ...oldIntents])
+      }
     } else if (!!upd.commit) {
       setCommits((oldCommits) => [upd.commit, ...oldCommits])
     } else if (!!upd.review) {

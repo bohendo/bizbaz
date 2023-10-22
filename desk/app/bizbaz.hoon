@@ -454,9 +454,8 @@
           =/  is-pal  ?~((find ~[ship.client.new-intent] ~(tap in pals)) %.n %.y)
           ?:  is-pal
             ~&  "new intent by pal doesn't concern us, re-broadcasting to our pals"
-            :_  this
-            :~  [%give %fact ~[/noun/intents] %review-update !>(`update:review`[%intent new-intent])]
-            ==
+            :_  this(intents [new-intent intents])
+            (pub-card:revlib [%intent new-intent])
           ~&  "new intent by non-pal doesn't concern us, ignoring it"
           [~ this]
         ~&  (weld "%intent received from " (scow %p src.bowl))
