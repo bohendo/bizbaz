@@ -17,7 +17,7 @@ then
 elif [[ -n "$(command -v docker)" ]]
 then
   image_name="tloncorp/vere"
-  image_version="v2.4"
+  image_version="v2.12-53c50a9"
   image="$image_name:$image_version"
   if ! grep -q "$image_version" <<<"$(docker image ls | grep "$image_name")"
   then docker image pull "$image"
