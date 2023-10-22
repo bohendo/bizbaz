@@ -29,12 +29,6 @@ export const Explore = () => {
   const bizbaz = useContext(BizbazContext)
   const { adverts } = bizbaz
 
-  if(adverts.length == 0) return (
-    <Typography>
-      Loading
-    </Typography>
-  )
-
   const config = {
     point: '~talsyx-talsud', // or 'zod'
     size: 24,
@@ -46,17 +40,21 @@ export const Explore = () => {
       <Typography variant="h2">
         Adverts
       </Typography>
-      <Masonry columns={3} spacing={2}>
-        {adverts.length > 0 ? adverts.map((advert: TAdvert, index: number) => {
-          return (
-            <AdvertCard key={index} advert={advert}/>
-          )
-        }): 
+      {adverts.length > 0 ?
+        <Masonry columns={3} spacing={2}>
+          {adverts.map((advert: TAdvert, index: number) => {
+            return (
+              <AdvertCard key={index} advert={advert}/>
+            )
+          })}
+        </Masonry> :
           <Typography>
-            No Ads posted or synced to the ship 
+            No ads posted or synced to your ship.
+            <br />
+            <br />
+            Click button in the bottom right corner to post a new ad
           </Typography>
-        }
-      </Masonry>
+      }
     </Box>
   )
 }

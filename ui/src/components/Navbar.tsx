@@ -27,23 +27,11 @@ const config = {
  space:'none',
 }
 
-function a11yProps(index: number) {
-  return {
-    id: `tab-${index}`,
-    'aria-controls': `tabpanel-${index}`,
-  };
-}
-
 export const NavBar = ({api, toggleTheme}:{api: any, toggleTheme: () => void}) => {
-    const [value, setValue] = useState(0);
     const [openNewAdvertDialog, setOpenNewAdvertDialog] = useState(false);
     const location = useLocation();
     
     const theme = useTheme();
-
-    const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-        setValue(newValue);
-    };
 
     return (<>
       <AppBar color='primary' position="fixed" sx={{
