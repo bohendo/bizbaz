@@ -467,7 +467,7 @@
         ~&  "Got a new commit from our subscription"
         =/  new-commit  commit.upd
         =/  cmt-index  ((get-by-hash:cmtlib commits) hash.new-commit)
-        ?~  cmt-index
+        ?.  ?~(cmt-index %.y %.n)
           ~&  "Ignoring duplicate commit"
           [~ this]
         ?.  ((validate:cmtlib bowl) new-commit)

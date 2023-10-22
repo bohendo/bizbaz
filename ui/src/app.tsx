@@ -28,7 +28,6 @@ export const App = ({ api }: { api: any }) => {
 
   useEffect(() => {
     (async () => {
-      console.log(`Subscribing to all bizbaz paths`)
       api.subscribe( { app: "bizbaz", path: '/json/adverts', event: updateAdverts } )
       api.subscribe( { app: "bizbaz", path: '/json/votes', event: updateVotes } )
       api.subscribe( { app: "bizbaz", path: '/json/reviews', event: updateReviews } )
@@ -36,11 +35,9 @@ export const App = ({ api }: { api: any }) => {
   }, []);
 
   const updateAdverts = ( upd: any) => {
-    console.log(`Got ${Object.keys(upd)} advert update:`, upd)
     if (upd.gather) {
       setAdverts(upd.gather.adverts || [] as Array<TAdvert>)
     } else if (upd.create) {
-      console.log(`Adding newly created advert`)
       setAdverts((oldAdverts: Array<TAdvert>) => [upd.create.advert, ...oldAdverts])
     } else if (upd.update) {
       const newAdvert = upd.update.new
@@ -65,14 +62,12 @@ export const App = ({ api }: { api: any }) => {
   }
 
   const updateVotes = (upd: any) => {
-    console.log(`Got %${Object.keys(upd)} vote update:`, upd)
     if (upd.gather) {
       setVotes(upd.gather.votes)
     } else if (upd.vote) {
       const newVote = upd.vote
       setVotes((oldVotes: TVote[]): TVote[] => {
         if (oldVotes.find(v => v.hash === newVote.hash) !== undefined) {
-          console.log(`Ignoring duplicate vote w hash ${newVote.hash}`)
           return oldVotes
         }
         const recast = oldVotes!.findIndex(v =>
@@ -80,13 +75,10 @@ export const App = ({ api }: { api: any }) => {
         )
         if (recast === -1) {
           if (newVote.body.choice === "un") {
-            console.log(`Ignoring new unvote`)
             return oldVotes
           }
-          console.log(`Adding new vote`)
           return [...oldVotes!, newVote]
         } else {
-          console.log(`This is a recast vote, updating the previous vote to ${newVote.body.choice}`)
           if (newVote.body.choice === "un") {
             return [...oldVotes!.slice(0, recast), ...oldVotes!.slice(recast + 1)]
           } else {
@@ -100,7 +92,6 @@ export const App = ({ api }: { api: any }) => {
   }
 
   const updateReviews = (upd: any) => {
-    console.log(`Got %${Object.keys(upd)} reviews update:`, upd)
     if (!!upd.gather) {
       setIntents(upd.gather.intents.filter(
         (i: TIntent) => i.client.ship === myShip || i.body.vendor.ship === myShip
@@ -153,8 +144,8 @@ export const App = ({ api }: { api: any }) => {
     minWidth: '100vh',
 }));
 
+console.log(intents)
 
-  console.log(theme.palette)
   return (
     <BizbazContext.Provider value={{
       adverts: adverts,
