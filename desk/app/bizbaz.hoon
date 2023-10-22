@@ -454,8 +454,9 @@
           =/  is-pal  ?~((find ~[ship.client.new-intent] ~(tap in pals)) %.n %.y)
           ?:  is-pal
             ~&  "new intent by pal doesn't concern us, re-broadcasting to our pals"
-            :_  this(intents [new-intent intents])
-            (pub-card:revlib [%intent new-intent])
+            :_  this
+            :~  [%give %fact ~[/noun/reviews] %review-update !>(`update:review`[%intent new-intent])]
+            ==
           ~&  "new intent by non-pal doesn't concern us, ignoring it"
           [~ this]
         ~&  (weld "%intent received from " (scow %p src.bowl))
@@ -479,7 +480,7 @@
           ?:  is-pal
             ~&  "new commit by pal doesn't concern us, re-broadcasting to our pals"
             :_  this
-            :~  [%give %fact ~[/noun/commits] %review-update !>(`update:review`[%commit new-commit])]
+            :~  [%give %fact ~[/noun/reviews] %review-update !>(`update:review`[%commit new-commit])]
             ==
           ~&  "new commit by non-pal doesn't concern us, ignoring it"
           [~ this]
