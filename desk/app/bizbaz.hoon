@@ -459,7 +459,9 @@
           ~&  "new intent by non-pal doesn't concern us, ignoring it"
           [~ this]
         ~&  (weld "%intent received from " (scow %p src.bowl))
-        [~ this(intents [new-intent intents])]
+        :_  this(intents [new-intent intents])
+        :~  [%give %fact ~[/json/reviews] %review-update !>(upd)]
+        ==
       ::
           %commit
         ~&  "Got a new commit from our subscription"
@@ -482,7 +484,9 @@
           ~&  "new commit by non-pal doesn't concern us, ignoring it"
           [~ this]
         ~&  (weld "%commit received from " (scow %p src.bowl))
-        [~ this(commits [new-commit commits])]
+        :_  this(commits [new-commit commits])
+        :~  [%give %fact ~[/json/reviews] %review-update !>(upd)]
+        ==
       ::
           %review
         ~&  "Got a new review from our subscription"
