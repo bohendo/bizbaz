@@ -117,7 +117,7 @@ export const Advert = ({ api }: { api: any }) => {
         app: 'bizbaz',
         mark: 'review-action',
         json: { 
-          'commit': { intent }
+          'commit': { intent: intent.hash }
         }
       })
   }
