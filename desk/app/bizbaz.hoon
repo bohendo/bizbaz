@@ -52,11 +52,11 @@
     =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
     ~&  (weld "Syncing data w mutual pals: " (spud (turn ~(tap in pals) |=(pal=ship (scot %p pal)))))
     ::  only share data from our direct pals
-    =/  paladvs  (skim adverts |=(adv=advert:advert (~(has in pals) ship.vendor.adv)))
-    =/  palvots  (skim votes |=(vote=vote:vote (~(has in pals) ship.voter.vote)))
-    =/  palints  (skim intents |=(int=intent:review (~(has in pals) ship.client.int)))
-    =/  palcmts  (skim commits |=(cmt=commit:review (~(has in pals) ship.vendor.cmt)))
-    =/  palrevs  (skim reviews |=(rev=review:review (~(has in pals) ship.reviewer.rev)))
+    =/  paladvs  (skim adverts |=(adv=advert:advert |((~(has in pals) ship.vendor.adv) =(our.bowl ship.vendor.adv))))
+    =/  palvots  (skim votes |=(vote=vote:vote |((~(has in pals) ship.voter.vote) =(our.bowl ship.voter.vote))))
+    =/  palints  (skim intents |=(int=intent:review |((~(has in pals) ship.client.int) =(our.bowl ship.client.int))))
+    =/  palcmts  (skim commits |=(cmt=commit:review |((~(has in pals) ship.vendor.cmt) =(our.bowl ship.vendor.cmt))))
+    =/  palrevs  (skim reviews |=(rev=review:review |((~(has in pals) ship.reviewer.rev) =(our.bowl ship.reviewer.rev))))
     ::  gather list of subscription cards
     =/  advsubs  `(list card)`(turn ~(tap in pals) |=(pal=ship (sub-card:advlib pal)))
     =/  votsubs  `(list card)`(turn ~(tap in pals) |=(pal=ship (sub-card:votlib pal)))
