@@ -144,8 +144,6 @@ export const App = ({ api }: { api: any }) => {
     minWidth: '100vh',
 }));
 
-console.log(intents)
-
   return (
     <BizbazContext.Provider value={{
       adverts: adverts,

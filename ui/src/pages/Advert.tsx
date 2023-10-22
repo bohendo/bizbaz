@@ -45,7 +45,6 @@ export const Advert = ({ api }: { api: any }) => {
   const bizbaz = useContext(BizbazContext);
   const theme = useTheme();
   const { hash } = useParams();
-  const navigate = useNavigate();
 
   const [reviewCommit, setReviewCommit] = useState<TCommit | undefined>(undefined);
   const [openNewAdvertDialog, setOpenNewAdvertDialog] = useState(false);
@@ -67,7 +66,8 @@ export const Advert = ({ api }: { api: any }) => {
   const advReviews = reviews.filter(r => r.commit.intent.advert === hash);
   const vndReviews = reviews
     .filter(r => r.commit.vendor.ship === vendor)
-    .filter(r => !advReviews.some(ar => ar.hash === r.hash));
+    .filter(r => !advReviews.some(ar => ar.hash === r.hash))
+    .filter(r => r.reviewer.ship !== vendor);
 
   const vote = (choice: string) => {
     console.log(choice);
@@ -228,23 +228,33 @@ export const Advert = ({ api }: { api: any }) => {
         }
 
         {advReviews.length > 0 ?
-          <List sx={{px: 0}}>
+          <Grid container direction="row" spacing={2} sx={{mt: 3}}>
+            <Grid item xs={12}>
+              <Typography variant='h4'>
+                Reviews on this advert
+              </Typography>
+            </Grid>
             {advReviews.map((review: TReview, i) => (
-              <ListItem key={i} sx={{px: 0}}>
+              <Grid item xs={6} key={i} >
                 <ReviewCard review={review} api={api} />
-              </ListItem>
+              </Grid>
             ))}
-          </List> : null
+          </Grid> : null
         }
 
         {vndReviews.length > 0 ?
-          <List sx={{px: 0}}>
-            {vndReviews.map((review: TReview, i) => (
-              <ListItem key={i} sx={{px: 0}}>
-                <ReviewCard review={review} api={api} />
-              </ListItem>
-            ))}
-          </List> : null
+          <>
+            <Typography variant='h4'>
+              Past reviews for {vendor}
+            </Typography>
+            <List sx={{px: 0}}>
+              {vndReviews.map((review: TReview, i) => (
+                <ListItem key={i} sx={{px: 0}}>
+                  <ReviewCard review={review} api={api} />
+                </ListItem>
+              ))}
+            </List>
+          </> : null
         }
 
         {advert.vendor.ship === ourShip ? 
