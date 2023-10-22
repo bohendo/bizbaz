@@ -118,18 +118,18 @@ export const App = ({ api }: { api: any }) => {
       });
     } else if (!!upd.review) {
       setReviews((oldReviews) => [upd.review, ...oldReviews])
-      let oldIndex = commits.findIndex(c => c.hash === upd.review.commit.hash)
-      if (oldIndex !== -1) {
-        console.log(`Removing old commit w hash=${upd.review.commit.hash} and index=${oldIndex} from list`)
-        setCommits(oldCommits => [
-          ...oldCommits!.slice(0, oldIndex),
-          ...oldCommits!.slice(oldIndex + 1)
-        ])
-      }
+      setCommits((oldCommits) => {
+        if (!oldCommits) return []
+        let oldIndex = oldCommits!.findIndex(i => i.hash === upd.review.commit.hash)
+        if (oldIndex === -1) {
+          return oldCommits
+        }
+        return [...oldCommits!.slice(0, oldIndex), ...oldCommits!.slice(oldIndex + 1)]
+      });
     } else if (!!upd.update) {
       setReviews((oldReviews) => {
-        const oldRev = upd.oldRev
-        const newRev = upd.newRev
+        const oldRev = upd.update.old;
+        const newRev = upd.update.new;
         const oldIdx = oldReviews.findIndex(r => r.hash == oldRev)
         if (oldIdx === -1) {
           console.log(`Uhh, no existing review matches this update.. Adding it as if it were a new review`)

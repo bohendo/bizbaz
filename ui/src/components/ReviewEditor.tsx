@@ -46,17 +46,21 @@ export const ReviewEditor = ({
   }
 
   const postReview = () => {
-    console.log(`Posting new review:`, newReview);
+    if (!commit) return
+    const isUpdate = !!oldReview
+    console.log(`Posting ${isUpdate ? "updated" : "new"} review:`, newReview);
+    const body = {
+      commit: commit?.hash,
+      score: newReview.score,
+      why: newReview.why,
+    } as any;
+    if (isUpdate) body.old = oldReview.hash
+    const json = isUpdate ? { 'update': body } : { 'review': body }
+    console.log(`Review action json:`, json);
     api.poke({
       app: 'bizbaz',
       mark: 'review-action',
-      json: { 
-        'review': { 
-          commit: commit.hash,
-          score: newReview.score,
-          why: newReview.why,
-        }
-      }
+      json,
     })
     handleCloseDialog()
   }

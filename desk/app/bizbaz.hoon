@@ -485,7 +485,10 @@
           ~&  "new commit by non-pal doesn't concern us, ignoring it"
           [~ this]
         ~&  (weld "%commit received from " (scow %p src.bowl))
-        :_  this(commits [new-commit commits])
+        =/  int-index  ((get-by-hash:intlib intents) intent.body.new-commit)
+        =/  new-intents  (oust [(need int-index) 1] intents)  :: remove old intent
+        =/  new-commits  [new-commit commits]  :: add new commit
+        :_  this(intents new-intents, commits new-commits)
         :~  [%give %fact ~[/json/reviews] %review-update !>(upd)]
         ==
       ::

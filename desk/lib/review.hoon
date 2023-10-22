@@ -176,6 +176,7 @@
     ++  parse-action
         |=  jon=json
         ^-  action:revsur
+        ~&  jon
         %.  jon
         %-  of
         :~  [%intent parse-advert:from-json:intlib]
@@ -191,18 +192,9 @@
             why+so
         ==
     ::
-    ++  parse-review-body
-        %-  ot
-        :~  commit+(se %uv)
-            reviewee+(se %p)
-            score+ni
-            why+so
-            when+du
-        ==
-    ::
     ++  parse-update
         %-  ot
-        :~  hash+(se %uv)
+        :~  old+(se %uv)
             commit+(se %uv)
             score+ni
             why+so
