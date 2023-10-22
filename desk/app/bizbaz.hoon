@@ -493,7 +493,7 @@
         ~&  "Got a new review from our subscription"
         =/  new-review  review.upd
         =/  rev-index  ((get-by-hash:revlib reviews) hash.new-review)
-        ?~  rev-index
+        ?.  ?~(rev-index %.y %.n)
           ~&  "Ignoring duplicate review"
           [~ this]
         ?.  ((validate:revlib bowl) new-review)
