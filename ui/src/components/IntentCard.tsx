@@ -30,7 +30,7 @@ export const IntentCard = ({intent, doCommit}: {
   const client = intent ? intent?.client?.ship : '...'
   const advert = intent ? intent?.body?.advert : '...'
   const when = intent ? intent?.body?.when : 0
-  const isVendor = myShip === vendor
+  const isVendor = myShip === vendor;
   return (
     <Card variant='outlined' sx={{ p: 2, mx: 8, my: 2 }}>
 
