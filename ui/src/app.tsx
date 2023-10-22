@@ -35,6 +35,7 @@ export const App = ({ api }: { api: any }) => {
   }, []);
 
   const updateAdverts = ( upd: any) => {
+    console.log(`Got ${Object.keys(upd)} advert update:`, upd)
     if (upd.gather) {
       setAdverts(upd.gather.adverts || [] as Array<TAdvert>)
     } else if (upd.create) {
@@ -62,6 +63,7 @@ export const App = ({ api }: { api: any }) => {
   }
 
   const updateVotes = (upd: any) => {
+    console.log(`Got ${Object.keys(upd)} vote update:`, upd)
     if (upd.gather) {
       setVotes(upd.gather.votes)
     } else if (upd.vote) {
@@ -92,6 +94,7 @@ export const App = ({ api }: { api: any }) => {
   }
 
   const updateReviews = (upd: any) => {
+    console.log(`Got ${Object.keys(upd)} review update:`, upd)
     if (!!upd.gather) {
       setIntents(upd.gather.intents.filter(
         (i: TIntent) => i.client.ship === myShip || i.body.vendor.ship === myShip
@@ -105,8 +108,24 @@ export const App = ({ api }: { api: any }) => {
       }
     } else if (!!upd.commit) {
       setCommits((oldCommits) => [upd.commit, ...oldCommits])
+      setIntents((oldIntents) => {
+        if (!oldIntents) return []
+        let oldIndex = oldIntents!.findIndex(i => i.hash === upd.commit.body.intent)
+        if (oldIndex === -1) {
+          return oldIntents
+        }
+        return [...oldIntents!.slice(0, oldIndex), ...oldIntents!.slice(oldIndex + 1)]
+      });
     } else if (!!upd.review) {
       setReviews((oldReviews) => [upd.review, ...oldReviews])
+      let oldIndex = commits.findIndex(c => c.hash === upd.review.commit.hash)
+      if (oldIndex !== -1) {
+        console.log(`Removing old commit w hash=${upd.review.commit.hash} and index=${oldIndex} from list`)
+        setCommits(oldCommits => [
+          ...oldCommits!.slice(0, oldIndex),
+          ...oldCommits!.slice(oldIndex + 1)
+        ])
+      }
     } else if (!!upd.update) {
       setReviews((oldReviews) => {
         const oldRev = upd.oldRev
@@ -122,6 +141,7 @@ export const App = ({ api }: { api: any }) => {
           ...oldReviews.slice(oldIdx + 1)
         ]
       })
+
     } else {
       console.log("Unknown review updates")
     }

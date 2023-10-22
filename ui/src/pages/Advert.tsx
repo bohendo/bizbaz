@@ -112,7 +112,7 @@ export const Advert = ({ api }: { api: any }) => {
           console.log(`No intent exists to commit to`)
           return
       }
-      console.log(`Committing to intent ${intent}`)
+      console.log(`Committing to intent`, intent)
       api.poke({
         app: 'bizbaz',
         mark: 'review-action',
