@@ -14,9 +14,10 @@ import Fab from '@mui/material/Fab';
 
 // Icons
 import AddIcon from '@mui/icons-material/Add';
+import DarkIcon from '@mui/icons-material/Brightness4';
 import HomeIcon from '@mui/icons-material/Home';
 import LightIcon from '@mui/icons-material/BrightnessHigh';
-import DarkIcon from '@mui/icons-material/Brightness4';
+import SyncIcon from '@mui/icons-material/Sync';
 
 import { Sigil } from './Sigil'
 
@@ -33,6 +34,17 @@ export const NavBar = ({api, toggleTheme}:{api: any, toggleTheme: () => void}) =
     
     const theme = useTheme();
 
+    const handleSync = () => {
+      console.log("Syncing");
+      api.poke({
+        app: 'bizbaz',
+        mark: 'sync',
+        json: {
+          sync: 1
+        }
+      });
+    };
+
     return (<>
       <AppBar color='primary' position="fixed" sx={{
           display: "flex",
@@ -45,6 +57,9 @@ export const NavBar = ({api, toggleTheme}:{api: any, toggleTheme: () => void}) =
           <Typography sx={{ flexGrow: 1, ml: theme.spacing(4)}}>
             {location.pathname}
           </Typography>
+          <IconButton sx={{mr: 1}} onClick={handleSync}>
+            <SyncIcon />
+          </IconButton>
           <IconButton sx={{mr: 1}} onClick={toggleTheme}>
             {theme.palette.mode === 'dark' ? <LightIcon color='secondary' /> : <DarkIcon color='secondary' />}
           </IconButton>
