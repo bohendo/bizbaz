@@ -120,7 +120,10 @@
       =/  new-votes  ((upsert-vote:votlib votes) new-vote)
       ?:  ?&(=(ship.voter.new-vote src.bowl) =(choice.body.new-vote %down))
           :_  this(votes new-votes, adverts (oust [(need adv-index) 1] adverts))
-          (pub-card:votlib `update:vote`[%vote new-vote])
+          :~  [%give %fact ~[/json/adverts] %advert-update !>(`update:advert`[%delete advert.req.act])]
+              [%give %fact ~[/json/votes] %vote-update !>(`update:vote`[%vote new-vote])]
+              [%give %fact ~[/noun/votes] %vote-update !>(`update:vote`[%vote new-vote])]
+          ==
       :_  this(votes new-votes)
       (pub-card:votlib `update:vote`[%vote new-vote])
     == 

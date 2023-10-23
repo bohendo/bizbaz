@@ -173,10 +173,10 @@ export const App = ({ api }: { api: any }) => {
       reviews: reviews,
     }}>
       <ThemeProvider theme={theme}>
-          <NavBar api={api} toggleTheme={toggleTheme} />
-          <MainContainer id="main">
-            <Outlet />
-          </MainContainer>
+        <NavBar api={api} toggleTheme={toggleTheme} />
+        <MainContainer id="main">
+          <Outlet />
+        </MainContainer>
       </ThemeProvider>
     </BizbazContext.Provider>
   );
