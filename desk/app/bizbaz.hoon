@@ -355,9 +355,7 @@
         ?:  is-pal
           ~&  "advert was deleted by our pal, re-broadcasting to our pals"
           :_  this(adverts (oust [(need index) 1] adverts))
-          :~  [%give %fact ~[/json/adverts] %advert-update !>(`update:advert`[%delete hash])]
-              [%give %fact ~[/noun/adverts] %advert-update !>(`update:advert`[%delete hash])]
-          ==
+          (pub-card:advlib `update:advert`[%delete hash])
         ~&  "advert was NOT deleted by our pal, not re-broadcasting"
         :_  this(adverts (oust [(need index) 1] adverts))
         :~  [%give %fact ~[/json/adverts] %advert-update !>(`update:advert`[%delete hash])]
@@ -386,8 +384,8 @@
         ~&  (weld "Got a %vote update from " (scow %p src.bowl))
         =/  new-vote  vote.upd
         ?.  (((validate:votlib bowl) adverts) new-vote)
-          ~&  "Crashing, invalid vote received"
-          !!
+          ~&  "Ignoring, invalid vote received"
+          [~ this]
         :: TODO: drop adverts that we downvote therefore, only allow unvotes on upvotes
         =/  new-votes  ((upsert-vote:votlib votes) new-vote)
         =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
