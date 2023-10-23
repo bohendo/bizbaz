@@ -99,7 +99,9 @@ export const App = ({ api }: { api: any }) => {
       setIntents(upd.gather.intents.filter(
         (i: TIntent) => i.client.ship === myShip || i.body.vendor.ship === myShip
       ));
-      setCommits(upd.gather.commits)
+      setCommits(upd.gather.commits.filter(
+        (i: TCommit) => i.body.client.ship === myShip || i.vendor.ship === myShip
+      ));
       setReviews(upd.gather.reviews)
     } else if (!!upd.intent) {
       let newIntent = upd.intent as TIntent;
