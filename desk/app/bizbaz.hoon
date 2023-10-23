@@ -343,10 +343,10 @@
         ~&  "Got a %delete %advert-update from our subscription"
         =/  hash  advert.upd
         =/  index  ((get-by-hash:advlib adverts) hash)
-        =/  ad  (snag (need index) adverts)
         ?:  ?~(index %.y %.n)
           ~&  "we do not have this advert, doing nothing"
           [~ this]
+        =/  ad  (snag (need index) adverts)
         :: TODO: think of validation logic for delete request so
         :: that a malicious ship cannot shadow ban ad advert by
         :: sending a delete update to network
