@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState, useCallback } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate, useLocation } from "react-router-dom";
 
 import { BizbazContext } from "./BizbazContext"
 import { TAdvert, TCommit, TIntent, TReview, TVote } from "./types";
@@ -24,6 +24,7 @@ export const App = ({ api }: { api: any }) => {
   const [reviews, setReviews] = useState([] as Array<TReview>);
 
   const navigate = useNavigate();
+  const location = useLocation();
   const myShip = `~${window.ship}`
 
   useEffect(() => {
@@ -43,15 +44,18 @@ export const App = ({ api }: { api: any }) => {
     } else if (upd.update) {
       const newAdvert = upd.update.new
       const oldHash = upd.update.old
-      const oldAdvert = adverts.findIndex(a => a.hash === newAdvert.hash)
-      if (oldAdvert === -1) {
-        setAdverts((oldAdverts: Array<TAdvert>) => [upd.update.new, ...oldAdverts])
-      } else {
-        setAdverts((oldAdverts: Array<TAdvert>) =>
-          [...oldAdverts!.slice(0, oldAdvert), upd.update.new, ...oldAdverts!.slice(oldAdvert + 1)]
-        )
+      setAdverts((oldAdverts: Array<TAdvert>) => {
+        const oldAdvert = oldAdverts.findIndex(a => a.hash === oldHash)
+        if (oldAdvert === -1) {
+          return [upd.update.new, ...oldAdverts]
+        } else {
+            return [...oldAdverts!.slice(0, oldAdvert), upd.update.new, ...oldAdverts!.slice(oldAdvert + 1)]
+        }
+      })
+
+      if (location.hash === oldHash.hash) {
+        navigate(`/advert/${newAdvert.hash}`)
       }
-      navigate(`/advert/${newAdvert.hash}`)
     } else if (upd.delete) {
       setAdverts((oldAdverts: Array<TAdvert>) =>
         oldAdverts.filter((ad: TAdvert) => upd.delete.advert !== ad.hash)
