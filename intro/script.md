@@ -47,4 +47,47 @@ And as a bonus, peer-to-peer communications on urbit are simple, easy, and come 
 
 # bizbaz features
 
-advert crud
+We can simply create, update and delete adverts and votes.
+
+We can create reviews via a more involved process that involves both parties committing to a transaction and, once a review is created, it can be simply updated.
+
+# Advert creation
+
+We're starting out with two ships that are not direct pals, but they have a pal in common.
+
+Here, you can see the advert creation form. We're adding a title, cover image link, some tags, and pasting in a description. Once it's created, our ship broadcasts this new advert to it's pals, and those pals broadcast it to their pals, but ships do not broadcast and info that did not come from a mutual pal.
+
+# Advert updates
+
+Advert updates use the same form as advert creation so you can update any of the fields. Updated adverts are distributed to pals of pals the same way as new ones, with the old one being replaced.
+
+# Advert deletion
+
+Same for deletions, the delete request is distributed to pals of pals who remove the advert from their list of open adverts.
+
+# But wait
+
+Some of you might be alarmed at this point. Aren't people going to create adverts prostituting human trafficking victims? Or illegal drugs that might be laced with fentanyl? Or pirated copies of copyrighted movies or music?
+
+Now, put me on the record as being a fan of sex, drugs, and rock & roll. But I do not want to draw the unwelcome attention of SESTA, DEA, or DMCA enforcement to urbit. And definitely not to my personal ship.
+
+The first line of defense is that adverts are only distributed among pals of pals. Some random ship fed-posting into the void isn't going to put their adverts in front of anyone's eyes but their own. And, if you're pals with a fed poster, consider kicking them out of your circle of friends.
+
+But, a second, more fine-grained line of defense comes in voting.
+
+# Up Voting
+
+Firstly, we can upvote high-quality, wholesome ads, these votes are distributed to any of our pals of pals who have stored the advert being voted.
+
+# Down Voting
+
+But, when we notice any naughty ads, we can downvote them. This will delete this ad from our ship and we will stop forwarding any updates, votes, or reviews related to this ad.
+
+At the very least, this protects our ship from the Eye of Sauron because we is no longer hosting the questionable content.
+
+Later, once we get more real world usage data, we could update bizbaz to auto-drop any ads that hit some negative vote threshold so that we're still dropping the naughtiest adverts even if we don't check in on bizbaz every day. We're still uncertain what this threshold should be and are open to suggestions.
+
+# Reviews
+
+Now, let's talk more about the review process.
+
