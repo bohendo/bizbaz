@@ -42,7 +42,7 @@ export const Votes = ({
     return (
         <Box display='flex' flexDirection='column' maxWidth={50}>
           <IconButton sx={{ m: theme.spacing(-2)}}
-            color={ourVote?.body?.choice === "up" ? 'primary' : 'default'}
+            color={ourVote?.body?.choice === "up" ? 'success' : 'default'}
             onClick={() => vote(ourVote?.body?.choice === "up" ? "un" : "up")}
             disabled={disabled}
           >
@@ -52,7 +52,7 @@ export const Votes = ({
             {voteScore}
           </Avatar>
           <IconButton sx={{ m: theme.spacing(-2)}}
-            color={ourVote?.body?.choice === "down" ? 'primary' : 'default'}
+            color={ourVote?.body?.choice === "down" ? 'success' : 'default'}
             onClick={() => setOpen(true)}
             disabled={disabled}
           >
