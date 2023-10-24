@@ -55,7 +55,7 @@ We can create reviews via a more involved process that involves both parties com
 
 We're starting out with two ships that are not direct pals, but they have a pal in common.
 
-Here, you can see the advert creation form. We're adding a title, cover image link, some tags, and pasting in a description. Once it's created, our ship broadcasts this new advert to it's pals, and those pals broadcast it to their pals, but ships do not broadcast and info that did not come from a mutual pal.
+Here, you can see the advert creation form. We're adding a title, cover image link, some tags, and pasting in a description. Once it's created, our ship broadcasts this new advert to it's pals, and those pals broadcast it to their pals, but ships do not broadcast an info that did not come from a mutual pal.
 
 # Advert updates
 
