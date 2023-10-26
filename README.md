@@ -21,7 +21,7 @@ Make sure you have [`just`](https://github.com/casey/just) installed or check th
 Also, make sure you have either an `urbit` runtime ([`vere`](https://github.com/urbit/vere)) or `docker` installed if you want to run this app locally.
 
 You can start up a fresh zod ship by running urbit directly, but this repo includes a start script with a few convenience features:
-- `me@bizbaz$ just start` (this will take a few mins the first time you do it)
+- `me@bizbaz$ just start` or `me@bizbaz$ just start <fake-ship-name>` (this will take a few mins the first time you do it. *NOTE* if no ship name is specified it defaults to start zod)
 - `~zod:dojo> |exit` or hit `ctrl-d` (the start-fake-ship script will preserve a copy of the freshly booted ship so you can quickly reset if something breaks)
 - `me@bizbaz$ just start` (this will use `sudo` to reset permissions and copy over the fresh ship's data, it should boot up instantly)
 
