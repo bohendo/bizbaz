@@ -60,6 +60,25 @@ const StyledMarkdown = styled(ReactMarkdown)(({ theme }) => ({
     padding: "2px",
     textAlign: "justify",
     fontVariant: "discretionary-ligatures",
+    '& ul li': {
+        listStyleType: 'disc', // default bullet point for unordered lists
+        marginLeft: '20px', // Indentation for list items
+    },
+    '& ol li': {
+        listStyleType: 'decimal', // default number style for ordered lists
+        marginLeft: '20px', // Indentation for list items
+    },
+    '& a': { // Targeting anchor tags inside ReactMarkdown
+        textDecoration: 'underline',
+        color: '#f99',
+        '&:hover': {
+            color: '#b44'
+        }
+    },
+    '& p': { // Targeting paragraph tags
+        marginBottom: '0.5em', // Add space below each paragraph
+        marginTop: '0.5em', // Add space below each paragraph
+    },
     "& > blockquote": {
       padding: `0 ${theme.spacing(2)}px`, 
       borderLeft: `${theme.spacing(0.5)}px solid ${theme.palette.divider}`,
