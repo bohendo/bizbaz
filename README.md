@@ -6,11 +6,70 @@ Buy & sell stuff with pals-of-pals
 
 ## Live Installation
 
-Go to `apps/landscape/search/~dibmet-narren/apps` on your urbit ship and install the `bizbaz` app.
+%bizbaz depends on %pals to propagate adverts so you must install %pals first (/1/desk/~paldev/pals).
 
-## Usage
+Once you have some pals, install by running `|install ~dibmet-narren %bizbaz` or searching for apps by ~dibmet-narren from the landscape app.
 
+App link: /1/desk/~dibmet-narren/bizbaz
 
+## Usage Overview
+
+Note that you'll need to install bizbaz on at least 2 ships that are mutual pals to test out all of the features. For brevity, we'll refer to these two ships as ~zod and ~nec while describing usage.
+
+If you have pals who have published adverts and you don't see them on the home page, click the refresh button in the top right. This is not normally necessary, but might help get your ship unstuck if an error has occurred.
+
+To create the first advert from ~zod, click the `+` button in the bottom right corner of the home page. Fill out the advert details and click "submit". Adverts are displayed as markdown, so you can add formatting or links to images, videos, and even 3D models in `glb` format! A new advert card will appear on the home page, click the card to view advert details. From here, the advert creator can use the button in the bottom right to edit or delete this advert.
+
+This advert should be picked up by ~zod's pals and pals-of-pals (eg ~nec) and be displayed on the home page. If you click the advert card from ~nec, you'll see similar advert details but with a few new options.
+
+You can upvote this advert from ~nec by clicking the up arrow if it's a high quality advert. You can un-upvote by clicking the up arrow again. If the advert is spam or distasteful, you can downvote it. A confirmation screen pops up warning you that this will delete the advert from your ship. After downvoting an advert, your ship will stop propagating info related to this advert such as votes and steps of the review flow.
+
+You can click the "Message Vendor" button from ~nec to open the %talk app and chat with the vendor (eg ~zod).
+
+You can click the "Express Intent" button from ~nec to signal your willingness to transact according to this advert. After clicking this button, your intention will be sent to ~zod.
+
+*Client Tip: Do not start transacting after expressing intent. You will not be able to review until the vendor commits to the transaction.*
+
+If, after chatting, ~zod agrees to transact with ~nec, ~zod can click "Commit" to commit to the transaction. At this point, either party is free to leave a review and both parties should proceed to uphold their end of the transaction.
+
+After transacting, both parties should click "Review" on the associated commitment to create a review. Fill out the review form and click "Submit". This review will be broadcast to all pals-of-pals and be displayed below the associated advert.
+
+All reviews of the vendor from other adverts will also be displayed on the advert page (below the reviews specifically regarding this advert). So if a vendor gets negative reviews and then deletes that advert, these negative reviews will still be displayed on other adverts created by the same vendor.
+
+Navigation tips:
+- All ship names are clickable links that will take you to that ship's profile. Your profile is accessible by clicking on your sigil in the top right. A ship's profile will display all of their open adverts, the reviews this ship has created, and the reviews of this ship created by other ships.
+- All advert hashes are clickable links that will take you to that advert page.
+
+Now you're up and running, have fun buying and selling stuff with your pals-of-pals!
+
+For a step-by-step walkthrough of these bizbaz features, check out the tutorial in the next section.
+
+## Tutorial
+
+This tutorial is designed to be followed along from two local fake ships. Follow the instructions in the next section to install bizbaz on two fake ships before proceeding. We'll refer to these two ships as ~zod and ~nec.
+
+From ~zod:
+- create three adverts with titles like "good advert", "bad advert", and "ugly advert" by clicking the "+" button in the bottom right corner and submitting the advert creation form.
+- click the good advert card and use the button in the bottom right to update it and make it even better.
+- return to the home page by clicking the button on the top left
+- open the ugly advert and delete it
+
+From ~nec:
+- the home page should display the (updated) good advert and the bad advert created by ~zod.
+- open the bad advert and upvote, unvote, and downvote it. Note that after downvoting, it's deleted from ~nec but is still present on ~zod (but with a score of -1)
+- open the good advert and upvote it
+- click "Message Vendor" and send a message to ~zod asking for more details.
+- click "Express Intent" to move forward with the transaction.
+
+From ~zod:
+- open the talk app to respond to the message from ~nec then click "Commit" once you're ready.
+- at this point, both parties would uphold their end of the agreed upon transaction
+- click "Review" on the commit card and thank ~nec for being such a great client.
+
+From ~nec:
+- click "Review" on the commit card and chastise ~zod for being a bad vendor.
+- check out ~zod's review, feel guilty, click the "pencil" icon on your review and reciprocate the praise you got from ~zod.
+- click ~zod's name in the review or advert details to explore ~zod's profile including all of ~zod's adverts, reviews of ~zod, and reviews by ~zod.
 
 ## Local Installation
 
@@ -20,8 +79,8 @@ Make sure you have [`just`](https://github.com/casey/just) installed or check th
 
 Also, make sure you have either an `urbit` runtime ([`vere`](https://github.com/urbit/vere)) or `docker` installed if you want to run this app locally.
 
-You can start up a fresh zod ship by running urbit directly, but this repo includes a start script with a few convenience features:
-- `me@bizbaz$ just start` or `me@bizbaz$ just start <fake-ship-name>` (this will take a few mins the first time you do it. *NOTE* if no ship name is specified it defaults to start zod)
+You can start up a fresh ~zod ship by running urbit directly, but this repo includes a start script with a few convenience features:
+- `me@bizbaz$ just start` or `me@bizbaz$ just start <fake-ship-name>` (this will take a few mins the first time you do it. *NOTE* if no ship name is specified it defaults to start ~zod)
 - `~zod:dojo> |exit` or hit `ctrl-d` (the start-fake-ship script will preserve a copy of the freshly booted ship so you can quickly reset if something breaks)
 - `me@bizbaz$ just start` (this will use `sudo` to reset permissions and copy over the fresh ship's data, it should boot up instantly)
 
@@ -44,7 +103,9 @@ Commit and install both pals and bizbaz
 
 Visit http://localhost:8080 (confirm this link from the startup logs, sometimes urbit on mac uses an unusual port by default), login with the code printed to the console, and click the bizbaz tile to get started.
 
-Follow the same instructions for additional ships (eg `nec` and `bud`) to test out interactions between ships. Don't forget to add these other ships as pals so bizbaz can communicate with them.
+Follow the same instructions for additional ships (eg `~nec` and `~bud`) to test out interactions between ships. Don't forget to add these other ships as pals so bizbaz can communicate with them.
+
+If you've added a new pal after installing bizbaz and the data doesn't seem to be syncing (or if an error occurs and a subscription breaks), click the refresh button in the top right corner to re-subscribe and re-broadcast this ship's data to all pals.
 
 ## Development
 
@@ -62,7 +123,7 @@ Note: the dev server runs on port 3000 but, while deploying, we'll be talking di
 
 We'll use this local %globber desk to create UI globs on our dev computer.
 
-- `me@bizbaz$ just start` (if you don't already have a zod running)
+- `me@bizbaz$ just start` (if you don't already have a ~zod running)
 - `~zod:dojo> |merge %globber our %base` to create a new globber desk from a fork of the built-in base desk
 - `~zod:dojo> |mount %globber` to make our globber desk accessible from the host filesystem
 
