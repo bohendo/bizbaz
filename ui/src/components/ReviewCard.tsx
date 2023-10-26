@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { TReview, TIntent } from "../types";
+import { Review } from "../types";
 
 // MUI
 import Box from '@mui/material/Box';
@@ -22,7 +22,7 @@ import { ReviewEditor } from "../components/ReviewEditor";
 
 export const ReviewCard = ({ review, api }: {
   api: any
-  review: TReview;
+  review: Review;
 }) => {
   const [openNewReviewDialog, setOpenNewReviewDialog] = useState(false);
 

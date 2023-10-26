@@ -15,15 +15,15 @@ import Typography from '@mui/material/Typography';
 import BackHandIcon from '@mui/icons-material/BackHand';
 import CommitIcon from '@mui/icons-material/Commit';
 
-import { TIntent } from '../types';
+import { Intent } from '../types';
 
 // Components
 import { ShipLink } from './ShipLink'
 import { AdvertLink } from './AdvertLink'
 
 export const IntentCard = ({intent, doCommit}: {
-    intent: TIntent | undefined;
-    doCommit: (intent: TIntent) => void;
+    intent: Intent | undefined;
+    doCommit: (intent: Intent) => void;
 }) => {
   const myShip = `~${window.ship}`
   const vendor = intent ? intent?.body?.vendor?.ship : '...'

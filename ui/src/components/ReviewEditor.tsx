@@ -10,7 +10,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Rating from '@mui/material/Rating';
 import TextField from '@mui/material/TextField';
 
-import { TReview } from "../types";
+import { Review } from "../types";
 
 const myShip = `~${window.ship}`
 
@@ -22,7 +22,7 @@ export const ReviewEditor = ({
   api,
 }: {
   commit: any;
-  oldReview?: TReview | undefined;
+  oldReview?: Review | undefined;
   open: boolean;
   handleCloseDialog: () => void;
   api: any // TODO: Fix api type

@@ -1,13 +1,13 @@
 import { createContext } from 'react';
 
-import { TAdvert, TCommit, TIntent, TReview, TVote } from "./types";
+import { Advert, Commit, Intent, Review, Vote } from "./types";
 
 interface BizbazContextType {
-  adverts: Array<TAdvert>;
-  votes: Array<TVote>;
-  intents: Array<TIntent>;
-  commits: Array<TCommit>;
-  reviews: Array<TReview>;
+  adverts: Array<Advert>;
+  votes: Array<Vote>;
+  intents: Array<Intent>;
+  commits: Array<Commit>;
+  reviews: Array<Review>;
 }
 
 export const BizbazContext = createContext<BizbazContextType>({} as BizbazContextType);

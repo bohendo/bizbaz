@@ -16,7 +16,7 @@ import { styled, useTheme } from "@mui/material/styles";
 import { BizbazContext } from "../BizbazContext"
 
 // types
-import { TAdvert } from "../types";
+import { Advert } from "../types";
 
 // components
 import { Sigil } from "../components/Sigil";
@@ -33,7 +33,7 @@ const StyledCardImg = styled("img")(( { theme }) => ({
 
 export const AdvertCard = ({
   advert
-}: { advert: TAdvert }) => {
+}: { advert: Advert }) => {
   const theme = useTheme();
   // TODO set itemHeight based on cover image
   const [imgError, setImgError] = useState(false);

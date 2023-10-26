@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
 import { BizbazContext } from '../BizbazContext'
-import { TAdvert, TReview, } from "../types";
+import { Advert, Review, } from "../types";
 
 // MUI
 import { useTheme } from '@mui/material/styles'
@@ -23,9 +23,9 @@ export const Profile = ({ api }: { api: any }) => {
   const theme = useTheme();
 
   const { adverts, reviews } = bizbaz;
-  const [filteredAds, setFilteredAds] = useState([] as Array<TAdvert>);
-  const [filteredReviewsByMe, setFilteredReviewsByMe] = useState([] as Array<TReview>);
-  const [filteredReviewsOfMe, setFilteredReviewsOfMe] = useState([] as Array<TReview>);
+  const [filteredAds, setFilteredAds] = useState([] as Array<Advert>);
+  const [filteredReviewsByMe, setFilteredReviewsByMe] = useState([] as Array<Review>);
+  const [filteredReviewsOfMe, setFilteredReviewsOfMe] = useState([] as Array<Review>);
 
   useEffect(() => {
     setFilteredAds(adverts.filter(a => a.vendor.ship === ship));
@@ -52,7 +52,7 @@ export const Profile = ({ api }: { api: any }) => {
       </Typography>
       {filteredAds.length > 0 ?
         <Masonry columns={3} spacing={2}>
-          {filteredAds.map((advert: TAdvert, index: number) => {
+          {filteredAds.map((advert: Advert, index: number) => {
             return (
               <AdvertCard key={index} advert={advert}/>
             )
@@ -70,7 +70,7 @@ export const Profile = ({ api }: { api: any }) => {
       </Typography>
       {filteredReviewsByMe.length > 0 ?
         <Masonry columns={3} spacing={2}>
-          {filteredReviewsByMe!.map((review: TReview, index: number) => {
+          {filteredReviewsByMe!.map((review: Review, index: number) => {
             return (
               <ReviewCard key={index} review={review} api={api} />
             )
@@ -88,7 +88,7 @@ export const Profile = ({ api }: { api: any }) => {
       </Typography>
       {filteredReviewsOfMe!.length > 0 ?
         <Masonry columns={3} spacing={2}>
-          {filteredReviewsOfMe!.map((review: TReview, index: number) => {
+          {filteredReviewsOfMe!.map((review: Review, index: number) => {
             return (
               <ReviewCard key={index} review={review} api={api} />
             )

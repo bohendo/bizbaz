@@ -23,7 +23,7 @@ import { useTheme } from "@mui/material/styles"
 
 import { BizbazContext } from "../BizbazContext"
 
-import { TAdvert, TCommit, TIntent, TReview, TVote } from "../types";
+import { Commit, Intent, Review, Vote } from "../types";
 
 // Icons
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -46,7 +46,7 @@ export const Advert = ({ api }: { api: any }) => {
   const theme = useTheme();
   const { hash } = useParams();
 
-  const [reviewCommit, setReviewCommit] = useState<TCommit | undefined>(undefined);
+  const [reviewCommit, setReviewCommit] = useState<Commit | undefined>(undefined);
   const [openNewAdvertDialog, setOpenNewAdvertDialog] = useState(false);
   const [openNewReviewDialog, setOpenNewReviewDialog] = useState(false);
   const [openBackdrop, setOpenBackdrop] = useState(false);
@@ -107,7 +107,7 @@ export const Advert = ({ api }: { api: any }) => {
       })
   }
 
-  const doCommit = (intent: TIntent) => {
+  const doCommit = (intent: Intent) => {
       if (!intent) {
           console.log(`No intent exists to commit to`)
           return
@@ -122,7 +122,7 @@ export const Advert = ({ api }: { api: any }) => {
       })
   }
 
-  const makeReview = (commit: TCommit) => {
+  const makeReview = (commit: Commit) => {
     setReviewCommit(commit)
     setOpenNewReviewDialog(true)
   }
@@ -153,7 +153,7 @@ export const Advert = ({ api }: { api: any }) => {
             </Grid>
             <Grid item xs container spacing={2}>
               <Grid item xs={1}>
-                <Votes votes={votes.filter((v: TVote) => v.body.advert === hash)}
+                <Votes votes={votes.filter((v: Vote) => v.body.advert === hash)}
                   vote={vote} disabled={ourShip === advert.vendor.ship} />
               </Grid>
               <Grid item xs container direction="column" spacing={2}>
@@ -203,7 +203,7 @@ export const Advert = ({ api }: { api: any }) => {
 
         {advIntents.length > 0 ? 
           <List sx={{px: 0}}>
-            {advIntents.map((intent: TIntent, i) => (
+            {advIntents.map((intent: Intent, i) => (
               <ListItem key={i} sx={{px: 0}}>
                 <IntentCard
                   intent={intent}
@@ -216,7 +216,7 @@ export const Advert = ({ api }: { api: any }) => {
 
         {advCommits.length > 0 ?
           <List sx={{px: 0}}>
-            {advCommits.map((commit: TCommit, i) => (
+            {advCommits.map((commit: Commit, i) => (
               <ListItem key={i} sx={{px: 0}}>
                 <CommitCard
                   commit={commit}
@@ -234,7 +234,7 @@ export const Advert = ({ api }: { api: any }) => {
                 Reviews on this advert
               </Typography>
             </Grid>
-            {advReviews.map((review: TReview, i) => (
+            {advReviews.map((review: Review, i) => (
               <Grid item xs={6} key={i} >
                 <ReviewCard review={review} api={api} />
               </Grid>
@@ -248,7 +248,7 @@ export const Advert = ({ api }: { api: any }) => {
               Past reviews for {vendor}
             </Typography>
             <List sx={{px: 0}}>
-              {vndReviews.map((review: TReview, i) => (
+              {vndReviews.map((review: Review, i) => (
                 <ListItem key={i} sx={{px: 0}}>
                   <ReviewCard review={review} api={api} />
                 </ListItem>
@@ -286,17 +286,7 @@ export const Advert = ({ api }: { api: any }) => {
             </SpeedDial>
 
             <AdvertEditor
-              editAdvert={{
-                hash: advert.hash,
-                body: {
-                  title: advert.body.title,
-                  tags: advert.body.tags,
-                  description: advert.body.description,
-                  cover: advert.body.cover,
-                  when: Date.now()
-                }
-              }}
-              edit={true}
+              oldAdvert={advert}
               open={openNewAdvertDialog} handleCloseDialog={() => setOpenNewAdvertDialog(false)}
               api={api}
             /> 

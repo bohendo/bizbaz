@@ -16,25 +16,25 @@ import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import NotInterestedIcon from '@mui/icons-material/NotInterested';
 
-import { TVote } from "../types";
+import { Vote } from "../types";
 
 export const Votes = ({
     votes,
     vote,
     disabled,
 }: {
-    votes: Array<TVote>;
+    votes: Array<Vote>;
     vote: (choice: string) => void;
     disabled: boolean;
 }) => {
     const theme = useTheme();
-    const [ourVote, setOurVote] = useState<TVote | undefined>(undefined);
+    const [ourVote, setOurVote] = useState<Vote | undefined>(undefined);
     const [open, setOpen] = useState(false);
     const [voteScore, setVoteScore] = useState(0);
 
     useEffect(() => {
         if (votes.length > 0) {
-          setOurVote(votes.find((v: TVote) => v.voter.ship === `~${window.ship}`))
+          setOurVote(votes.find((v: Vote) => v.voter.ship === `~${window.ship}`))
           setVoteScore(votes.reduce((score, vote) => vote.body.choice === "up" ? score + 1 : score - 1, 0));
         }
     }, [votes])

@@ -8,17 +8,15 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import Button from "@mui/material/Button";
 
-import { TNewAdvert, TAdvertValidation  } from "../types";
+import { Advert, AdvertReq, AdvertValidation  } from "../types";
 
 export const AdvertEditor = ({
-    editAdvert,
-    edit,
+    oldAdvert,
     open,
     handleCloseDialog,
     api
 }: {
-    editAdvert?: TNewAdvert;
-    edit?: boolean;
+    oldAdvert?: Advert;
     open: boolean;
     handleCloseDialog: () => void;
     // TODO: Fix api type
@@ -32,26 +30,31 @@ export const AdvertEditor = ({
             descriptionError: "",
             tagsError: ""
         }
-    } as TAdvertValidation)
-    const [newAdvert, setNewAdvert] = useState(editAdvert || {
-        body: {
-            title: "Advert Title",
-            cover: "link to cover image",
-            description: "Description of the stuff I'm selling",
-            tags: ["example"],
-        }
-    } as TNewAdvert);
+    } as AdvertValidation)
+    const [advertReq, setAdvertReq] = useState({
+        title: oldAdvert?.body?.title || "Advert Title",
+        cover: oldAdvert?.body?.cover || "link to cover image",
+        description: oldAdvert?.body?.description || "Description of the stuff I'm selling",
+        tags: oldAdvert?.body?.tags || ["example"],
+    } as AdvertReq);
 
     useEffect(() => {
-        if (editAdvert)
-            setNewAdvert(editAdvert);
-    }, [editAdvert]);
+      if (oldAdvert) {
+        console.log(`Updating old advert w hash: ${oldAdvert.hash}`)
+        setAdvertReq({
+          title: oldAdvert.body.title,
+          cover: oldAdvert.body.cover,
+          description: oldAdvert.body.description,
+          tags: oldAdvert.body.tags,
+        });
+      }
+    }, [oldAdvert]);
 
-    const validate = (advert: TNewAdvert) => {
-       const titleError = !advert.body.title ? "Advert must have a title" : "";
-       const coverError = !advert.body.cover ? "Advert cover must be a url" : "";
-       const descriptionError = !advert.body.description ? "Advert description is required" : "";
-       let tagsError = advert.body.tags.reduce((tagError, tag) =>
+    const validate = (req: AdvertReq) => {
+       const titleError = !req.title ? "Advert must have a title" : "";
+       const coverError = !req.cover ? "Advert cover must be a url" : "";
+       const descriptionError = !req.description ? "Advert description is required" : "";
+       let tagsError = req.tags.reduce((tagError, tag) =>
             /^[a-z][a-z0-9-]*$/.test(tag) ? tagError : tagError + ` '${tag}'`,
             "");
     
@@ -62,35 +65,34 @@ export const AdvertEditor = ({
        const hasError = !!(descriptionError || tagsError);
        setValidation({ hasError, errorMsgs: {coverError, titleError, descriptionError, tagsError}});
     }
-    const syncNewAdvert = (advert: TNewAdvert) => {
-        validate(advert);
-        setNewAdvert(advert);
+
+    const syncNewAdvert = (req: AdvertReq) => {
+        validate(req);
+        setAdvertReq(req);
     }
 
     const postAdvert = () => {
-        validate(newAdvert);
+        validate(advertReq);
         if (validation.hasError) return;
-        const body = {
-          ...newAdvert.body,
-        };
 
-        if (edit) {
+        if (!!oldAdvert) {
           const req = {
-            'update': {
-              hash: newAdvert.hash,
-              ...body,
+            update: {
+              hash: oldAdvert.hash,
+              ...advertReq,
             }
           }
-          console.log(req);
+          console.log("advert update req", req);
           api.poke({
             app: 'bizbaz',
             mark: 'advert-action',
             json: req,
           })
         } else {
-            const req = {
-                'create': body
-            }
+          const req = {
+            create: advertReq
+          }
+          console.log("advert create req", req);
             api.poke({
               app: 'bizbaz',
               mark: 'advert-action',
@@ -104,14 +106,14 @@ export const AdvertEditor = ({
         <Dialog open={open} onClose={handleCloseDialog}>
           <DialogContent>
             <DialogContentText>
-              {edit ? 
-                <>Edit Advert {newAdvert.hash}</>
+              {!!oldAdvert ? 
+                <>Edit Advert {oldAdvert.hash}</>
                 : <> Create New Advert </>
               }
             </DialogContentText>
             <TextField
               autoFocus
-              defaultValue={newAdvert.body.title}
+              defaultValue={advertReq.title}
               error={!!validation.errorMsgs.titleError}
               margin="dense"
               id="title"
@@ -121,12 +123,12 @@ export const AdvertEditor = ({
               helperText={validation.errorMsgs.titleError}
               variant="standard"
               onChange={(event) => {
-                syncNewAdvert({ hash: newAdvert.hash, body: {...newAdvert.body, [event.target.id]: event.target.value} })}
-              }
+                syncNewAdvert({ ...advertReq, [event.target.id]: event.target.value })
+              }}
             />
             <TextField
               error={!!validation.errorMsgs.coverError}
-              defaultValue={newAdvert.body.cover}
+              defaultValue={advertReq.cover}
               margin="dense"
               id="cover"
               label="Cover"
@@ -135,12 +137,12 @@ export const AdvertEditor = ({
               helperText={validation.errorMsgs.coverError}
               variant="standard"
               onChange={(event) => {
-                  syncNewAdvert({ hash: newAdvert.hash, body: {...newAdvert.body, [event.target.id]: event.target.value} })}
-              }
+                syncNewAdvert({ ...advertReq, [event.target.id]: event.target.value })
+              }}
             />
             <TextField
               error={!!validation.errorMsgs.tagsError}
-              defaultValue={newAdvert.body.tags}
+              defaultValue={advertReq.tags}
               margin="dense"
               id="tags"
               label="Tags"
@@ -149,12 +151,12 @@ export const AdvertEditor = ({
               helperText={validation.errorMsgs.tagsError}
               variant="standard"
               onChange={(event) => {
-                  syncNewAdvert({ hash: newAdvert.hash, body: { ...newAdvert.body, [event.target.id]: event.target.value.toLowerCase().trim().split(" ") }})}
-              }
+                syncNewAdvert({ ...advertReq, [event.target.id]: event.target.value })
+              }}
             />
             <TextField
               error={!!validation.errorMsgs.descriptionError}
-              defaultValue={newAdvert.body.description}
+              defaultValue={advertReq.description}
               margin="dense"
               id="description"
               multiline={true}
@@ -164,8 +166,8 @@ export const AdvertEditor = ({
               helperText={validation.errorMsgs.descriptionError}
               variant="standard"
               onChange={(event) => {
-                  syncNewAdvert({ hash: newAdvert.hash, body: {...newAdvert.body, [event.target.id]: event.target.value} })}
-              }
+                syncNewAdvert({ ...advertReq, [event.target.id]: event.target.value })
+              }}
             />
 
           </DialogContent>

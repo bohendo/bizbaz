@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { TCommit, TIntent } from "../types";
+import { Commit } from "../types";
 
 // MUI
 import Box from '@mui/material/Box';
@@ -16,7 +16,7 @@ import { ShipLink } from "./ShipLink"
 import { AdvertLink } from './AdvertLink'
 
 export const CommitCard = ({ commit, makeReview }: {
-    commit: TCommit;
+    commit: Commit;
     makeReview: () => void;
 }) => {
   const myShip = `~${window.ship}`

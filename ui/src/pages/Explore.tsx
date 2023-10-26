@@ -4,7 +4,7 @@ import { Box, styled, useTheme } from "@mui/material";
 import { BizbazContext } from "../BizbazContext"
 
 // types
-import { TAdvert } from "../types";
+import { Advert } from "../types";
 
 // MUI
 import Button from "@mui/material/Button";
@@ -42,7 +42,7 @@ export const Explore = () => {
       </Typography>
       {adverts.length > 0 ?
         <Masonry columns={3} spacing={2}>
-          {adverts.map((advert: TAdvert, index: number) => {
+          {adverts.map((advert: Advert, index: number) => {
             return (
               <AdvertCard key={index} advert={advert}/>
             )

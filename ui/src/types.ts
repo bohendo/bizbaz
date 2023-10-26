@@ -1,4 +1,43 @@
-export type TAdvertValidation = {
+
+////////////////////////////////////////
+// Signatures
+
+export type Signature = {
+    life: string;
+    ship: string;
+    sig: string;
+};
+
+////////////////////////////////////////
+// Adverts
+
+export type AdvertReq = {
+    title: string;
+    cover: string;
+    tags: Array<string>;
+    description: string;
+}
+
+export type AdvertBody = {
+    cover: string;
+    description: string;
+    tags: Array<string>;
+    title: string;
+    when: number;
+}
+
+export type Advert = {
+    hash: string;
+    body: AdvertBody;
+    vendor: Signature;
+}
+
+export type AdvertUpdate = {
+    hash: string;
+    body: AdvertReq;
+}
+
+export type AdvertValidation = {
     hasError: boolean;
     errorMsgs: {
         coverError: string;
@@ -8,32 +47,10 @@ export type TAdvertValidation = {
     }
 }
 
-export type TAdvertBody = {
-    cover: string;
-    description: string;
-    tags: Array<string>;
-    title: string;
-    when: number;
-}
+////////////////////////////////////////
+// Votes
 
-export type TNewAdvert = {
-    hash?: string;
-    body: TAdvertBody;
-}
-
-export type TAdvert = {
-    hash: string;
-    body: TAdvertBody;
-    vendor: TSignature;
-}
-
-export type TSignature = {
-    life: string;
-    ship: string;
-    sig: string;
-};
-
-export type TVote = {
+export type Vote = {
     hash: string;
     body: {
         advert: string;
@@ -41,24 +58,40 @@ export type TVote = {
         voter: string;
         when: number;
     };
-    voter: TSignature;
+    voter: Signature;
 }
 
-export type TIntentBody = {
+////////////////////////////////////////
+// Reviews
+
+export type IntentBody = {
     advert: string;
-    vendor: TSignature;
+    vendor: Signature;
     client: string;
     when: number;
 }
 
-export type TCommitBody = {
+export type Intent = {
+    hash: string;
+    client: Signature;
+    body: IntentBody;
+};
+
+export type CommitBody = {
     intent: string;
-    client: TSignature;
+    client: Signature;
     vendor: string;
     when: number;
 }
 
-export type TReviewBody = {
+export type Commit = {
+    hash: string;
+    vendor: Signature;
+    body: CommitBody;
+    intent: IntentBody;
+};
+
+export type ReviewBody = {
     commit: string;
     reviewee: string;
     score: number;
@@ -66,22 +99,9 @@ export type TReviewBody = {
     when: number;
 }
 
-export type TIntent = {
+export type Review = {
     hash: string;
-    client: TSignature;
-    body: TIntentBody;
-};
-
-export type TCommit = {
-    hash: string;
-    vendor: TSignature;
-    intent: TIntentBody;
-    body: TCommitBody;
-};
-
-export type TReview = {
-    hash: string;
-    reviewer: TSignature;
-    body: TReviewBody;
-    commit: TCommit;
+    reviewer: Signature;
+    body: ReviewBody;
+    commit: Commit;
 };

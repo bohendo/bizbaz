@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState, useCallback } from "react";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 
 import { BizbazContext } from "./BizbazContext"
-import { TAdvert, TCommit, TIntent, TReview, TVote } from "./types";
+import { Advert, Commit, Intent, Review, Vote } from "./types";
 
 // Components
 import { NavBar } from "./components/Navbar";
@@ -17,15 +17,17 @@ const savedTheme = localStorage.getItem("theme") || "";
 
 export const App = ({ api }: { api: any }) => {
   const [theme, setTheme] = useState(savedTheme === "dark" || savedTheme === "" ? darkTheme : lightTheme);
-  const [adverts, setAdverts] = useState([] as Array<TAdvert>);
-  const [votes, setVotes] = useState([] as Array<TVote>);
-  const [intents, setIntents] = useState([] as Array<TIntent>);
-  const [commits, setCommits] = useState([] as Array<TCommit>);
-  const [reviews, setReviews] = useState([] as Array<TReview>);
+  const [adverts, setAdverts] = useState([] as Array<Advert>);
+  const [votes, setVotes] = useState([] as Array<Vote>);
+  const [intents, setIntents] = useState([] as Array<Intent>);
+  const [commits, setCommits] = useState([] as Array<Commit>);
+  const [reviews, setReviews] = useState([] as Array<Review>);
 
   const navigate = useNavigate();
   const location = useLocation();
   const myShip = `~${window.ship}`
+
+  console.log("location:", location)
 
   useEffect(() => {
     (async () => {
@@ -38,13 +40,13 @@ export const App = ({ api }: { api: any }) => {
   const updateAdverts = ( upd: any) => {
     console.log(`Got ${Object.keys(upd)} advert update:`, upd)
     if (upd.gather) {
-      setAdverts(upd.gather.adverts || [] as Array<TAdvert>)
+      setAdverts(upd.gather.adverts || [] as Array<Advert>)
     } else if (upd.create) {
-      setAdverts((oldAdverts: Array<TAdvert>) => [upd.create.advert, ...oldAdverts])
+      setAdverts((oldAdverts: Array<Advert>) => [upd.create.advert, ...oldAdverts])
     } else if (upd.update) {
       const newAdvert = upd.update.new
       const oldHash = upd.update.old
-      setAdverts((oldAdverts: Array<TAdvert>) => {
+      setAdverts((oldAdverts: Array<Advert>) => {
         const oldAdvert = oldAdverts.findIndex(a => a.hash === oldHash)
         if (oldAdvert === -1) {
           return [upd.update.new, ...oldAdverts]
@@ -53,12 +55,16 @@ export const App = ({ api }: { api: any }) => {
         }
       })
 
-      if (location.hash === oldHash.hash) {
+      const curHash = location.pathname.split("/").pop()
+      if (curHash === oldHash) {
+        console.log(`${curHash} === ${oldHash}`)
         navigate(`/advert/${newAdvert.hash}`)
+      } else {
+        console.log(`${curHash} !== ${oldHash}`)
       }
     } else if (upd.delete) {
-      setAdverts((oldAdverts: Array<TAdvert>) =>
-        oldAdverts.filter((ad: TAdvert) => upd.delete.advert !== ad.hash)
+      setAdverts((oldAdverts: Array<Advert>) =>
+        oldAdverts.filter((ad: Advert) => upd.delete.advert !== ad.hash)
       )
       navigate(`/`)
     } else {
@@ -72,7 +78,7 @@ export const App = ({ api }: { api: any }) => {
       setVotes(upd.gather.votes)
     } else if (upd.vote) {
       const newVote = upd.vote
-      setVotes((oldVotes: TVote[]): TVote[] => {
+      setVotes((oldVotes: Vote[]): Vote[] => {
         if (oldVotes.find(v => v.hash === newVote.hash) !== undefined) {
           return oldVotes
         }
@@ -101,14 +107,14 @@ export const App = ({ api }: { api: any }) => {
     console.log(`Got ${Object.keys(upd)} review update:`, upd)
     if (!!upd.gather) {
       setIntents(upd.gather.intents.filter(
-        (i: TIntent) => i.client.ship === myShip || i.body.vendor.ship === myShip
+        (i: Intent) => i.client.ship === myShip || i.body.vendor.ship === myShip
       ));
       setCommits(upd.gather.commits.filter(
-        (i: TCommit) => i.body.client.ship === myShip || i.vendor.ship === myShip
+        (i: Commit) => i.body.client.ship === myShip || i.vendor.ship === myShip
       ));
       setReviews(upd.gather.reviews)
     } else if (!!upd.intent) {
-      let newIntent = upd.intent as TIntent;
+      let newIntent = upd.intent as Intent;
       if (newIntent.client.ship === myShip || newIntent.body.vendor.ship === myShip) {
         setIntents((oldIntents) => [newIntent, ...oldIntents])
       }
