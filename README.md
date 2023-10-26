@@ -12,7 +12,7 @@ Once you have some pals, install by running `|install ~dibmet-narren %bizbaz` or
 
 App link: /1/desk/~dibmet-narren/bizbaz
 
-## Usage Overview
+## Usage
 
 Note that you'll need to install bizbaz on at least 2 ships that are mutual pals to test out all of the features. For brevity, we'll refer to these two ships as ~zod and ~nec while describing usage.
 
