@@ -50,15 +50,15 @@ This tutorial is designed to be followed along from two local fake ships. Follow
 
 From ~zod:
 - create three adverts with titles like "good advert", "bad advert", and "ugly advert" by clicking the "+" button in the bottom right corner and submitting the advert creation form.
-- click the good advert card and use the button in the bottom right to update it and make it even better.
-- return to the home page by clicking the button on the top left
-- open the ugly advert and delete it
+- click the good advert card and make it even better by hovering over the button in the bottom right and clicking "Edit"
+- return to the home page by clicking the home icon in the top left
+- open the ugly advert and delete it hovering over the button in the bottom right and clicking "Delete".
 
 From ~nec:
 - the home page should display the (updated) good advert and the bad advert created by ~zod.
-- open the bad advert and upvote, unvote, and downvote it. Note that after downvoting, it's deleted from ~nec but is still present on ~zod (but with a score of -1)
+- open the bad advert and upvote, unvote, and downvote it by clicking on the up and down arrows. Note that after downvoting, it's deleted from ~nec but is still present on ~zod (with a score of -1)
 - open the good advert and upvote it
-- click "Message Vendor" and send a message to ~zod asking for more details.
+- click "Message Vendor" to open the talk app and send a message to ~zod asking for more details.
 - click "Express Intent" to move forward with the transaction.
 
 From ~zod:
