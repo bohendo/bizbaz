@@ -31,13 +31,13 @@
     ^-  (list review:revsur)
     =/  old-review-index  ((get-by-hash reviews) hash.new-review)
     ?~  old-review-index
-      ~&  "did not find existing review, adding a new one"
+      ~&  "Did not find existing review, adding a new one"
       [new-review reviews]
     =/  old-review  (snag (need old-review-index) reviews)
     ?:  (lth when.body.new-review when.body.old-review)
       ~&  "Ignoring updated review that's older than the existing one"
       reviews
-    ~&  "found an existing review, updating it"
+    ~&  "Replacing existing review with updated review"
     (snap reviews (need old-review-index) new-review)
 ::
 ++  exists

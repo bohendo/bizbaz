@@ -93,7 +93,8 @@
         %update
       =/  index  ((get-by-hash:advlib adverts) old.act)
       ?~  index
-        ~|((weld "No advert with hash " (scow %uv old.act)) !!)
+        ~&  "Ignoring update to an advert we don't have"
+        [~ this]
       =/  new-advert  ((build:advlib bowl) new.act)
       :_  this(adverts (snap adverts (need index) new-advert))
       (pub-card:advlib `update:advert`[%update old.act new-advert])
@@ -101,7 +102,8 @@
         %delete
       =/  index  ((get-by-hash:advlib adverts) advert.act)
       ?~  index
-        ~|((weld "No advert with hash " (scow %uv advert.act)) !!)
+        ~&  "Ignoring deletion of an advert we don't have"
+        [~ this]
       :_  this(adverts (oust [(need index) 1] adverts))
       (pub-card:advlib `update:advert`[%delete advert.act])
     == 
@@ -116,7 +118,8 @@
         %vote
       =/  adv-index  ((get-by-hash:advlib adverts) advert.req.act)
       ?~  adv-index
-        ~|((weld "No advert with hash " (scow %uv advert.req.act)) !!)
+        ~&  "Ignoring vote on an advert we don't have"
+        [~ this]
       =/  new-vote  (((build-vote:votlib bowl) adverts) req.act)
       =/  new-votes  ((upsert-vote:votlib votes) new-vote)
       ?:  ?&(=(ship.voter.new-vote src.bowl) =(choice.body.new-vote %down))
@@ -139,19 +142,22 @@
         %intent
       =/  adv-index  ((get-by-hash:advlib adverts) advert.act)
       ?~  adv-index
-        ~|((weld "No advert with hash " (scow %uv advert.act)) !!)
+        ~&  "Ignoring intent on an advert we don't have"
+        [~ this]
       =/  ad  (snag (need adv-index) adverts)
       =/  new-intent  ((build:intlib bowl) ad)
       ?:  ((exists:intlib intents) new-intent)
         ~&  "Ignoring duplicate intent"  
         [~ this]
+      ~&  "Saving new intent and broadcasting it to UI + pals"  
       :_  this(intents [new-intent intents])
       (pub-card:revlib `update:review`[%intent new-intent])
     ::
         %commit
       =/  int-index  ((get-by-hash:intlib intents) intent.act)
       ?~  int-index
-        ~|((weld "No intent with hash " (scow %uv intent.act)) !!)
+        ~&  "Ignoring commit on an intent we don't have"
+        [~ this]
       =/  int  (snag (need int-index) intents)
       =/  new-commit  ((build:cmtlib bowl) int)
       ?:  ((exists:cmtlib commits) new-commit)
@@ -159,13 +165,15 @@
         [~ this]
       =/  new-intents  (oust [(need int-index) 1] intents)  :: remove old intent
       =/  new-commits  [new-commit commits]  :: add new commit
+      ~&  "Saving new intent and broadcasting it to UI + pals"  
       :_  this(intents new-intents, commits new-commits)
       (pub-card:revlib `update:review`[%commit new-commit])
     ::
         %review
       =/  cmt-index  (find ~[commit.req.act] (turn commits |=(cmt=commit:review hash.cmt)))
       ?~  cmt-index
-        ~|((weld "No commit with hash " (scow %uv commit.req.act)) !!)
+        ~&  "Ignoring review on a commit we don't have"
+        [~ this]
       =/  cmt  (snag (need cmt-index) commits)
       =/  new-review  (((build:revlib bowl) cmt) req.act)
       ?:  ((exists:revlib reviews) new-review)
@@ -173,19 +181,22 @@
         [~ this]
       =/  new-commits  (oust [(need cmt-index) 1] commits)  :: remove old commit
       =/  new-reviews  [new-review reviews]  :: add new review
+      ~&  "Saving new review and broadcasting it to UI + pals"  
       :_  this(commits new-commits, reviews new-reviews)
       (pub-card:revlib `update:review`[%review new-review])
     ::
         %update
       =/  old-index  (find ~[old.act] (turn reviews |=(rev=review:review hash.rev)))
       ?~  old-index
-        ~|((weld "No review with hash " (scow %uv old.act)) !!)
+        ~&  "Ignoring update for a review we don't have"
+        [~ this]
       =/  rev  (snag (need old-index) reviews)
       =/  new-review  (((build:revlib bowl) commit.rev) new.act)
       ?:  ((exists:revlib reviews) new-review)
         ~&  "Ignoring no-op review update"  
         [~ this]
       =/  new-reviews  [new-review reviews]  :: add new review
+      ~&  "Updating old review and broadcasting it to UI + pals"  
       :_  this(reviews (snap reviews (need old-index) new-review))
       (pub-card:revlib `update:review`[%update old=old.act new=new-review])
     == 
@@ -292,16 +303,16 @@
           [~ this]
         ~&  "validating newly created advert"
         ?.  ((validate:advlib bowl) new-advert)
-          ~&  "Crashing, received advert is invalid"
-          !!
+          ~&  "Ignoring invalid advert"
+          [~ this]
         ~&  (weld "%create: valid advert received from " (scow %p src.bowl))
         =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
         =/  is-pal  ?~((find ~[ship.vendor.new-advert] ~(tap in pals)) %.n %.y)
         ?:  is-pal
-          ~&  "new advert was created by our pal, re-broadcasting to our pals"
+          ~&  "New advert was created by our pal, re-broadcasting to our pals"
           :_  this(adverts [new-advert adverts])
           (pub-card:advlib [%create new-advert])
-        ~&  "new advert was NOT created by our pal, not re-broadcasting"
+        ~&  "New advert was NOT created by our pal, not re-broadcasting"
         :_  this(adverts [new-advert adverts])
         :~  [%give %fact ~[/json/adverts] %advert-update !>(`update:advert`[%create new-advert])]
         ==
@@ -321,18 +332,18 @@
           [~ this]
         ~&  new-advert
         ?.  ((validate:advlib bowl) new-advert)
-          ~&  "Crashing, received advert is invalid"
-          !!
+          ~&  "Ignoring invalid advert"
+          [~ this]
         =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
         =/  is-pal  ?~((find ~[ship.vendor.new-advert] ~(tap in pals)) %.n %.y)
         ?:  is-pal
-          ~&  "new advert was updated by our pal, re-broadcasting to our pals"
+          ~&  "New advert was updated by our pal, re-broadcasting to our pals"
           ?.  ?~(old-ad-index %.y %.n)
             :_  this(adverts (snap adverts (need old-ad-index) new-advert))
             (pub-card:advlib [%update old-hash new-advert])
           :_  this(adverts [new-advert adverts])
           (pub-card:advlib [%update old-hash new-advert])
-        ~&  "new advert was NOT updated by our pal, not re-broadcasting"
+        ~&  "New advert was NOT updated by our pal, not re-broadcasting"
         ?.  ?~(old-ad-index %.y %.n)
           :_  this(adverts (snap adverts (need old-ad-index) new-advert))
           :~  [%give %fact ~[/json/adverts] %advert-update !>(`update:advert`[%update old-hash new-advert])]
@@ -352,9 +363,6 @@
         :: TODO: think of validation logic for delete request so
         :: that a malicious ship cannot shadow ban ad advert by
         :: sending a delete update to network
-        ?.  ((validate:advlib bowl) ad)
-          ~&  "Crashing, received advert is invalid"
-          !!
         =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
         =/  is-pal  ?~((find ~[ship.vendor.ad] ~(tap in pals)) %.n %.y)
         ?:  is-pal
@@ -391,17 +399,16 @@
         ?.  (((validate:votlib bowl) adverts) new-vote)
           ~&  "Ignoring, invalid vote received"
           [~ this]
-        :: TODO: drop adverts that we downvote therefore, only allow unvotes on upvotes
         =/  new-votes  ((upsert-vote:votlib votes) new-vote)
         =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
         =/  is-pal  ?~((find ~[ship.voter.new-vote] ~(tap in pals)) %.n %.y)
         ?:  is-pal
-          ~&  "new vote was created by our pal, re-broadcasting to our pals"
+          ~&  "New vote was created by our pal, re-broadcasting to our pals"
           :_  this(votes new-votes)
           :~  [%give %fact ~[/json/votes] %vote-update !>(`update:vote`[%vote new-vote])]
               [%give %fact ~[/noun/votes] %vote-update !>(`update:vote`[%vote new-vote])]
           ==
-        ~&  "new vote was NOT created by our pal, not re-broadcasting"
+        ~&  "New vote was NOT created by our pal, not re-broadcasting"
         :_  this(votes new-votes)
         :~  [%give %fact ~[/json/votes] %vote-update !>(`update:vote`[%vote new-vote])]
         ==
@@ -450,17 +457,17 @@
           ~&  "Ignoring duplicate intent"
           [~ this]
         ?.  ((validate:intlib bowl) new-intent)
-          ~&  "Crashing, received intent is invalid"
-          !!
+          ~&  "Ignoring invalid intent"
+          [~ this]
         ?.  =(ship.vendor.body.new-intent our.bowl)
           =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
           =/  is-pal  ?~((find ~[ship.client.new-intent] ~(tap in pals)) %.n %.y)
           ?:  is-pal
-            ~&  "new intent by pal doesn't concern us, re-broadcasting to our pals"
+            ~&  "New intent by pal doesn't concern us, re-broadcasting to our pals"
             :_  this
             :~  [%give %fact ~[/noun/reviews] %review-update !>(`update:review`[%intent new-intent])]
             ==
-          ~&  "new intent by non-pal doesn't concern us, ignoring it"
+          ~&  "New intent by non-pal doesn't concern us, ignoring it"
           [~ this]
         ~&  (weld "%intent received from " (scow %p src.bowl))
         :_  this(intents [new-intent intents])
@@ -475,17 +482,17 @@
           ~&  "Ignoring duplicate commit"
           [~ this]
         ?.  ((validate:cmtlib bowl) new-commit)
-          ~&  "Crashing, received commit is invalid"
-          !!
+          ~&  "Ignoring invalid commit"
+          [~ this]
         ?.  =(ship.client.body.new-commit our.bowl)
           =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
           =/  is-pal  ?~((find ~[ship.vendor.new-commit] ~(tap in pals)) %.n %.y)
           ?:  is-pal
-            ~&  "new commit by pal doesn't concern us, re-broadcasting to our pals"
+            ~&  "New commit by pal doesn't concern us, re-broadcasting to our pals"
             :_  this
             :~  [%give %fact ~[/noun/reviews] %review-update !>(`update:review`[%commit new-commit])]
             ==
-          ~&  "new commit by non-pal doesn't concern us, ignoring it"
+          ~&  "New commit by non-pal doesn't concern us, ignoring it"
           [~ this]
         ~&  (weld "%commit received from " (scow %p src.bowl))
         =/  int-index  ((get-by-hash:intlib intents) intent.body.new-commit)
@@ -503,18 +510,18 @@
           ~&  "Ignoring duplicate review"
           [~ this]
         ?.  ((validate:revlib bowl) new-review)
-          ~&  "Crashing, received review is invalid"
-          !!
+          ~&  "Ignoring invalid review"
+          [~ this]
         ~&  (weld "valid review received from " (scow %p src.bowl))
         =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
         =/  is-pal  ?~((find ~[ship.reviewer.new-review] ~(tap in pals)) %.n %.y)
         ?:  is-pal
-          ~&  "new review was created by our pal, re-broadcasting to our pals"
+          ~&  "New review was created by our pal, re-broadcasting to our pals"
           :_  this(reviews [new-review reviews])
           :~  [%give %fact ~[/json/reviews] %review-update !>(`update:review`[%review new-review])]
               [%give %fact ~[/noun/reviews] %review-update !>(`update:review`[%review new-review])]
           ==
-        ~&  "new review was NOT created by our pal, not re-broadcasting"
+        ~&  "New review was NOT created by our pal, not re-broadcasting"
         :_  this(reviews [new-review reviews])
         :~  [%give %fact ~[/json/reviews] %review-update !>(`update:review`[%review new-review])]
         ==
@@ -524,73 +531,24 @@
         =/  new-review  new.upd
         =/  rev-index  ((get-by-hash:revlib reviews) hash.new-review)
         ?~  rev-index
-          ~&  "Ignoring duplicate review"
+          ~&  "We already have this exact review, ignoring update"
           [~ this]
         ?.  ((validate:revlib bowl) new-review)
-          ~&  "Crashing, received review is invalid"
-          !!
-        :: TODO: ensure the new when.body is newer than the existing one
+          ~&  "Ignoring invalid review"
+          [~ this]
         ~&  (weld "%review: valid review update received from " (scow %p src.bowl))
         =/  new-reviews  ((upsert:revlib reviews) new-review)
         =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
         =/  is-pal  ?~((find ~[ship.reviewer.new-review] ~(tap in pals)) %.n %.y)
         ?:  is-pal
-          ~&  "new review was updated by our pal, re-broadcasting to our pals"
+          ~&  "New review was updated by our pal, re-broadcasting to our pals"
           :_  this(reviews new-reviews)
-          (pub-card:revlib `update:review`[%update old=old.upd new=new-review])
-        ~&  "new review was NOT updated by our pal, not re-broadcasting"
+          (pub-card:revlib `update:review`[%update old.upd new-review])
+        ~&  "New review was NOT updated by our pal, not re-broadcasting"
         :_  this(reviews new-reviews)
         :~  [%give %fact ~[/json/reviews] %review-update !>(upd)]
         ==
       ==
-    ==
-  ::
-  :: pals subscription updates
-  ::
-    ::   [%pals %target ~]
-    :: ?+    -.sign  (on-agent:default wire sign)
-    ::     %fact
-    ::   :: this wire only handles pal effects
-    ::   ~&  "Got pals target cage:"
-    ::   ~&  cage.sign
-    ::   ?.  =(p.cage.sign %pals-effect)
-    ::     (on-agent:default wire sign)
-    ::   =/  fx  !<(effect:pals q.cage.sign)
-    ::   ?+    -.fx  (on-agent:default wire sign)
-    ::   ::
-    ::       %target
-    ::     ~&  (weld "Subscribing to new pal: " "?") :: (scot %p pal)
-    ::     ~&  fx
-    ::     =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
-    ::     =/  pal  ~zod :: TODO set to our real, new pal
-    ::     ::  only share data from our direct pals
-    ::     =/  paladvs  (skim adverts |=(adv=advert:advert (~(has in pals) ship.vendor.adv)))
-    ::     =/  palvots  (skim votes |=(vote=vote:vote (~(has in pals) ship.voter.vote)))
-    ::     =/  palints  (skim intents |=(int=intent:review (~(has in pals) ship.client.int)))
-    ::     =/  palcmts  (skim commits |=(cmt=commit:review (~(has in pals) ship.vendor.cmt)))
-    ::     =/  palrevs  (skim reviews |=(rev=review:review (~(has in pals) ship.reviewer.rev)))
-    ::     ::  gather list of subscription cards
-    ::     =/  advsub  `card`(sub-card:advlib pal)
-    ::     =/  votsub  `card`(sub-card:votlib pal)
-    ::     =/  revsub  `card`(sub-card:revlib pal)
-    ::     :_  this
-    ::     ::  subscription to all 3 wires on our new pal
-    ::     %+  weld  ~[advsub votsub revsub]
-    ::     :: broadcast all of our data so the new pal can grab it
-    ::     :~  `card`[%give %fact ~[/noun/adverts] %advert-update !>(`update:advert`[%gather paladvs])]
-    ::         `card`[%give %fact ~[/noun/votes] %vote-update !>(`update:vote`[%gather palvots])]
-    ::         `card`[%give %fact ~[/noun/reviews] %review-update !>(`update:review`[%gather palints palcmts palrevs])]
-    ::     ==
-    ::   ==
-    :: ==
-  ::
-      [%pals %leeche ~]
-    ?+    -.sign  (on-agent:default wire sign)
-        %fact
-      :: this wire only handles pal effects
-      ~&  "Got pals leeche cage:"
-      ~&  cage.sign
-      !!
     ==
   ==
 ++  on-fail  :: runs during certain types of crashes
