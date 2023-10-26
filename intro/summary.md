@@ -1,6 +1,4 @@
-# Instructions to install
-
-## Installation instructions
+# Installation instructions
 
 %bizbaz depends on %pals to propagate adverts so you must install %pals first (/1/desk/~paldev/pals). You can add ~dibmet-narren & ~talsyx-talsud as pals to get some existing adverts.
 
