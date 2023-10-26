@@ -2,6 +2,9 @@
 start ship="zod":
   bash bin/start-fake-ship.sh {{ship}}
 
+start-comet:
+  cd data && urbit -c mycomet
+
 install:
   cd ui && npm install
 
@@ -35,6 +38,16 @@ symlink ship="zod":
 
 unsymlink ship="zod":
   rm -rf data/{{ship}}/bizbaz
+
+prod-init server="blog":
+  ssh {{server}} 'mkdir bizbaz && cd bizbaz && git init`
+  git remote add {{server}} ssh://{{server}}:/home/admin/bizbaz/
+  git push {{server}} main
+  ssh {{server}} 'cd bizbaz && git checkout --force main'
+
+prod-push server="blog":
+  git push {{server}} main
+  ssh {{server}} 'cd bizbaz && git checkout --force main'
 
 code:
   codium .
