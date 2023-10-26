@@ -90,23 +90,23 @@
     |=  review=review:revsur
     ^-  ?
     ?.  ((validate:cmtlib bowl) commit.review)
-      ~&  "commit included in this review is invalid"
+      ~&  "Commit included in this review is invalid"
       %.n
     ?.  =(hash.review (sham body.review))
-      ~&  "review hash does not match digest of the body"
+      ~&  "Review hash does not match digest of the body"
       %.n
     ?.  (is-signature-valid:signatures [our.bowl reviewer.review hash.review now.bowl])
-      ~&  "reviewer sig on the review hash is invalid"
+      ~&  "Reviewer sig on the review hash is invalid"
       %.n
     =/  reviewee  reviewee.body.review
     =/  reviewer  ship.reviewer.review
     =/  client    ship.client.body.commit.review
     =/  vendor    vendor.body.commit.review
     ?.  |(&(=(reviewee client) =(reviewer vendor)) &(=(reviewee vendor) =(reviewer client)))
-      ~&  "reviewer & reviewee are not the client & vendor"
+      ~&  "Reviewer & reviewee are not the client & vendor"
       %.n
     ?.  |((lte score.body.review 5) (gte score.body.review 1))
-      ~&  "score is not 1 to 5"
+      ~&  "Score is not 1 to 5"
       %.n
     %.y
 ::
@@ -176,7 +176,6 @@
     ++  parse-action
         |=  jon=json
         ^-  action:revsur
-        ~&  jon
         %.  jon
         %-  of
         :~  [%intent parse-advert:from-json:intlib]

@@ -126,14 +126,16 @@ export const App = ({ api }: { api: any }) => {
       });
     } else if (!!upd.review) {
       setReviews((oldReviews) => [upd.review, ...oldReviews])
-      setCommits((oldCommits) => {
-        if (!oldCommits) return []
-        let oldIndex = oldCommits!.findIndex(i => i.hash === upd.review.commit.hash)
-        if (oldIndex === -1) {
-          return oldCommits
-        }
-        return [...oldCommits!.slice(0, oldIndex), ...oldCommits!.slice(oldIndex + 1)]
-      });
+      if (upd.review.reviewer.ship === myShip) {
+        setCommits((oldCommits) => {
+          if (!oldCommits) return []
+          let oldIndex = oldCommits!.findIndex(i => i.hash === upd.review.commit.hash)
+          if (oldIndex === -1) {
+            return oldCommits
+          }
+          return [...oldCommits!.slice(0, oldIndex), ...oldCommits!.slice(oldIndex + 1)]
+        });
+      }
     } else if (!!upd.update) {
       setReviews((oldReviews) => {
         const oldRev = upd.update.old;
