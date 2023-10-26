@@ -38,14 +38,17 @@ export const IntentCard = ({intent, doCommit}: {
         sx={{ m: 0 }}
         title={isVendor ? (
           <Typography variant='h5'>
-            <ShipLink ship={client}/> has shown interest in this advert
+            <ShipLink ship={client}/> intends to transact with you
           </Typography>
         ) : (
           <Typography variant='h5'>
-            <ShipLink ship={vendor}/> has been notified of your interest in the advert
+            <ShipLink ship={vendor}/> has been notified of your intent
           </Typography>
         )}
-        subheader={`Wait to complete the transaction until the vendor commits`}
+        subheader={isVendor
+          ? `Wait to complete the transaction until you have committed`
+          : `Wait to complete the transaction until the vendor commits`
+        }
       />
 
       <CardContent sx={{ m: 0, py: 0 }}>
