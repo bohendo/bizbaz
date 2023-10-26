@@ -27,7 +27,7 @@
 ::
 +$  action
   $%  [%create req=advert-req]
-      [%update advert=hash req=advert-req]
+      [%update old=hash new=advert-req]
       [%delete advert=hash]
   ==
 +$  update

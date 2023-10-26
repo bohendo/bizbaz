@@ -91,12 +91,12 @@
       (pub-card:advlib `update:advert`[%create new-advert])
     ::
         %update
-      =/  index  ((get-by-hash:advlib adverts) advert.act)
+      =/  index  ((get-by-hash:advlib adverts) old.act)
       ?~  index
-        ~|((weld "No advert with hash " (scow %uv advert.act)) !!)
-      =/  new-advert  ((build:advlib bowl) req.act)
+        ~|((weld "No advert with hash " (scow %uv old.act)) !!)
+      =/  new-advert  ((build:advlib bowl) new.act)
       :_  this(adverts (snap adverts (need index) new-advert))
-      (pub-card:advlib `update:advert`[%update advert.act new-advert])
+      (pub-card:advlib `update:advert`[%update old.act new-advert])
     ::
         %delete
       =/  index  ((get-by-hash:advlib adverts) advert.act)

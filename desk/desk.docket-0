@@ -1,7 +1,7 @@
 :~  title+'bizbaz'
     info+'buy and sell stuff with pals of pals'
     color+0xf0.8080
-    glob-http+['https://bohendo.com/ipfs/QmXtkDUoJqyUHBYRdP8htX7BrS1jfA9NJ8hnrRBCgoxvaQ' 0v1an72.kroq6.70et0.ckbid.12lfq]
+    glob-http+['https://bohendo.com/ipfs/QmYqNTJokadetGhvDES3NnXRskZrK6g6MZmPa218V1UYYJ' 0v6.9e4j0.er0df.icck5.b9aqk.gd995]
     base+'bizbaz'
     version+[0 1 0]
     website+'https://github.com/bohendo/bizbaz'
