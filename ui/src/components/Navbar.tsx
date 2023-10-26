@@ -41,6 +41,7 @@ export const NavBar = ({api, toggleTheme}:{api: any, toggleTheme: () => void}) =
         mark: 'sync',
         json: {}
       });
+      window.location.reload();
     };
 
     return (<>
