@@ -59,18 +59,15 @@ export const AdvertEditor = ({
 
     const validate = (req: AdvertReq) => {
       const titleError = !req.title ? "Advert must have a title" : "";
-      const coverError = !req.cover ? "Advert cover must be a url" : "";
+      const coverError = ""; // empty cover image is acceptable
       const descriptionError = !req.description ? "Advert description is required" : "";
-      let tagsError = req.tags.reduce((tagError, tag) =>
+      const badTags = req.tags.reduce((tagError, tag) =>
         /^[a-z][a-z0-9-]*$/.test(tag) ? tagError : tagError + ` '${tag}'`,
         "",
       );
-   
-       if (tagsError) {
-         tagsError = "Tags must start with an alphabet and only contain alphanumeric and '-' symbols. \
-                     Following are invalid tags: "
-                     + tagsError;
-       }
+      const tagsError = (!!badTags && badTags !== "")
+        ? "Tags must start with an alphabet and only contain alphanumeric and '-' symbols. Invalid tags: " + badTags
+        : ""
       const hasError = !!(descriptionError || tagsError);
       setValidation({ hasError, errorMsgs: {coverError, titleError, descriptionError, tagsError}});
     }
@@ -161,7 +158,7 @@ export const AdvertEditor = ({
               helperText={validation.errorMsgs.tagsError}
               variant="standard"
               onChange={(event) => {
-                syncNewAdvert({ ...advertReq, [event.target.id]: event.target.value })
+                syncNewAdvert({ ...advertReq, [event.target.id]: event.target.value.toLowerCase().trim().split(" ").filter(t => !!t) })
               }}
             />
             <TextField

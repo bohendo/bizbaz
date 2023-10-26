@@ -120,14 +120,14 @@ If you have `nix` installed, run `nix develop` (or `direnv allow` if you're usin
 
 ## Deploying
 
-Note: the dev server runs on port 3000 but, while deploying, we'll be talking directly to the local urbit server (at port 8080 by default).
+Note: the dev server runs on port 3000 but, while deploying, we'll be talking directly to the local urbit server (usually at port 8080).
 
 ### Once per development env: Setting up the %globber desk 
 
 We'll use this local %globber desk to create UI globs on our dev computer.
 
 - `me@bizbaz$ just start` (if you don't already have a ~zod running)
-- `~zod:dojo> |merge %globber our %base` to create a new globber desk from a fork of the built-in base desk
+- `~zod:dojo> |merge %globber our %base` to create a new globber desk from a fork of the built-in base desk, libs from the base desk are required to make globs
 - `~zod:dojo> |mount %globber` to make our globber desk accessible from the host filesystem
 
 ### Build a deployable glob
