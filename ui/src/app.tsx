@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState, useCallback } from "react";
-import { Outlet, useNavigate, useLocation } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 
 import { BizbazContext } from "./BizbazContext"
 import { Advert, Commit, Intent, Review, Vote } from "./types";
@@ -24,10 +24,7 @@ export const App = ({ api }: { api: any }) => {
   const [reviews, setReviews] = useState([] as Array<Review>);
 
   const navigate = useNavigate();
-  const location = useLocation();
   const myShip = `~${window.ship}`
-
-  console.log("location:", location)
 
   useEffect(() => {
     (async () => {
@@ -39,6 +36,7 @@ export const App = ({ api }: { api: any }) => {
 
   const updateAdverts = ( upd: any) => {
     console.log(`Got ${Object.keys(upd)} advert update:`, upd)
+    const curHash = window.location.pathname.split("/").pop()
     if (upd.gather) {
       setAdverts(upd.gather.adverts || [] as Array<Advert>)
     } else if (upd.create) {
@@ -55,20 +53,18 @@ export const App = ({ api }: { api: any }) => {
         }
       })
 
-      const curHash = location.pathname.split("/").pop()
       if (curHash === oldHash) {
-        console.log(`${curHash} === ${oldHash}`)
         navigate(`/advert/${newAdvert.hash}`)
-      } else {
-        console.log(`${curHash} !== ${oldHash}`)
       }
     } else if (upd.delete) {
       setAdverts((oldAdverts: Array<Advert>) =>
         oldAdverts.filter((ad: Advert) => upd.delete.advert !== ad.hash)
       )
-      navigate(`/`)
+      if (curHash === upd.delete.advert) {
+        navigate(`/`)
+      }
     } else {
-      console.log(`Unknown vote update`)
+      console.log(`Unknown advert update`)
     }
   }
 

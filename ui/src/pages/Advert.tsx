@@ -129,7 +129,7 @@ export const Advert = ({ api }: { api: any }) => {
 
   if (advert === undefined) {
     // TODO: create error 404 not found page
-    return <div> Advert does not exist </div>
+    return <Box sx={{ mt: theme.spacing(10) }}> This advert does not exist </Box>
   } else if (advert.body) {
     return (
       <Box sx={{width: "100%", mt: theme.spacing(10), minHeight: '100vh' }}>

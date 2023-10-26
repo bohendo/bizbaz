@@ -10,6 +10,13 @@ import Button from "@mui/material/Button";
 
 import { Advert, AdvertReq, AdvertValidation  } from "../types";
 
+const defaultReq: AdvertReq = {
+  title: "Advert Title",
+  cover: "link to cover image",
+  description: "Description of the stuff I'm selling",
+  tags: ["example"],
+};
+
 export const AdvertEditor = ({
     oldAdvert,
     open,
@@ -32,10 +39,10 @@ export const AdvertEditor = ({
         }
     } as AdvertValidation)
     const [advertReq, setAdvertReq] = useState({
-        title: oldAdvert?.body?.title || "Advert Title",
-        cover: oldAdvert?.body?.cover || "link to cover image",
-        description: oldAdvert?.body?.description || "Description of the stuff I'm selling",
-        tags: oldAdvert?.body?.tags || ["example"],
+        title: oldAdvert?.body?.title || defaultReq.title,
+        cover: oldAdvert?.body?.cover || defaultReq.cover,
+        description: oldAdvert?.body?.description || defaultReq.description,
+        tags: oldAdvert?.body?.tags || defaultReq.tags,
     } as AdvertReq);
 
     useEffect(() => {
@@ -51,55 +58,58 @@ export const AdvertEditor = ({
     }, [oldAdvert]);
 
     const validate = (req: AdvertReq) => {
-       const titleError = !req.title ? "Advert must have a title" : "";
-       const coverError = !req.cover ? "Advert cover must be a url" : "";
-       const descriptionError = !req.description ? "Advert description is required" : "";
-       let tagsError = req.tags.reduce((tagError, tag) =>
-            /^[a-z][a-z0-9-]*$/.test(tag) ? tagError : tagError + ` '${tag}'`,
-            "");
-    
-        if (tagsError) 
-            tagsError = "Tags must start with an alphabet and only contain alphanumeric and '-' symbols. \
-                         Following are invalid tags: "
-                        + tagsError;
-       const hasError = !!(descriptionError || tagsError);
-       setValidation({ hasError, errorMsgs: {coverError, titleError, descriptionError, tagsError}});
+      const titleError = !req.title ? "Advert must have a title" : "";
+      const coverError = !req.cover ? "Advert cover must be a url" : "";
+      const descriptionError = !req.description ? "Advert description is required" : "";
+      let tagsError = req.tags.reduce((tagError, tag) =>
+        /^[a-z][a-z0-9-]*$/.test(tag) ? tagError : tagError + ` '${tag}'`,
+        "",
+      );
+   
+       if (tagsError) {
+         tagsError = "Tags must start with an alphabet and only contain alphanumeric and '-' symbols. \
+                     Following are invalid tags: "
+                     + tagsError;
+       }
+      const hasError = !!(descriptionError || tagsError);
+      setValidation({ hasError, errorMsgs: {coverError, titleError, descriptionError, tagsError}});
     }
 
     const syncNewAdvert = (req: AdvertReq) => {
-        validate(req);
-        setAdvertReq(req);
+      validate(req);
+      setAdvertReq(req);
     }
 
     const postAdvert = () => {
-        validate(advertReq);
-        if (validation.hasError) return;
+      validate(advertReq);
+      if (validation.hasError) return;
 
-        if (!!oldAdvert) {
-          const req = {
-            update: {
-              hash: oldAdvert.hash,
-              ...advertReq,
-            }
+      if (!!oldAdvert) {
+        const req = {
+          update: {
+            hash: oldAdvert.hash,
+            ...advertReq,
           }
-          console.log("advert update req", req);
+        }
+        console.log("advert update req", req);
+        api.poke({
+          app: 'bizbaz',
+          mark: 'advert-action',
+          json: req,
+        })
+      } else {
+        const req = {
+          create: advertReq
+        }
+        console.log("advert create req", req);
           api.poke({
             app: 'bizbaz',
             mark: 'advert-action',
             json: req,
-          })
-        } else {
-          const req = {
-            create: advertReq
-          }
-          console.log("advert create req", req);
-            api.poke({
-              app: 'bizbaz',
-              mark: 'advert-action',
-              json: req,
-          })
-        }
-        handleCloseDialog()
+        })
+      }
+      handleCloseDialog()
+      setAdvertReq(defaultReq)
     }
 
     return (
