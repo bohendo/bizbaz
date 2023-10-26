@@ -36,7 +36,7 @@ const router = createBrowserRouter([
       },
     ]
   },
-], { basename: "/apps/bizbaz" });
+], { basename: "/apps/bizbaz/" });
 
 createRoot(document.getElementById('app')!).render(
   <RouterProvider router={router} />
