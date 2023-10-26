@@ -21,27 +21,20 @@ build-ui: install
 publish:
   bash bin/ipfs-upload.sh
 
-sync-app ship: 
+sync-app ship="zod": 
   rm -rf data/{{ship}}/bizbaz
   cp -rf desk data/{{ship}}/bizbaz
 
-sync-lib ship dir: 
+sync-lib ship="zod" dir="pals": 
   rm -rf data/{{ship}}/{{dir}}
   cp -rf libs/{{dir}} data/{{ship}}/{{dir}}
 
-symlink ship:
+symlink ship="zod":
   rm -rf data/{{ship}}/bizbaz
   ln -s $(pwd)/desk data/{{ship}}/bizbaz
 
-unsymlink ship:
+unsymlink ship="zod":
   rm -rf data/{{ship}}/bizbaz
-
-bind ship:
-  mkdir -p ./data/{{ship}}/bizbaz
-  sudo mount --bind $(pwd)/desk $(pwd)/data/{{ship}}/bizbaz
-
-unbind ship:
-  sudo umount $(pwd)/data/{{ship}}/bizbaz
 
 code:
   codium .
