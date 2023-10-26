@@ -39,9 +39,7 @@ export const NavBar = ({api, toggleTheme}:{api: any, toggleTheme: () => void}) =
       api.poke({
         app: 'bizbaz',
         mark: 'sync',
-        json: {
-          sync: 1
-        }
+        json: {}
       });
     };
 

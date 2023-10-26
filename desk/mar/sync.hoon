@@ -1,17 +1,15 @@
-|_  act=[%sync @ud]
+|_  act=[%sync]
 ++  grow
   |%
   ++  noun  act
   --
 ++  grab
   |%
-  ++  noun  [%sync @ud]
+  ++  noun  [%sync]
   ++  json
+    =,  dejs-soft:format
     |=  jon=json
-    %.  jon
-    %-  of
-    :~  [%sync (se %ud)]
-    ==
+    [%sync]
   --
 ++  grad  %noun
 --
