@@ -18,6 +18,8 @@ Note that you'll need to install bizbaz on at least 2 ships that are mutual pals
 
 If you have pals who have published adverts and you don't see them on the home page, click the refresh button in the top right. This is not normally necessary, but might help get your ship unstuck if an error has occurred.
 
+Expected propagation: If we have 4 ships and ~zod is a mutual pal w ~nec, ~nec is a mutual pal w ~bud, and ~bud is a mutual pal w ~wes, then when ~zod creates an advert, casts a vote, or submits a review, this data will be propagated to ~nec and ~wes but not ~bud.
+
 To create the first advert from ~zod, click the `+` button in the bottom right corner of the home page. Fill out the advert details and click "submit". Adverts are displayed as markdown, so you can add formatting or links to images, videos, and even 3D models in `glb` format! A new advert card will appear on the home page, click the card to view advert details. From here, the advert creator can use the button in the bottom right to edit or delete this advert.
 
 This advert should be picked up by ~zod's pals and pals-of-pals (eg ~nec) and be displayed on the home page. If you click the advert card from ~nec, you'll see similar advert details but with a few new options.
@@ -42,7 +44,7 @@ Navigation tips:
 
 Now you're up and running, have fun buying and selling stuff with your pals-of-pals!
 
-For a step-by-step walkthrough of these bizbaz features, check out the tutorial in the next section.
+For a step-by-step walkthrough of all bizbaz features, check out the tutorial in the next section.
 
 ## Tutorial
 
@@ -95,7 +97,7 @@ Open a 2nd terminal to run extra shell commands while the fake ship stays up in 
 - `me@bizbaz$ just sync-lib zod pals`
 - `me@bizbaz$ just sync-app zod`
 
-Commit and install both pals and bizbaz
+Commit and install both pals and bizbaz. Make sure you install pals before you install bizbaz.
 - `~zod:dojo> |commit %pals`
 - `~zod:dojo> |install our %pals`
 - `~zod:dojo> |commit %bizbaz`

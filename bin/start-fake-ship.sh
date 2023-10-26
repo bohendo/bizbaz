@@ -22,7 +22,8 @@ then
   if ! grep -q "$image_version" <<<"$(docker image ls | grep "$image_name")"
   then docker image pull "$image"
   fi
-  urbit="docker run --interactive --tty --rm --name=$name --mount=type=bind,src=$data,dst=/urbit --publish=8080:80 --entrypoint=urbit $image --loom 31"
+  port="$(( RANDOM % (65535 - 1000 + 1 ) + 1000 ))"
+  urbit="docker run --interactive --tty --rm --name=$name --mount=type=bind,src=$data,dst=/urbit --publish=$port:80 --entrypoint=urbit $image --loom 31"
 else
   echo "Neither urbit nor docker is installed, can't start a fake ship" && exit 1
 fi
@@ -34,15 +35,11 @@ then
   if [[ ! -d "$name" ]]
   then
     echo "Copying fresh data from $fresh to $name"
-    echo "(requires one-time sudo to reset permissions that docker sometimes screws up)"
-    sudo chown -R "$(whoami)" .
     cp -r "$fresh" "$name"
   elif [[ "$reset" == "true" ]]
   then
-    echo "Deleting all data for $name"
-    echo "(requires one-time sudo to reset permissions that docker sometimes screws up)"
+    echo "Deleting all data for $name and copying over fresh data"
     sleep 3 # give user a sec to ctrl-c if this was a mistake
-    sudo chown -R "$(whoami)" .
     rm -rfv "$name"
     cp -r "$fresh" "$name"
   fi
