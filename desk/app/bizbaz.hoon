@@ -57,6 +57,7 @@
     =/  palints  (skim intents |=(int=intent:review |((~(has in pals) ship.client.int) =(our.bowl ship.client.int))))
     =/  palcmts  (skim commits |=(cmt=commit:review |((~(has in pals) ship.vendor.cmt) =(our.bowl ship.vendor.cmt))))
     =/  palrevs  (skim reviews |=(rev=review:review |((~(has in pals) ship.reviewer.rev) =(our.bowl ship.reviewer.rev))))
+
     ::  gather list of subscription cards
     =/  advsubs  `(list card)`(turn ~(tap in pals) |=(pal=ship (sub-card:advlib pal)))
     =/  votsubs  `(list card)`(turn ~(tap in pals) |=(pal=ship (sub-card:votlib pal)))
@@ -193,7 +194,7 @@
   |=  =path
   ^-  (unit (unit cage))
   ?+    path  (on-peek:default path)
-    [%x %review ~]  ``noun+!>(reviews)
+    [%x %adverts ~]  ``noun+!>(update:advert)
   ==
 ++  on-watch  :: handles subscription requests
   |=  =path
@@ -209,7 +210,7 @@
     ::  only allow subscriptions by our pals
     ?>  (~(has in pals) src.bowl)
     ::  only share adverts created by our pals, filter out those from pals-of-pals
-    =/  pal-adverts  (skim adverts |=(ad=advert:advert (~(has in pals) ship.vendor.ad)))
+    =/  pal-adverts  (skim adverts |=(adv=advert:advert |((~(has in pals) ship.vendor.adv) =(our.bowl ship.vendor.adv))))
     [%give %fact ~ %advert-update !>(`update:advert`[%gather pal-adverts])]~
   ::
       [%noun %votes ~]
@@ -217,7 +218,8 @@
     ::  only allow subscriptions by our pals
     ?>  (~(has in pals) src.bowl)
     ::  only share votes created by our pals, filter out those from pals-of-pals
-    =/  pal-votes  (skim votes |=(vote=vote:vote (~(has in pals) ship.voter.vote)))
+
+    =/  pal-votes  (skim votes |=(vote=vote:vote |((~(has in pals) ship.voter.vote) =(our.bowl ship.voter.vote))))
     [%give %fact ~ %vote-update !>(`update:vote`[%gather pal-votes])]~
   ::
       [%noun %reviews ~]
@@ -225,9 +227,9 @@
     ::  only allow subscriptions by our pals
     ?>  (~(has in pals) src.bowl)
     ::  only share reviews created by our pals, filter out those from pals-of-pals
-    =/  pal-intents  (skim intents |=(intent=intent:review (~(has in pals) ship.client.intent)))
-    =/  pal-commits  (skim commits |=(commit=commit:review (~(has in pals) ship.vendor.commit)))
-    =/  pal-reviews  (skim reviews |=(review=review:review (~(has in pals) ship.reviewer.review)))
+    =/  pal-intents  (skim intents |=(int=intent:review |((~(has in pals) ship.client.int) =(our.bowl ship.client.int))))
+    =/  pal-commits  (skim commits |=(cmt=commit:review |((~(has in pals) ship.vendor.cmt) =(our.bowl ship.vendor.cmt))))
+    =/  pal-reviews  (skim reviews |=(rev=review:review |((~(has in pals) ship.reviewer.rev) =(our.bowl ship.reviewer.rev))))
     [%give %fact ~ %review-update !>(`update:review`[%gather pal-intents pal-commits pal-reviews])]~
   ::
   :: paths for serving json data to the UI
