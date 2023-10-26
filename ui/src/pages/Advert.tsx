@@ -54,7 +54,7 @@ export const Advert = ({ api }: { api: any }) => {
   const [openEditReview, setOpenEditReview] = useState(false);
   const [imgError, setImgError] = useState(false);
 
-  const ourShip = `~${window.ship}`
+  const myShip = `~${window.ship}`
 
   const { adverts, votes, intents, commits, reviews } = bizbaz;
 
@@ -133,7 +133,7 @@ export const Advert = ({ api }: { api: any }) => {
   } else if (advert.body) {
     return (
       <Box sx={{width: "100%", mt: theme.spacing(10), minHeight: '100vh' }}>
-        <Paper variant="outlined" sx={{ p: 8, m: 8 }}>
+        <Paper variant="outlined" sx={{ p: 8, mx: 8, mt: 4, mb: 2 }}>
           <Grid container direction="column" spacing={2}>
             <Grid item xs>
               {advert.body.cover && !imgError ? 
@@ -154,7 +154,7 @@ export const Advert = ({ api }: { api: any }) => {
             <Grid item xs container spacing={2}>
               <Grid item xs={1}>
                 <Votes votes={votes.filter((v: Vote) => v.body.advert === hash)}
-                  vote={vote} disabled={ourShip === advert.vendor.ship} />
+                  vote={vote} disabled={myShip === advert.vendor.ship} />
               </Grid>
               <Grid item xs container direction="column" spacing={2}>
                 <Grid item xs>
@@ -178,12 +178,12 @@ export const Advert = ({ api }: { api: any }) => {
             </Grid>
           </Grid>
 
-          {(ourShip !== advert.vendor.ship) ? (
+          {(myShip !== advert.vendor.ship) ? (
             <Stack direction="row" sx={{ justifyContent: "center", marginTop: 8 }} spacing={2}>
               <Button
                 variant="contained"
                 onClick={doIntent}
-                disabled={!!advIntents.find(i => i.client.ship === ourShip)}
+                disabled={!!advIntents.find(i => i.client.ship === myShip) || !!advCommits.find(c => c.body.client.ship === myShip)}
               >
                 Express Intent
               </Button>
@@ -257,7 +257,7 @@ export const Advert = ({ api }: { api: any }) => {
           </> : null
         }
 
-        {advert.vendor.ship === ourShip ? 
+        {advert.vendor.ship === myShip ? 
           <>
             <Backdrop open={openBackdrop} />
             <SpeedDial
