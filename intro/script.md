@@ -11,51 +11,43 @@ Over the last couple months we built bizbaz, the bizarre bazaar, it's a simple m
 
 # Why
 
-Bizbaz is built around free form adverts. They are simple text blobs that can offer or request anything that can be put into words. I am not yet aware of any marketplaces that have caught on in urbit and we weren't sure what exactly people want to buy or sell, so at every opportunity we've prioritized simplicity and flexibility.
+Bizbaz is built around free form adverts. They are simple text blobs that can offer or request any good or service you can think of.
 
-It could be that a lot of urbit users want to sell ebooks. Or maybe a large market for free-lance hoon developers will form. If one use-case comes to dominate bizbaz, this is a signal to other developers that a specialized marketplace app would immediately find product market fit. Bizbaz is not destined to add specialized support for ebook distribution or the kinds of feedback on a work-in-progress that might aid a freelance developer, the goal of bizbaz is not to become a central market of everything like Amazon.
+I am not yet aware of any general purpose marketplaces that have caught on in urbit and we weren't sure what exactly people want to buy or sell, so at every opportunity we've prioritized simplicity and flexibility.
 
-Bizbaz lets you add tags to your adverts. If a specialized ebook marketplace is published and we feel it's high-enough quality to refer, then, while creating an advert with the ebook tag, we would add a little pop-up suggesting they check out the dedicated marketplace instead. If only a few markets develop and specialized apps are born to serve each of them, bizbaz usage might dry up, which is fine because accelerating the development of more marketplace apps is a victory condition of bizbaz.
+It could be that a lot of urbit users want to sell ebooks. If one use-case dominates bizbaz, this is a signal to other developers that a specialized marketplace app would immediately find product market fit.
 
-But, we expect a long tail of weird offerings to always be present, and bizbaz will always be there as a fallback option. To serve these unusual offerings well, bizbaz is designed to do one thing very well: reviews. We'll cover reviews in-depth later but they have been carefully designed so that spamming positive reviews of yourself is difficult, and suppressing your negative reviews is impossible.
+Bizbaz is not destined to add specialized support for ebook distribution, the goal of bizbaz is not to become a central market of everything.
 
-These reviews are an information dense raw material that services such as aera can mine for higher quality reputation signals. Summarizing group chat interactions is an important way to bootstrap initial reputation scores, and maybe we'll integrate these kinds of scores into bizbaz someday. But once ships start transferring monetary value with each other and using bizbaz to review each others services, that's when other apps can start refining these reputation signals and putting them to real use.
+Bizbaz lets you add tags to your adverts so if someone creates an advert and adds the nft tag, we would add a pop-up suggesting they check out the urbitswap marketplace that's dedicated to buying or selling NFTs.
 
-3:00
+If only a few markets develop and specialized apps are born to serve each of them, bizbaz usage might dry up, which is fine because accelerating the development of more marketplace apps is a victory condition of bizbaz.
+
+But, we expect a long tail of weird offerings to always be present, and bizbaz will always be there as a general purpose fallback option.
+
+To serve these unusual offerings well, bizbaz is designed to do one thing very well: reviews. We'll cover reviews in-depth later but they have been carefully designed so that spamming positive reviews of yourself is difficult, and suppressing your negative reviews is impossible.
+
+These reviews put a little social skin in the game so, with trust proportional to the value being transacted, these reviews could play a similar role to an escrow + trusted 3rd party while trading crypto or buying something that needs to be shipped.
+
+These reviews are also an information dense raw material that services such as aera could mine for higher quality reputation signals.
 
 # History
 
 Before we get into technical details and demos, let's zoom out for a second.
 
-A peer to peer marketplace is nothing new. Ebay and OpenSea already exist. But our goal is to create a general purpose marketplace like Ebay, that we can deploy without any ongoing hosting obligations like OpenSea.
+A peer to peer marketplace is nothing new. Ebay provides cost effective data storage and OpenSea is non-custodial, but I would really like something to exist that combines the best properties of both of these markets.
 
-Past urbit hackathons have built similar services and we even tried to build something like this during an Ethereum hackathon at the 2018 devcon conference in Prague.
+To that end, me and my hackathon partner tried to build bizbaz.eth at a past Ethereum hackathon using a combination of traditional web and blockchain tech.
 
-Our previous attempt to build bizbaz was an abject failure. We did not have the required tools available to us and our hacking quickly devolved into heated arguments about how best to work around these limitations. We did not submit anything for that hackathon, and even if we did stay focused until we had something to deliver, it would have been a crude mockery of what we were able to build on urbit these last few months.
+That project was an abject failure, we didn't even submit anything and even if we did, it would have been a crude mockery of what we were able to build on urbit.
 
-The biggest problem we faced while trying to build %bizbaz on a combination of traditional and web3 tech was sybil attacks, also known as manipulation via sock puppet accounts. Ethereum accounts are just key pairs, we can create a million of them per second. Although each one needs a few bucks of gas money to take any action, there is no expectation that an ethereum address is long lived and it's even a privacy best practice if addresses are not long lived. Preventing spam on Ethereum therefore devolves into applying higher on-boarding costs for all users. The stronger the spam protection is, the less pleasant it is for honest users to start using the service.
+One of the biggest problems we faced is sybil attacks. Ethereum IDs are just key pairs, you can make a million a minute and mitigating spam devolves to just increasing on-boarding costs. And email addresses aren't much better. But urbit IDs are long lived and are tangled up with your group chats, flappy bird high scores, etc so it's not painless to shed an old ID and don a new one, and it's obvious when you do.
 
-Email addresses are not much better, there's a little more friction involved in creating each new email address but it's free. Combatting spam on a site like ebay therefore requires privileged moderators who are stuck playing whack-a-mole while manually reviewing and banning individual offenders.
-
-The second big problem we encountered is where to store the advert data. A blob of text is not a large amount of data, but when you're paying per-byte to save it on Ethereum, it adds up. We could host a big database in the cloud like Ebay does, maybe using ipfs. This would actually be cost-effective but then we're back to ongoing hosting obligations which we're not interested in.
-
-When we were first trying to build bizbaz, we thought to ourselves "wow I really wish we could convince our users to host their own personal servers to store this data" but that's too much friction for users who aren't already hosting their own personal servers.
-
-5:40
-
-# How urbit enables %bizbaz
-
-First and foremost, urbit users are already hosting their own personal server so we have a cost-effective place to store advert data that does not impose any burdens the marketplace developer. Pictures and videos are a little heavier, we still depend on some external hosting service for these, but this is icing on the cake and we aren't existentially dependent on external hosts to validate and propagate the advert bodies.
-
-Urbit also gives us what we need to mitigate sybil attacks. Urbit IDs are expected to be long-lived and they're tangled up with a user's group chats, flappy bird high scores, and data from other apps. It's not painless to discard one identity and don a new one. And if you do, it's obvious.
-
-And as a bonus, peer-to-peer communication on urbit is simple, easy, and comes with some really nice guarantees. Ethereum and ipfs nodes use libp2p, this is not an easy library to work with and we're grateful that we didn't have to.
-
-6:45
+The second problem was data storage. A blob of text isn't a huge amount of data, but it gets pricey when you're paying per-byte to save it on ethereum. Ebay can save plenty of data cost effectively, but only by introducing a centralized custodian honestly and honestly we're not responsible enough for that. Urbit is the perfect solution, not only is it non-custodial and cost effective to store advert descriptions, but the built-in tools for sharing this data with our peers saved us from libp2p hell.
 
 # bizbaz features
 
-So, let's get into bizbaz.
+So, bizbaz manages 3 important types of data: adverts, votes, and reviews.
 
 We can create, update and delete adverts and votes.
 
@@ -67,8 +59,6 @@ We're starting out with two ships that are not direct pals, but they have a pal 
 
 Here, you can see the advert creation form. We're adding a title, cover image link, some tags, and pasting in a description. Once it's created, our ship broadcasts this new advert to it's pals, and those pals broadcast it to their pals, but ships do not forward any info that did not come from a mutual pal.
 
-7:45
-
 # Advert updates
 
 Advert updates use the same form as advert creation so you can update any of the fields. Updated adverts are distributed to pals of pals the same way as new ones, with the old one being replaced.
@@ -76,8 +66,6 @@ Advert updates use the same form as advert creation so you can update any of the
 # Advert deletion
 
 Same for deletions, the delete request is distributed to pals of pals who remove the advert from their ship.
-
-8:20
 
 # But wait
 
@@ -89,15 +77,11 @@ The first line of defense is that adverts are only distributed among pals of pal
 
 But, a second, more fine-grained line of defense comes in voting.
 
-9:20
-
 # Up Voting
 
 We can upvote high-quality, wholesome ads. These votes are distributed to any of our pals of pals who have stored the advert being voted on.
 
 And, you can also unvote by clicking on the up arrow again.
-
-9:40
 
 # Down Voting
 
@@ -109,21 +93,17 @@ This will at least protect our ship from the Eye of Sauron because we are no lon
 
 Later, once we get more real world usage data, we could update bizbaz to auto-drop any ads that hit some negative vote threshold so that we're still dropping the naughtiest adverts even if we don't check in on bizbaz every day. We're still uncertain what this threshold should be and are open to suggestions.
 
-10:45
-
 # Review Overview
 
 Now, let's talk more about the review process.
 
-First, a vendor creates an advert. When anyone besides the vendor looks at this advert, they'll have the option to open up a chat with the vendor where they can hash out the details. We just use the talk app for this. Maybe we'll add a built-in chat feature later but the talk app works fine so whatever. The advert page also includes a button that the client can use to express intent, that's the first step towards completing a transaction.
+Actually, step zero of conducting a reviewable transaction is for the vendor to create an advert. From the advert page, the client can click to open a talk app to hash out the details w the vendor.
 
-Next, the vendor can commit to transacting with the client who expressed intent.
+Then, step one is the client expressing intent, and the vendor can do a background check or whatever to make sure the client is trustworthy before committing.
 
-Once both ships have this commit object, they are free to transact. Ships should not start sending money or whatever until they both have a commit object because it's required to create a review.
+Once both ships have this commit object, they are ready to transact. Ships should not start sending money or shipping stuff until they both have a commit object because it's required to create a review.
 
 When the deal is done, or when one of them gets impatient, they can each submit their reviews and then later update their review if so desired.
-
-11:45
 
 # Review Demo
 
@@ -137,17 +117,13 @@ Also, notice the advert on the left. The two new reviews are visible at the top,
 
 # Live Advert #1
 
-bizbaz is live and ready to use. Here's one of the real live adverts that shows off some fancy formatting. The advert description is formatted as markdown so you can add in-line pictures, videos, or even glb formatted 3D models as well as links, lists, and so on.
-
-13:15
+Bizbaz is live and ready to use. Here's one of the real live adverts that shows off some fancy formatting. The advert description is formatted as markdown so you can add in-line pictures, videos, or even glb formatted 3D models as well as links, lists, and so on.
 
 # Live Advert #2
 
 Another live advert. Note that adverts don't need to be offers to sell anything, they could be requests to buy something too. And this is a real advert, if you install bizbaz and express intent, you really could get paid to help me refactor bizbaz.
 
 We do a little dogfooding, It's called we do a little dogfooding.
-
-13:35
 
 # Welcome
 
@@ -158,5 +134,3 @@ And with that, you're ready to join us.
 I'm ~dibmet-narren and my teammate is ~talsyx-talsud, add us as pals and install bizbaz to start buying and selling stuff with us & our pals.
 
 Thank you.
-
-14:00
