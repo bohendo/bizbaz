@@ -31,13 +31,13 @@
     ^-  (list review:revsur)
     =/  old-review-index  ((get-by-hash reviews) hash.new-review)
     ?~  old-review-index
-      ~&  "Did not find existing review, adding a new one"
+      :: ~&  "Did not find existing review, adding a new one"
       [new-review reviews]
     =/  old-review  (snag (need old-review-index) reviews)
     ?:  (lth when.body.new-review when.body.old-review)
-      ~&  "Ignoring updated review that's older than the existing one"
+      :: ~&  "Ignoring updated review that's older than the existing one"
       reviews
-    ~&  "Replacing existing review with updated review"
+    :: ~&  "Replacing existing review with updated review"
     (snap reviews (need old-review-index) new-review)
 ::
 ++  exists
@@ -90,23 +90,23 @@
     |=  review=review:revsur
     ^-  ?
     ?.  ((validate:cmtlib bowl) commit.review)
-      ~&  "Commit included in this review is invalid"
+      :: ~&  "Commit included in this review is invalid"
       %.n
     ?.  =(hash.review (sham body.review))
-      ~&  "Review hash does not match digest of the body"
+      :: ~&  "Review hash does not match digest of the body"
       %.n
     ?.  (is-signature-valid:signatures [our.bowl reviewer.review hash.review now.bowl])
-      ~&  "Reviewer sig on the review hash is invalid"
+      :: ~&  "Reviewer sig on the review hash is invalid"
       %.n
     =/  reviewee  reviewee.body.review
     =/  reviewer  ship.reviewer.review
     =/  client    ship.client.body.commit.review
     =/  vendor    vendor.body.commit.review
     ?.  |(&(=(reviewee client) =(reviewer vendor)) &(=(reviewee vendor) =(reviewer client)))
-      ~&  "Reviewer & reviewee are not the client & vendor"
+      :: ~&  "Reviewer & reviewee are not the client & vendor"
       %.n
     ?.  |((lte score.body.review 5) (gte score.body.review 1))
-      ~&  "Score is not 1 to 5"
+      :: ~&  "Score is not 1 to 5"
       %.n
     %.y
 ::

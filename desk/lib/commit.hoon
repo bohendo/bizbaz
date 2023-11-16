@@ -51,19 +51,19 @@
     |=  commit=commit:revsur
     ^-  ?
     ?.  ((validate:intlib bowl) [hash=intent.body.commit client=client.body.commit body=intent.commit])
-      ~&  "Intent included in this commit is invalid"
+      :: ~&  "Intent included in this commit is invalid"
       %.n
     ?.  =(ship.vendor.commit ship.vendor.intent.commit)
-      ~&  "Vendor specified in intent body did not sign this commit"
+      :: ~&  "Vendor specified in intent body did not sign this commit"
       %.n
     ?.  =(ship.vendor.commit vendor.body.commit)
-      ~&  "Vendor specified in commit body did not sign this commit"
+      :: ~&  "Vendor specified in commit body did not sign this commit"
       %.n
     ?.  =(hash.commit (sham body.commit))
-      ~&  "Commit hash does not match digest of the body"
+      :: ~&  "Commit hash does not match digest of the body"
       %.n
     ?.  (is-signature-valid:signatures [our.bowl vendor.commit hash.commit now.bowl])
-      ~&  "Vendor sig on the commit hash is invalid"
+      :: ~&  "Vendor sig on the commit hash is invalid"
       %.n
     %.y
 ::

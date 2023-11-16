@@ -10,22 +10,22 @@
     ^-  (list vote:vote)
     =/  vote-is-duplicate  ((vote-exists votes) new-vote)
     ?:  vote-is-duplicate
-      ~&  "Ignoring duplicate vote"
+      :: ~&  "Ignoring duplicate vote"
       votes
     =/  recast-vote  ((get-recast-vote votes) new-vote)
     ?~  recast-vote
-      ~&  "Did not find existing vote, adding a new one"
+      :: ~&  "Did not find existing vote, adding a new one"
       ?:  ?=(%un choice.body.new-vote)
-        ~&  "Ignoring new unvote"
+        :: ~&  "Ignoring new unvote"
         votes
       [new-vote votes]
     =/  old-vote  (snag (need recast-vote) votes)
     ?:  (lth when.body.new-vote when.body.old-vote)
-      ~&  "Ignoring updated vote that's older than the existing one"
+      :: ~&  "Ignoring updated vote that's older than the existing one"
       votes
-    ~&  "Found an existing vote, updating it"
+    :: ~&  "Found an existing vote, updating it"
     ?:  ?=(%un choice.body.new-vote)
-      ~&  "Removing unvote"
+      :: ~&  "Removing unvote"
       (oust [(need recast-vote) 1] votes)
     (snap votes (need recast-vote) new-vote)
 ::
@@ -117,18 +117,18 @@
     |=  vote=vote:vote
     ^-  ?
     ?.  =(hash.vote (sham body.vote))
-      ~&  "Vote hash does not match digest of the body"
+      :: ~&  "Vote hash does not match digest of the body"
       %.n
     ?.  (is-signature-valid:signatures [our.bowl voter.vote hash.vote now.bowl])
-      ~&  "Voter sig on the vote hash is invalid"
+      :: ~&  "Voter sig on the vote hash is invalid"
       %.n
     =/  adv-index  ((get-by-hash:advlib adverts) advert.body.vote)
     ?~  adv-index
-      ~&  "No advert exists for this vote"
+      :: ~&  "No advert exists for this vote"
       %.n
     =/  adv  (snag (need adv-index) adverts)
     ?:  =(ship.vendor.adv ship.voter.vote)
-      ~&  "Voting on your own advert is not allowed"
+      :: ~&  "Voting on your own advert is not allowed"
       %.n
     %.y
 ::

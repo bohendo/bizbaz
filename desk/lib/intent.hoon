@@ -49,19 +49,19 @@
     |=  intent=intent:revsur
     ^-  ?
     ?:  =(ship.vendor.body.intent ship.client.intent)
-      ~&  "Vendor and client are the same ship"
+      :: ~&  "Vendor and client are the same ship"
       %.n
     ?.  =(client.body.intent ship.client.intent)
-      ~&  "Client specified in the body did not sign this commit"
+      :: ~&  "Client specified in the body did not sign this commit"
       %.n
     ?.  (is-signature-valid:signatures [our.bowl vendor.body.intent advert.body.intent now.bowl])
-      ~&  "Vendor sig on the advert hash is invalid"
+      :: ~&  "Vendor sig on the advert hash is invalid"
       %.n
     ?.  =(hash.intent (sham body.intent))
-      ~&  "Intent hash does not match digest of the body"
+      :: ~&  "Intent hash does not match digest of the body"
       %.n
     ?.  (is-signature-valid:signatures [our.bowl client.intent hash.intent now.bowl])
-      ~&  "Client sig on the intent hash is invalid"
+      :: ~&  "Client sig on the intent hash is invalid"
       %.n
     %.y
 ::

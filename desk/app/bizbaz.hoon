@@ -28,13 +28,13 @@
     default  ~(. (default-agent this %|) bowl)
 ++  on-init  :: runs one time after installing to set up the initial state
   ^-  (quip card _this)
-  ~&  >  "%bizbaz initialized successfully."
   :: TODO: warn user if pals is not installed yet
   =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
-  ~&  (weld "subscribing to mutual pals: " (spud (turn ~(tap in pals) |=(pal=ship (scot %p pal)))))
+  :: ~&  (weld "subscribing to mutual pals: " (spud (turn ~(tap in pals) |=(pal=ship (scot %p pal)))))
   =/  advsubs  (turn ~(tap in pals) |=(pal=ship (sub-card:advlib pal)))
   =/  votsubs  (turn ~(tap in pals) |=(pal=ship (sub-card:votlib pal)))
   =/  revsubs  (turn ~(tap in pals) |=(pal=ship (sub-card:revlib pal)))
+  ~&  >  "%bizbaz initialized successfully."
   :_  this
   %+  weld  advsubs
   %+  weld  votsubs  revsubs
@@ -84,16 +84,16 @@
     =/  act  !<(action:advert vase)
     ?-    -.act
     ::
-        %create 
+        %create
       =/  new-advert  ((build:advlib bowl) req.act)
       :_  this(adverts [new-advert adverts])
-      ~&  "Created new advert, publishing it"
+      :: ~&  "Created new advert, publishing it"
       (pub-card:advlib `update:advert`[%create new-advert])
     ::
         %update
       =/  index  ((get-by-hash:advlib adverts) old.act)
       ?~  index
-        ~&  "Ignoring update to an advert we don't have"
+        :: ~&  "Ignoring update to an advert we don't have"
         [~ this]
       =/  new-advert  ((build:advlib bowl) new.act)
       :_  this(adverts (snap adverts (need index) new-advert))
@@ -102,104 +102,104 @@
         %delete
       =/  index  ((get-by-hash:advlib adverts) advert.act)
       ?~  index
-        ~&  "Ignoring deletion of an advert we don't have"
+        :: ~&  "Ignoring deletion of an advert we don't have"
         [~ this]
       :_  this(adverts (oust [(need index) 1] adverts))
       (pub-card:advlib `update:advert`[%delete advert.act])
-    == 
+    ==
   ::
   :: vote poke responses
   ::
       %vote-action
     =/  act  !<(action:vote vase)
-    ~&  act
     ?-    -.act
     ::
         %vote
       =/  adv-index  ((get-by-hash:advlib adverts) advert.req.act)
       ?~  adv-index
-        ~&  "Ignoring vote on an advert we don't have"
+        :: ~&  "Ignoring vote on an advert we don't have"
         [~ this]
       =/  new-vote  (((build-vote:votlib bowl) adverts) req.act)
       =/  new-votes  ((upsert-vote:votlib votes) new-vote)
       ?:  ?&(=(ship.voter.new-vote src.bowl) =(choice.body.new-vote %down))
+          ~&  "Deleting down-voted advert and publishing vote to UI + pals"
           :_  this(votes new-votes, adverts (oust [(need adv-index) 1] adverts))
           :~  [%give %fact ~[/json/adverts] %advert-update !>(`update:advert`[%delete advert.req.act])]
               [%give %fact ~[/json/votes] %vote-update !>(`update:vote`[%vote new-vote])]
               [%give %fact ~[/noun/votes] %vote-update !>(`update:vote`[%vote new-vote])]
           ==
+      ~&  "Saving new vote and broadcasting it to UI + pals"
       :_  this(votes new-votes)
       (pub-card:votlib `update:vote`[%vote new-vote])
-    == 
+    ==
   ::
   :: review poke responses
   ::
       %review-action
     =/  act  !<(action:review vase)
-    ~&  act
     ?-    -.act
     ::
         %intent
       =/  adv-index  ((get-by-hash:advlib adverts) advert.act)
       ?~  adv-index
-        ~&  "Ignoring intent on an advert we don't have"
+        :: ~&  "Ignoring intent on an advert we don't have"
         [~ this]
       =/  ad  (snag (need adv-index) adverts)
       =/  new-intent  ((build:intlib bowl) ad)
       ?:  ((exists:intlib intents) new-intent)
-        ~&  "Ignoring duplicate intent"  
+        :: ~&  "Ignoring duplicate intent"
         [~ this]
-      ~&  "Saving new intent and broadcasting it to UI + pals"  
+      ~&  "Saving new intent and broadcasting it to UI + pals"
       :_  this(intents [new-intent intents])
       (pub-card:revlib `update:review`[%intent new-intent])
     ::
         %commit
       =/  int-index  ((get-by-hash:intlib intents) intent.act)
       ?~  int-index
-        ~&  "Ignoring commit on an intent we don't have"
+        :: ~&  "Ignoring commit on an intent we don't have"
         [~ this]
       =/  int  (snag (need int-index) intents)
       =/  new-commit  ((build:cmtlib bowl) int)
       ?:  ((exists:cmtlib commits) new-commit)
-        ~&  "Ignoring duplicate commit"  
+        :: ~&  "Ignoring duplicate commit"
         [~ this]
       =/  new-intents  (oust [(need int-index) 1] intents)  :: remove old intent
       =/  new-commits  [new-commit commits]  :: add new commit
-      ~&  "Saving new intent and broadcasting it to UI + pals"  
+      ~&  "Saving new commit and broadcasting it to UI + pals"
       :_  this(intents new-intents, commits new-commits)
       (pub-card:revlib `update:review`[%commit new-commit])
     ::
         %review
       =/  cmt-index  (find ~[commit.req.act] (turn commits |=(cmt=commit:review hash.cmt)))
       ?~  cmt-index
-        ~&  "Ignoring review on a commit we don't have"
+        :: ~&  "Ignoring review on a commit we don't have"
         [~ this]
       =/  cmt  (snag (need cmt-index) commits)
       =/  new-review  (((build:revlib bowl) cmt) req.act)
       ?:  ((exists:revlib reviews) new-review)
-        ~&  "Ignoring duplicate review"  
+        :: ~&  "Ignoring duplicate review"
         [~ this]
       =/  new-commits  (oust [(need cmt-index) 1] commits)  :: remove old commit
       =/  new-reviews  [new-review reviews]  :: add new review
-      ~&  "Saving new review and broadcasting it to UI + pals"  
+      ~&  "Saving new review and broadcasting it to UI + pals"
       :_  this(commits new-commits, reviews new-reviews)
       (pub-card:revlib `update:review`[%review new-review])
     ::
         %update
       =/  old-index  (find ~[old.act] (turn reviews |=(rev=review:review hash.rev)))
       ?~  old-index
-        ~&  "Ignoring update for a review we don't have"
+        :: ~&  "Ignoring update for a review we don't have"
         [~ this]
       =/  rev  (snag (need old-index) reviews)
       =/  new-review  (((build:revlib bowl) commit.rev) new.act)
       ?:  ((exists:revlib reviews) new-review)
-        ~&  "Ignoring no-op review update"  
+        :: ~&  "Ignoring no-op review update"
         [~ this]
       =/  new-reviews  [new-review reviews]  :: add new review
-      ~&  "Updating old review and broadcasting it to UI + pals"  
+      ~&  "Updating old review and broadcasting it to UI + pals"
       :_  this(reviews (snap reviews (need old-index) new-review))
       (pub-card:revlib `update:review`[%update old=old.act new=new-review])
-    == 
+    ==
   ==
 ++  on-peek  :: handles one-off read-only requests
   |=  =path
@@ -247,12 +247,12 @@
   ::
       [%json %adverts ~]
     =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
-    ~&  (weld "mutual pals: " (spud (turn ~(tap in pals) |=(pal=ship (scot %p pal)))))
+    :: ~&  (weld "mutual pals: " (spud (turn ~(tap in pals) |=(pal=ship (scot %p pal)))))
     :: ~&  "watching adverts"
       [%give %fact ~ %advert-update !>(`update:advert`[%gather adverts])]~
   ::
       [%json %votes ~]
-    ~&  "watching votes"
+    :: ~&  "watching votes"
     [%give %fact ~ %vote-update !>(`update:vote`[%gather votes])]~
   ::
       [%json %reviews ~]
@@ -274,7 +274,7 @@
 ++  on-agent  :: handles subscription updates and request acknowledgements from other agents
   |=  [=wire =sign:agent:gall]
   ^-  (quip card _this)
-  ~&  (weld "got new subscription update from wire: " (spud wire))
+  :: ~&  (weld "got new subscription update from wire: " (spud wire))
   ?+    wire  (on-agent:default wire sign)
   ::
   :: advert subscription updates
@@ -295,17 +295,17 @@
         [~ this(adverts (weld gud-adverts adverts))]
       ::
           %create
-        ~&  "Got a %create %advert-update from our subscription"
+        :: ~&  "Got a %create %advert-update from our subscription"
         =/  new-advert  advert.upd
         =/  existing-index  (find ~[hash.new-advert] (turn adverts |=(ad=advert:advert hash.ad)))
         ?.  ?~(existing-index %.y %.n)
-          ~&  "we already have this advert, doing nothing"
+          :: ~&  "we already have this advert, doing nothing"
           [~ this]
-        ~&  "validating newly created advert"
+        :: ~&  "validating newly created advert"
         ?.  ((validate:advlib bowl) new-advert)
-          ~&  "Ignoring invalid advert"
+          :: ~&  "Ignoring invalid advert"
           [~ this]
-        ~&  (weld "%create: valid advert received from " (scow %p src.bowl))
+        :: ~&  (weld "%create: valid advert received from " (scow %p src.bowl))
         =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
         =/  is-pal  ?~((find ~[ship.vendor.new-advert] ~(tap in pals)) %.n %.y)
         ?:  is-pal
@@ -318,21 +318,21 @@
         ==
       ::
           %update
-        ~&  (weld "Got an advert %update from " (scow %p src.bowl))
+        :: ~&  (weld "Got an advert %update from " (scow %p src.bowl))
         =/  old-hash  old.upd
         =/  new-advert  new.upd
         =/  existing-index  ((get-by-hash:advlib adverts) hash.new-advert)
         ?.  ?~(existing-index %.y %.n)
-          ~&  "we already have this advert, doing nothing"
+          :: ~&  "we already have this advert, doing nothing"
           [~ this]
         =/  old-ad-index  ((get-by-hash:advlib adverts) old-hash)
         =/  old-advert  (snag (need old-ad-index) adverts)
         ?:  (lth when.body.new-advert when.body.old-advert)
-          ~&  "Ignoring updated advert that's older than the existing one"
+          :: ~&  "Ignoring updated advert that's older than the existing one"
           [~ this]
-        ~&  new-advert
+        :: ~&  new-advert
         ?.  ((validate:advlib bowl) new-advert)
-          ~&  "Ignoring invalid advert"
+          :: ~&  "Ignoring invalid advert"
           [~ this]
         =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
         =/  is-pal  ?~((find ~[ship.vendor.new-advert] ~(tap in pals)) %.n %.y)
@@ -353,11 +353,11 @@
         ==
       ::
           %delete
-        ~&  "Got a %delete %advert-update from our subscription"
+        :: ~&  "Got a %delete %advert-update from our subscription"
         =/  hash  advert.upd
         =/  index  ((get-by-hash:advlib adverts) hash)
         ?:  ?~(index %.y %.n)
-          ~&  "we do not have this advert, doing nothing"
+          :: ~&  "we do not have this advert, doing nothing"
           [~ this]
         =/  ad  (snag (need index) adverts)
         :: TODO: think of validation logic for delete request so
@@ -394,10 +394,10 @@
         [~ this(votes (weld gud-votes votes))]
       ::
           %vote
-        ~&  (weld "Got a %vote update from " (scow %p src.bowl))
+        :: ~&  (weld "Got a %vote update from " (scow %p src.bowl))
         =/  new-vote  vote.upd
         ?.  (((validate:votlib bowl) adverts) new-vote)
-          ~&  "Ignoring, invalid vote received"
+          :: ~&  "Ignoring, invalid vote received"
           [~ this]
         =/  new-votes  ((upsert-vote:votlib votes) new-vote)
         =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
@@ -446,18 +446,18 @@
         [~ this(intents set-intents, commits set-commits, reviews set-reviews)]
       ::
           %intent
-        ~&  "Got a new intent from our subscription"
+        :: ~&  "Got a new intent from our subscription"
         =/  new-intent  intent.upd
         =/  adv-index  ((get-by-hash:advlib adverts) advert.body.new-intent)
         ?~  adv-index
-          ~&  "Ignoring intent without an associated advert"
+          :: ~&  "Ignoring intent without an associated advert"
           [~ this]
         =/  int-index  ((get-by-hash:intlib intents) hash.new-intent)
         ?.  ?~(int-index %.y %.n)
-          ~&  "Ignoring duplicate intent"
+          :: ~&  "Ignoring duplicate intent"
           [~ this]
         ?.  ((validate:intlib bowl) new-intent)
-          ~&  "Ignoring invalid intent"
+          :: ~&  "Ignoring invalid intent"
           [~ this]
         ?.  =(ship.vendor.body.new-intent our.bowl)
           =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
@@ -467,7 +467,7 @@
             :_  this
             :~  [%give %fact ~[/noun/reviews] %review-update !>(`update:review`[%intent new-intent])]
             ==
-          ~&  "New intent by non-pal doesn't concern us, ignoring it"
+          :: ~&  "New intent by non-pal doesn't concern us, ignoring it"
           [~ this]
         ~&  (weld "%intent received from " (scow %p src.bowl))
         :_  this(intents [new-intent intents])
@@ -475,14 +475,14 @@
         ==
       ::
           %commit
-        ~&  "Got a new commit from our subscription"
+        :: ~&  "Got a new commit from our subscription"
         =/  new-commit  commit.upd
         =/  cmt-index  ((get-by-hash:cmtlib commits) hash.new-commit)
         ?.  ?~(cmt-index %.y %.n)
-          ~&  "Ignoring duplicate commit"
+          :: ~&  "Ignoring duplicate commit"
           [~ this]
         ?.  ((validate:cmtlib bowl) new-commit)
-          ~&  "Ignoring invalid commit"
+          :: ~&  "Ignoring invalid commit"
           [~ this]
         ?.  =(ship.client.body.new-commit our.bowl)
           =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
@@ -492,7 +492,7 @@
             :_  this
             :~  [%give %fact ~[/noun/reviews] %review-update !>(`update:review`[%commit new-commit])]
             ==
-          ~&  "New commit by non-pal doesn't concern us, ignoring it"
+          :: ~&  "New commit by non-pal doesn't concern us, ignoring it"
           [~ this]
         ~&  (weld "%commit received from " (scow %p src.bowl))
         =/  int-index  ((get-by-hash:intlib intents) intent.body.new-commit)
@@ -503,16 +503,16 @@
         ==
       ::
           %review
-        ~&  "Got a new review from our subscription"
+        :: ~&  "Got a new review from our subscription"
         =/  new-review  review.upd
         =/  rev-index  ((get-by-hash:revlib reviews) hash.new-review)
         ?.  ?~(rev-index %.y %.n)
-          ~&  "Ignoring duplicate review"
+          :: ~&  "Ignoring duplicate review"
           [~ this]
         ?.  ((validate:revlib bowl) new-review)
-          ~&  "Ignoring invalid review"
+          :: ~&  "Ignoring invalid review"
           [~ this]
-        ~&  (weld "valid review received from " (scow %p src.bowl))
+        :: ~&  (weld "valid review received from " (scow %p src.bowl))
         =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
         =/  is-pal  ?~((find ~[ship.reviewer.new-review] ~(tap in pals)) %.n %.y)
         ?:  is-pal
@@ -527,16 +527,16 @@
         ==
       ::
           %update
-        ~&  "Got a review update from our subscription"
+        :: ~&  "Got a review update from our subscription"
         =/  new-review  new.upd
         =/  rev-index  ((get-by-hash:revlib reviews) hash.new-review)
         ?.  ?~(rev-index %.y %.n)
-          ~&  "We already have this exact review, ignoring update"
+          :: ~&  "We already have this exact review, ignoring update"
           [~ this]
         ?.  ((validate:revlib bowl) new-review)
-          ~&  "Ignoring invalid review"
+          :: ~&  "Ignoring invalid review"
           [~ this]
-        ~&  (weld "%review: valid review update received from " (scow %p src.bowl))
+        :: ~&  (weld "%review: valid review update received from " (scow %p src.bowl))
         =/  new-reviews  ((upsert:revlib reviews) new-review)
         =/  pals  .^((set ship) %gx /(scot %p our.bowl)/pals/(scot %da now.bowl)/mutuals/noun)
         =/  is-pal  ?~((find ~[ship.reviewer.new-review] ~(tap in pals)) %.n %.y)
