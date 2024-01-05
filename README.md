@@ -2,7 +2,7 @@
 
 **The Bizarre Bazaar**
 
-Buy & sell stuff with pals-of-pals
+Buy & sell stuff with your pals-of-pals!
 
 ## Live Installation
 
